@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>X3N's Cyberpunk Website</title>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+  /* Reset and main styles */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    /* Cyberpunk gradient background */
+    background: linear-gradient(135deg, #6a0dad, #71C4FFFF, #46277CFF);
+    background-size: 600% 600%;
+    animation: gradientBG 20s ease infinite;
+    overflow-x: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Intro overlay styles */
+  #introOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 0, 30, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    text-align: center;
+    transition: opacity 1s ease;
+  }
+
+  /* Glowing teacup icon style */
+  #teacup {
+    font-size: 100px;
+    color: #fff;
+    text-shadow:
+      0 0 15px #ff22aa,
+      0 0 30px #ff22aa,
+      0 0 60px #00ffe9,
+      0 0 120px #00ffe9;
+    cursor: pointer;
+    animation: pulseGlow 2s infinite alternate;
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      text-shadow:
+        0 0 15px #ff22aa,
+        0 0 30px #ff22aa,
+        0 0 60px #00ffe9,
+        0 0 120px #00ffe9;
+    }
+    100% {
+      text-shadow:
+        0 0 30px #ff22aa,
+        0 0 60px #ff22aa,
+        0 0 120px #00ffe9,
+        0 0 240px #00ffe9;
+    }
+  }
+
+  /* Welcome message style */
+  #welcomeMsg {
+    margin-top: 30px;
+    color: #fff;
+    font-size: 1.8rem;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  /* Main content hidden initially */
+  #mainContent {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  /* Show main content when visible */
+  #mainContent.visible {
+    opacity: 1;
+  }
+
+  /* Headline neon glow */
+  h1 {
+    font-size: 3rem;
+    text-align: center;
+    color: #00ffff;
+    text-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 40px #00ffff,
+      0 0 80px #00ffff;
+    margin-bottom: 10px;
+    animation: flicker 1.5s infinite alternate;
+  }
+
+  @keyframes flicker {
+    from { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff; }
+    to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 50px #ff00ff, 0 0 100px #ff00ff; }
+  }
+
+  /* Slider container styles */
+  .image-slider-container {
+    width: 100%;
+    overflow: hidden;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+    background-color: #111;
+    border-radius: 4px;
+  }
+
+  /* Slider animation */
+  .image-slider {
+    display: flex;
+    width: calc(3 * 100%);
+    animation: slide 9s infinite linear;
+  }
+
+  /* Slider images styles */
+  .image-slider img {
+    width: 33.3333%;
+    height: 40px;
+    object-fit: cover;
+  }
+
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    33.33% { transform: translateX(0); }
+    44.44% { transform: translateX(-33.3333%); }
+    77.77% { transform: translateX(-66.6666%); }
+    100% { transform: translateX(0); }
+  }
+
+  /* Navigation accordion styles */
+  .nav-container {
+    max-width: 800px;
+    margin: 20px auto;
+  }
+
+  .accordion {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ff00ff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 10px #ff00ff55;
+    cursor: pointer;
+    margin-bottom: 10px;
+    animation: ghostMove 3s ease-in-out infinite;
+  }
+
+  @keyframes ghostMove {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  .accordion-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(255,255,255,0.1);
+    transition: background-color 0.3s;
+  }
+
+  .accordion-header:hover {
+    background-color: rgba(255,255,255,0.2);
+  }
+
+  .chevron {
+    font-size: 1.5rem;
+    transition: transform 0.3s;
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    background-color: rgba(255,255,255,0.05);
+    padding: 0 15px;
+  }
+
+  .accordion-content.open {
+    max-height: 200px;
+    padding: 10px 15px;
+  }
+
+  /* Content sections */
+  .section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    border: 1px solid #ff00ff;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #eee;
+    box-shadow: 0 0 10px #ff00ff55;
+  }
+
+  /* Links inside sections */
+  .section a {
+    color: #00ffff;
+    text-decoration: underline;
+    transition: color 0.3s;
+  }
+
+  .section a:hover {
+    color: #ff00ff;
+  }
+
+  /* Music player styles */
+  #music-player {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.7);
+    border-top: 2px solid #ff00ff;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 900px;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 1000;
+  }
+
+  #music-controls button {
+    background: none;
+    border: 2px solid #00ffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    color: #00ffff;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  #music-controls button:hover {
+    background-color: #00ffff;
+    color: #000;
+  }
+
+  /* Scrolling titles at bottom */
+  #scrolling-titles {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1rem;
+    color: #fff;
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+  }
+
+  #scrolling-titles span {
+    display: inline-block;
+    padding: 0 2rem;
+    animation: scroll-left 20s linear infinite;
+  }
+
+  @keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* Glitch scan line overlay effect on images */
+  @keyframes scanLines {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+  }
+
+  .glitch-lines {
+    position: relative;
+  }
+
+  .glitch-lines::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.05) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+    background-size: 100% 4px;
+    animation: scanLines 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<!-- Intro overlay -->
+<div id="introOverlay">
+  <div id="teacup" title="Click me to enter">&#9749;</div>
+  <div id="welcomeMsg">X3N invites you to her cyberpunk world...</div>
+</div>
+
+<!-- Main content -->
+<div id="mainContent" style="display:none;">
+  <!-- ========================= -->
+  <!-- YOUR WEBSITE CONTENT STARTS HERE -->
+  <!-- ========================= -->
+
+  <!-- Neon Title -->
+  <h1>X3N was H3RE</h1>
+
+  <!-- Image Slider with Glitch Effect -->
+  <div class="image-slider-container glitch-lines">
+    <div class="image-slider">
+      <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0001.jpeg" alt="Image 1" />
+      <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/ehob.jpeg" alt="Image 2" />
+      <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0003.jpeg" alt="Image 3" />
+    </div>
+  </div>
+
+  <!-- Navigation Accordions -->
+  <div class="nav-container">
+    <div class="accordion" id="contact">
+      <div class="accordion-header">
+        <span>Contact</span>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="section">
+          <p>Reach out via <a href="mailto:example@example.com" target="_blank">Email</a> or connect on social media.</p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="commission">
+      <div class="accordion-header">
+        <span>Commission</span>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="section">
+          <p>Interested in a commission? <a href="#contact">Contact me</a> for details.</p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="portfolio">
+      <div class="accordion-header">
+        <span>Portfolio</span>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="section">
+          <p>Check out my work on <a href="#portfolio-section">this page</a>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="social">
+      <div class="accordion-header">
+        <span>Social Media</span>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="section">
+          <p>Follow me on <a href="https://twitter.com" target="_blank">Twitter</a>, <a href="https://instagram.com" target="_blank">Instagram</a>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="project">
+      <div class="accordion-header">
+        <span>Project</span>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="section">
+          <p>Learn about my latest project <a href="#project-section">here</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Sections -->
+  <div id="contact" class="section">
+    <h2>Contact</h2>
+    <p>You can reach me via email or social media links above.</p>
+  </div>
+  <div id="portfolio-section" class="section">
+    <h2>Portfolio</h2>
+    <p>A showcase of my work. More coming soon!</p>
+  </div>
+  <div id="project-section" class="section">
+    <h2>Project</h2>
+    <p>Details about my latest project.</p>
+  </div>
+  <div id="social" class="section">
+    <h2>Social Media</h2>
+    <p>Follow me for updates and more content.</p>
+  </div>
+
+  <!-- Music Player -->
+  <div id="music-player">
+    <div id="music-controls">
+      <button id="playBtn" title="Play">&#9658;</button>
+      <button id="pauseBtn" title="Pause">&#10073;&#10073;</button>
+    </div>
+    <div id="scrolling-titles"><span id="titles">X3N was H3RE - Cyberpunk Vibes - Neon Dreams - Synthwave Beats -</span></div>
+    <audio id="bgMusic" src="https://www.w3schools.com/html/horse.mp3" preload="auto"></audio>
+  </div>
+
+  <!-- ========================= -->
+  <!-- YOUR WEBSITE CONTENT ENDS HERE -->
+  <!-- ========================= -->
+
+</div>
+
+<script>
+  // Intro overlay click
+  const overlay = document.getElementById('introOverlay');
+  const teacup = document.getElementById('teacup');
+  const welcomeMsg = document.getElementById('welcomeMsg');
+  const mainContent = document.getElementById('mainContent');
+
+  teacup.addEventListener('click', () => {
+    teacup.style.animation = 'none';
+    teacup.style.transition = 'transform 0.5s ease';
+    teacup.style.transform = 'scale(1.2)';
+    welcomeMsg.style.opacity = 1;
+    setTimeout(() => {
+      overlay.style.opacity = 0;
+      overlay.style.pointerEvents = 'none';
+    }, 1500);
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      mainContent.style.display = 'block';
+      setTimeout(() => mainContent.classList.add('visible'), 50);
+    }, 2500);
+  });
+
+  // Accordion toggle
+  document.querySelectorAll('.accordion').forEach(acc => {
+    const header = acc.querySelector('.accordion-header');
+    const content = acc.querySelector('.accordion-content');
+    const chevron = acc.querySelector('.chevron');
+
+    header.addEventListener('click', () => {
+      const isOpen = content.classList.toggle('open');
+      chevron.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+    });
+  });
+
+  // Music controls
+  const audio = document.getElementById('bgMusic');
+  document.getElementById('playBtn').onclick = () => { audio.play(); };
+  document.getElementById('pauseBtn').onclick = () => { audio.pause(); };
+</script>
+</body>
+</html>
