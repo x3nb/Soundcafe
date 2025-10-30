@@ -66,13 +66,97 @@
     }
   }
 
-  <div class="image-slider-container glitch-lines">
-  <div class="image-slider">
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0001.jpeg" alt="Image 1" />
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/ehob.jpeg" alt="Image 2" />
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0003.jpeg" alt="Image 3" />
-  </div>
-</div>
+  /* Slider container */
+  .image-slider-container {
+    width: 100%;
+    overflow: hidden;
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+    background-color: #111;
+    border-radius: 4px;
+  }
+
+  /* Slider animation */
+  .image-slider {
+    display: flex;
+    width: calc(3 * 100%);
+    animation: slide 9s infinite linear;
+  }
+
+  /* The images inside slider */
+  .image-slider img {
+    width: 33.3333%;
+    height: 40px;
+    object-fit: cover;
+  }
+  /* Glitch keyframes animation */
+@keyframes glitch {
+  0% {
+    clip: rect(0, 100%, 100%, 0);
+    transform: skew(0.3deg);
+  }
+  10% {
+    clip: rect(0, 100%, 50%, 0);
+    transform: skew(-0.3deg);
+  }
+  20% {
+    clip: rect(50%, 100%, 100%, 0);
+    transform: skew(0.3deg);
+  }
+  30% {
+    clip: rect(0, 100%, 100%, 0);
+    transform: skew(-0.3deg);
+  }
+  40% {
+    clip: rect(0, 50%, 100%, 0);
+    transform: skew(0.3deg);
+  }
+  50% {
+    clip: rect(50%, 100%, 50%, 0);
+    transform: skew(-0.3deg);
+  }
+  60% {
+    clip: rect(0, 100%, 100%, 0);
+    transform: skew(0.3deg);
+  }
+  70% {
+    clip: rect(0, 100%, 100%, 0);
+    filter: hue-rotate(20deg);
+  }
+  80% {
+    clip: rect(0, 100%, 50%, 0);
+    filter: hue-rotate(-20deg);
+  }
+  90% {
+    clip: rect(50%, 100%, 100%, 0);
+  }
+  100% {
+    clip: rect(0, 100%, 100%, 0);
+  }
+}
+
+/* Apply glitch to images with class 'glitch-img' */
+.glitch-img {
+  display: block;
+  width: 100%;
+  animation: glitch 2s infinite;
+  position: relative;
+}
+
+/* Optional: creating multiple layers for stronger glitch effect */
+.glitch-container {
+  position: relative;
+  display: inline-block;
+}
+.glitch-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: glitch 2s infinite;
+}
+
   /* Slide keyframes for seamless loop */
   @keyframes slide {
     0% {
@@ -246,14 +330,14 @@
 <body>
 
 <h1>X3N was H3RE</h1>
-
-<div class="image-slider-container glitch-lines">
+<div class="image-slider-container glitch">
   <div class="image-slider">
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0001.jpeg" alt="Image 1" />
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/ehob.jpeg" alt="Image 2" />
-    <img src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0003.jpeg" alt="Image 3" />
+    <img class="glitch-img" src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0001.jpeg" alt="Image 1" />
+    <img class="glitch-img" src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/ehob.jpeg" alt="Image 2" />
+    <img class="glitch-img" src="https://3society.neocities.org/X_EN.TEA.2026/CHEZMOI/CyberLandXen/0003.jpeg" alt="Image 3" />
   </div>
 </div>
+
 
 <div class="nav-container">
   <!-- Accordion menu -->
