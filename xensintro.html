@@ -90,60 +90,32 @@
     height: 40px;
     object-fit: cover;
   }
-  /* Glitch keyframes animation */
-@keyframes glitch {
-  0% {
-    clip: rect(0, 100%, 100%, 0);
-    transform: skew(0.3deg);
-  }
-  10% {
-    clip: rect(0, 100%, 50%, 0);
-    transform: skew(-0.3deg);
-  }
-  20% {
-    clip: rect(50%, 100%, 100%, 0);
-    transform: skew(0.3deg);
-  }
-  30% {
-    clip: rect(0, 100%, 100%, 0);
-    transform: skew(-0.3deg);
-  }
-  40% {
-    clip: rect(0, 50%, 100%, 0);
-    transform: skew(0.3deg);
-  }
-  50% {
-    clip: rect(50%, 100%, 50%, 0);
-    transform: skew(-0.3deg);
-  }
-  60% {
-    clip: rect(0, 100%, 100%, 0);
-    transform: skew(0.3deg);
-  }
-  70% {
-    clip: rect(0, 100%, 100%, 0);
-    filter: hue-rotate(20deg);
-  }
-  80% {
-    clip: rect(0, 100%, 50%, 0);
-    filter: hue-rotate(-20deg);
-  }
-  90% {
-    clip: rect(50%, 100%, 100%, 0);
-  }
-  100% {
-    clip: rect(0, 100%, 100%, 0);
-  }
+  @keyframes scanLines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
 }
 
-/* Apply glitch to images with class 'glitch-img' */
-.glitch-img {
-  display: block;
-  width: 100%;
-  animation: glitch 2s infinite;
+.glitch-lines {
   position: relative;
+  overflow: hidden;
 }
 
+.glitch-lines::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.05) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  background-size: 100% 4px;
+  animation: scanLines 2s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
 /* Optional: creating multiple layers for stronger glitch effect */
 .glitch-container {
   position: relative;
