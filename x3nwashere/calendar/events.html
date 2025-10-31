@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goth-Themed Director's Cut Calendar</title>
+    <style>
+        body {
+            background-color: #3C3C3C; /* Grey */
+            color: #E5E5E5; /* Light Text Color */
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #5D478B; /* Deep Purple */
+            margin: 20px;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 0 auto;
+            max-width: 700px;
+        }
+        .day {
+            background-color: #7F1E8D; /* Violet */
+            border: 2px solid #3D4F9B; /* Cornflower Blue */
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .day:hover {
+            background-color: #5D478B; /* Deep Purple on Hover */
+        }
+        .event {
+            color: #FF69B4; /* Event Text Color */
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.75em;
+            text-shadow: 0 0 5px #FF69B4, 0 0 10px #FF69B4;
+        }
+        .laser-line {
+            position: absolute;
+            top: 0;
+            left: -5px;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #FF69B4, transparent);
+            opacity: 0.7;
+            animation: glitch 1s infinite linear;
+        }
+        @keyframes glitch {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-2px); }
+            50% { transform: translateY(2px); }
+            75% { transform: translateY(-2px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Goth-Themed Director's Cut Calendar</h1>
+    <div class="calendar">
+        <div class="day">Sun</div>
+        <div class="day">Mon</div>
+        <div class="day">Tue</div>
+        <div class="day">Wed</div>
+        <div class="day">Thu</div>
+        <div class="day">Fri</div>
+        <div class="day">Sat</div>
+
+        <div class="day">
+            <div class="event">Meeting</div>
+            <div class="laser-line"></div>
+            1
+        </div>
+        <div class="day">
+            <div class="event">Film Screening</div>
+            <div class="laser-line"></div>
+            2
+        </div>
+        <div class="day">
+            <div class="event">Q&A Session</div>
+            <div class="laser-line"></div>
+            3
+        </div>
+        <div class="day">4</div>
+        <div class="day">5</div>
+        <div class="day">6</div>
+        <div class="day">7</div>
+        <div class="day">8</div>
+        <div class="day">9</div>
+        <div class="day">10</div>
+        <div class="day">11</div>
+        <div class="day">
+            <div class="event">Goth Party</div>
+            <div class="laser-line"></div>
+            12
+        </div>
+        <div class="day">13</div>
+        <div class="day">14</div>
+        <div class="day">15</div>
+        <div class="day">16</div>
+        <div class="day">17</div>
+        <div class="day">18</div>
+        <div class="day">19</div>
+        <div class="day">20</div>
+        <div class="day">21</div>
+        <div class="day">22</div>
+        <div class="
