@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vampiric Cyberpunk Podcasts with Calendar</title>
+<!-- Google Font for style -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #2e0854, #1c1c1c);
+    color: #b0c4de;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 1rem;
+    text-align: center;
+    background: rgba(44, 8, 84, 0.8);
+    box-shadow: 0 0 20px #4B0082aa;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #6495ed, 0 0 20px #6495ed;
+  }
+
+  .container {
+    display: flex;
+    flex: 1;
+    min-height: 80vh;
+  }
+
+  /* Left: main content */
+  .main-area {
+    flex: 3;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Right: sidebar with months */
+  .sidebar {
+    flex: 1;
+    background: rgba(44, 8, 84, 0.8);
+    border-left: 2px solid #8A2BE2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  /* Month buttons style */
+  .month-btn {
+    background: rgba(70, 0, 70, 0.4);
+    margin: 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ececec;
+    text-shadow: 0 0 3px #fff;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .month-btn:hover {
+    background: rgba(70, 0, 70, 0.6);
+    transform: scale(1.05);
+  }
+
+  /* Podcast list styles */
+  .podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .podcast-item {
+    background: rgba(20, 20, 20, 0.8);
+    padding: 10px;
+    border: 2px solid #8A2BE2;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #4B0082aa;
+  }
+  .podcast-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #f0f8ff;
+    text-shadow: 0 0 5px #8A2BE2;
+  }
+  .timestamp {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #ccc;
+  }
+  /* Center display area for avatar/dialogue/calendar */
+  .center-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* Placeholder for calendar: */
+  .calendar {
+    background-color: rgba(25,25,25,0.9);
+    border: 2px solid #4B0082;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 90%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+  .calendar-header {
+    grid-column: span 7;
+    text-align: center;
+    font-size: 1.4rem;
+    color: #f0f8ff;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px #8A2BE2;
+  }
+  .day-cell {
+    background-color: #2b005b;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .day-cell:hover {
+    background-color: #440077;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 style="text-shadow: 0 0 10px #6495ed;">Vampiric Podcasters</h1>
+</header>
+
+<div class="container">
+  <!-- Main content -->
+  <div class="main-area" id="main-area">
+    <!-- Calendar view (replaces avatar/dialogue) -->
+    <div class="center-area" id="calContainer">
+      <div class="calendar" id="calendar"></div>
+    </div>
+    <!-- Podcasts list -->
+    <div class="podcast-list" id="podcastList">
+      <p style="color:#fff;text-align:center;">Please select a month from the right sidebar.</p>
+    </div>
+  </div>
+  <!-- Sidebar with months -->
+  <div class="sidebar">
+    <button class="month-btn" data-month="Oct" data-index="0">Oct</button>
+    <button class="month-btn" data-month="Nov" data-index="1">Nov</button>
+    <button class="month-btn" data-month="Dec" data-index="2">Dec</button>
+    <button class="month-btn" data-month="Jan" data-index="3">Jan</button>
+    <button class="month-btn" data-month="Feb" data-index="4">Feb</button>
+    <button class="month-btn" data-month="Mar" data-index="5">Mar</button>
+    <button class="month-btn" data-month="Apr" data-index="6">Apr</button>
+    <button class="month-btn" data-month="May" data-index="7">May</button>
+    <button class="month-btn" data-month="Jun" data-index="8">Jun</button>
+    <button class="month-btn" data-month="Jul" data-index="9">Jul</button>
+    <button class="month-btn" data-month="Aug" data-index="10">Aug</button>
+    <button class="month-btn" data-month="Sep" data-index="11">Sep</button>
+  </div>
+</div>
+
+<!-- Q&A Section (kept unchanged) -->
+<div class="qa-section">
+  <h2>The Shadowed Codex: Your Questions, Our Secrets</h2>
+  <p>Whisper your curiosities. The night responds.</p>
+  <div id="qaContainer" style="margin-top: 20px;">
+    <!-- Questions will be generated here -->
+  </div>
+</div>
+
+<!-- Footer -->
+<footer style="text-align:center; padding:1rem; background:rgba(10,10,10,0.8); box-shadow:0 0 20px #00ffff88; margin-top:20px;">
+  &copy; 2025 Vampiric Podcasters. All rights reserved.
+</footer>
+
+<script>
+  // Data for each month (same as previous)
+  const podcastData = [
+    {
+      month: 'Oct',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "Welcome to October's dark tales. Step into the shadows.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Oct Vampire Chat 1', date: '2025-10-01 10:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Oct Vampire Chat 2', date: '2025-10-02 11:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    // ... (rest of months as previously defined)
+    {
+      month: 'Nov',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "November whispers secrets from the abyss.",
+      banner: 'https://images.unsplash.com/photo-1573497019395-7ba8a66d2051?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Nov Vampire Tales 1', date: '2025-11-03 09:45', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Nov Vampire Tales 2', date: '2025-11-04 14:20', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Dec',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "December's frost hides ancient secrets.",
+      banner: 'https://images.unsplash.com/photo-1571572821722-4f98f0c2b3d4?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Dec Vampire Shadows', date: '2025-12-05 13:15', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Dec Vampire Shadows', date: '2025-12-06 16:00', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Jan',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "January awakens the eternal night.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Jan Vampire Legend', date: '2026-01-07 10:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Jan Vampire Legend', date: '2026-01-08 11:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    // ... (rest of months)
+  ];
+
+  // Populate the podcast list
+  const podcastListDiv = document.getElementById('podcastList');
+  const avatarImg = document.getElementById('avatarImg');
+  const dialogueDiv = document.getElementById('dialogue');
+  const bannerImg = document.getElementById('bannerImg');
+  const centerArea = document.getElementById('centerArea');
+
+  document.querySelectorAll('.month-btn').forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      loadMonth(index);
+    });
+  });
+
+  function loadMonth(index) {
+    const data = podcastData[index];
+    avatarImg.src = data.avatar;
+    dialogueDiv.textContent = data.dialogue;
+    bannerImg.src = data.banner;
+    centerArea.style.display = 'block';
+    generatePodcastList(data.podcasts);
+  }
+
+  function generatePodcastList(podcasts) {
+    podcastListDiv.innerHTML = '';
+    if (podcasts.length === 0) {
+      podcastListDiv.innerHTML = '<p style="color:#fff;text-align:center;">No podcasts available for this month.</p>';
+      return;
+    }
+    podcasts.forEach(p => {
+      const item = document.createElement('div');
+      item.className = 'podcast-item';
+
+      const title = document.createElement('div');
+      title.className = 'podcast-title';
+      title.textContent = p.title;
+
+      const date = document.createElement('div');
+      date.className = 'timestamp';
+      date.textContent = p.date;
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      const source = document.createElement('source');
+      source.src = p.src;
+      source.type = 'audio/mpeg';
+      audio.appendChild(source);
+
+      item.appendChild(title);
+      item.appendChild(date);
+      item.appendChild(audio);
+      podcastListDiv.appendChild(item);
+    });
+  }
+
+  // Q&A questions (you can replace or add more here)
+  const questions = [
+    {
+      q: "What is this website about?",
+      a: "Beyond the shadows, this realm is a portal to the dark arts of cyberpunk culture, neon dreams, and whispered stories from the night. Think of it as a digital crypt of secrets and sound."
+    },
+    {
+      q: "How do I listen to the podcasts?",
+      a: "Within each month's vault, you'll find spectral recordings. Use the mystical controls beneath each listing to summon the voices from the abyss."
+    },
+    {
+      q: "Can I contribute my own stories?",
+      a: "Indeed. Send your whispers through the shadows, and perhaps one day your tale will be etched into the eternal archives."
+    },
+    {
+      q: "What are the images of?",
+      a: "The visuals are enchanted with the essence of the night—fading cityscapes, blood moons, and spectral avatars—crafted to immerse you deeper into the vampiric cyber realm."
+    },
+    {
+      q: "How do the months work?",
+      a: "Each moon cycle reveals a new chapter. Click on a month in the shadowed sidebar, and the night unveils its hidden tales for that period."
+    },
+    {
+      q: "Can I change the theme?",
+      a: "The darkness is ever-shifting. For now, this vampiric glow is set, but you may craft your own shadows as you desire."
+    },
+    {
+      q: "Are there other secrets I should discover?",
+      a: "Yes. Hidden in the code, whispers of easter eggs and arcane symbols await the curious. Seek beyond the obvious, and the night reveals its mysteries."
+    },
+    {
+      q: "How can I contact the archivists?",
+      a: "Below the shadows, find the links or send a raven (email) to connect with the keepers of this cybercrypt."
+    }
+  ];
+
+  const qaContainer = document.getElementById('qaContainer');
+
+  questions.forEach(entry => {
+    const qDiv = document.createElement('div');
+    qDiv.style.backgroundColor = 'rgba(50, 0, 70, 0.6)';
+    qDiv.style.border = '2px solid #8A2BE2';
+    qDiv.style.borderRadius = '8px';
+    qDiv.style.marginBottom = '15px';
+    qDiv.style.padding = '10px';
+
+    const question = document.createElement('div');
+    question.innerHTML = `<strong style="color:#ffd700;">Q:</strong> ${entry.q}`;
+    question.style.cursor = 'pointer';
+    question.style.fontSize = '1.1rem';
+
+    const answer = document.createElement('div');
+    answer.innerHTML = `<strong style="color:#ff1493;">A:</strong> ${entry.a}`;
+    answer.style.display = 'none';
+    answer.style.marginTop = '8px';
+    answer.style.color = '#eee';
+
+    qDiv.appendChild(question);
+    qDiv.appendChild(answer);
+    qaContainer.appendChild(qDiv);
+
+    question.addEventListener('click', () => {
+      answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
