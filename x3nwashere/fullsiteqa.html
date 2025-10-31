@@ -215,6 +215,81 @@
   <p>Whisper your curiosities. The night responds.</p>
   <div id="qaContainer" style="margin-top: 20px;">
     <!-- Questions will be generated here -->
+    <!-- Shadowed Codex: Your Questions, Our Secrets -->
+<div style="background-color: rgba(30, 0, 50, 0.8); padding: 20px; border-radius: 12px; margin: 50px auto; max-width: 900px; box-shadow: 0 0 20px #8A2BE2;">
+  <h2 style="color: #f0f8ff; text-align: center; text-shadow: 0 0 10px #8A2BE2;">The Shadowed Codex: Your Questions, Our Secrets</h2>
+  <p style="color:#ccc; text-align: center;">Whisper your curiosities. The night responds.</p>
+  <div id="qaContainer" style="margin-top: 20px;">
+    <!-- Questions will be dynamically inserted here -->
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "What is this website about?",
+      a: "Beyond the shadows, this realm is a portal to the dark arts of cyberpunk culture, neon dreams, and whispered stories from the night. Think of it as a digital crypt of secrets and sound."
+    },
+    {
+      q: "How do I listen to the podcasts?",
+      a: "Within each month's vault, you'll find spectral recordings. Use the mystical controls beneath each listing to summon the voices from the abyss."
+    },
+    {
+      q: "Can I contribute my own stories?",
+      a: "Indeed. Send your whispers through the shadows, and perhaps one day your tale will be etched into the eternal archives."
+    },
+    {
+      q: "What are the images of?",
+      a: "The visuals are enchanted with the essence of the night—fading cityscapes, blood moons, and spectral avatars—crafted to immerse you deeper into the vampiric cyber realm."
+    },
+    {
+      q: "How do the months work?",
+      a: "Each moon cycle reveals a new chapter. Click on a month in the shadowed sidebar, and the night unveils its hidden tales for that period."
+    },
+    {
+      q: "Can I change the theme?",
+      a: "The darkness is ever-shifting. For now, this vampiric glow is set, but you may craft your own shadows as you desire."
+    },
+    {
+      q: "Are there other secrets I should discover?",
+      a: "Yes. Hidden in the code, whispers of easter eggs and arcane symbols await the curious. Seek beyond the obvious, and the night reveals its mysteries."
+    },
+    {
+      q: "How can I contact the archivists?",
+      a: "Below the shadows, find the links or send a raven (email) to connect with the keepers of this cybercrypt."
+    }
+  ];
+
+  const container = document.getElementById('qaContainer');
+
+  questions.forEach(entry => {
+    const qDiv = document.createElement('div');
+    qDiv.style.backgroundColor = 'rgba(50, 0, 70, 0.6)';
+    qDiv.style.border = '2px solid #8A2BE2';
+    qDiv.style.borderRadius = '8px';
+    qDiv.style.marginBottom = '15px';
+    qDiv.style.padding = '10px';
+
+    const question = document.createElement('div');
+    question.innerHTML = `<strong style="color:#ffd700;">Q:</strong> ${entry.q}`;
+    question.style.cursor = 'pointer';
+    question.style.fontSize = '1.1rem';
+
+    const answer = document.createElement('div');
+    answer.innerHTML = `<strong style="color:#ff1493;">A:</strong> ${entry.a}`;
+    answer.style.display = 'none';
+    answer.style.marginTop = '8px';
+    answer.style.color = '#eee';
+
+    qDiv.appendChild(question);
+    qDiv.appendChild(answer);
+    container.appendChild(qDiv);
+
+    question.addEventListener('click', () => {
+      answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+    });
+  });
+</script>
   </div>
 </div>
 
