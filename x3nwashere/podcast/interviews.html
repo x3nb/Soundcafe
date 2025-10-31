@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Class Podcasts Organized by Month</title>
+<!-- Google Font for cyberpunk style -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #0f0f0f;
+    color: #00ffff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  header {
+    padding: 1rem;
+    text-align: center;
+    background: rgba(10,10,10,0.8);
+    box-shadow: 0 0 20px #00ffff88;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  }
+
+  /* Main layout: container with sidebar and main content */
+  .container {
+    display: flex;
+    flex: 1;
+    min-height: 80vh;
+  }
+
+  /* Left: Podcast list area */
+  .main-area {
+    flex: 3;
+    padding: 20px;
+    position: relative;
+  }
+
+  /* Right: Month selector sidebar */
+  .sidebar {
+    flex: 1;
+    background: rgba(10,10,10,0.8);
+    border-left: 2px solid #ff00ff;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  /* Month buttons style */
+  .month-btn {
+    background: rgba(255,255,255,0.1);
+    margin: 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 5px #00ffff;
+    transition: background 0.3s;
+  }
+
+  .month-btn:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* Podcast list styles */
+  .podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .podcast-item {
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    border: 2px solid #ff00ff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ff00ff55;
+  }
+
+  .podcast-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 5px #00ffff;
+  }
+
+  /* Center display area for avatar + dialogue + banner */
+  .center-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    display: none; /* hidden initially, shown when a month is selected */
+  }
+
+  /* Avatar image style */
+  #avatarImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #ff00ff;
+    box-shadow: 0 0 20px #ff00ff88;
+    margin-bottom: 15px;
+  }
+
+  /* Dialogue bubble */
+  #dialogue {
+    background: rgba(10,10,10,0.8);
+    border: 2px solid #00ffff;
+    border-radius: 20px;
+    padding: 15px;
+    font-size: 1.2rem;
+    color: #fff;
+    max-width: 80%;
+    margin: 0 auto 20px;
+    text-shadow: 0 0 5px #00ffff;
+  }
+
+  /* Banner image (slimline) */
+  #bannerImg {
+    width: 100%;
+    max-width: 600px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 20px #ff00ff88;
+    margin-bottom: 15px;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 800px){
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+    #bannerImg {
+      height: 60px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Class Podcast Playlist by Month</h1>
+</header>
+
+<div class="container">
+  <!-- Left: main area -->
+  <div class="main-area" id="main-area">
+    <!-- Centered display: avatar, dialogue, banner -->
+    <div class="center-area" id="centerArea">
+      <img src="" id="avatarImg" alt="Avatar" />
+      <div id="bannerContainer">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80" id="bannerImg" alt="Banner" />
+      </div>
+      <div id="dialogue">Select a month to hear the interviews.</div>
+    </div>
+
+    <!-- List of podcasts for selected month -->
+    <div class="podcast-list" id="podcastList">
+      <p style="color:#fff;text-align:center;">Please select a month from the right sidebar.</p>
+    </div>
+  </div>
+
+  <!-- Right: months sidebar -->
+  <div class="sidebar">
+    <button class="month-btn" data-month="Oct" data-index="0">Oct</button>
+    <button class="month-btn" data-month="Nov" data-index="1">Nov</button>
+    <button class="month-btn" data-month="Dec" data-index="2">Dec</button>
+    <button class="month-btn" data-month="Jan" data-index="3">Jan</button>
+    <button class="month-btn" data-month="Feb" data-index="4">Feb</button>
+    <button class="month-btn" data-month="Mar" data-index="5">Mar</button>
+    <button class="month-btn" data-month="Apr" data-index="6">Apr</button>
+    <button class="month-btn" data-month="May" data-index="7">May</button>
+    <button class="month-btn" data-month="Jun" data-index="8">Jun</button>
+    <button class="month-btn" data-month="Jul" data-index="9">Jul</button>
+    <button class="month-btn" data-month="Aug" data-index="10">Aug</button>
+    <button class="month-btn" data-month="Sep" data-index="11">Sep</button>
+  </div>
+</div>
+
+<!-- Optional footer -->
+<footer style="text-align:center; padding:1rem; background:rgba(10,10,10,0.8); box-shadow:0 0 20px #00ffff88; margin-top:20px;">
+  &copy; 2025 Class Podcasts. All rights reserved.
+</footer>
+
+<script>
+  // Define the podcast data per month
+  const podcastData = [
+    {
+      month: 'Oct',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "Welcome to October's interviews. Dive into the world of neon lights and cyber dreams.",
+      banner: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Oct Interview 1', date: '2025-10-01 10:00', src: 'https://example.com/oct1.mp3' },
+        { title: 'Oct Interview 2', date: '2025-10-02 11:30', src: 'https://example.com/oct2.mp3' }
+        // Add more Oct podcasts here
+      ]
+    },
+    {
+      month: 'Nov',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "November's voices echo through the digital rain. Listen closely.",
+      banner: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Nov Interview 1', date: '2025-11-03 09:45', src: 'https://example.com/nov1.mp3' },
+        { title: 'Nov Interview 2', date: '2025-11-04 14:20', src: 'https://example.com/nov2.mp3' }
+      ]
+    },
+    // Repeat for other months with placeholder data
+    {
+      month: 'Dec',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "December's chill brings icy whispers of the future.",
+      banner: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Dec Interview 1', date: '2025-12-05 13:15', src: 'https://example.com/dec1.mp3' },
+        { title: 'Dec Interview 2', date: '2025-12-06 16:00', src: 'https://example.com/dec2.mp3' }
+      ]
+    },
+    {
+      month: 'Jan',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "January's new beginnings spark fresh ideas.",
+      banner: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Jan Interview 1', date: '2026-01-07 10:00', src: 'https://example.com/jan1.mp3' },
+        { title: 'Jan Interview 2', date: '2026-01-08 11:30', src: 'https://example.com/jan2.mp3' }
+      ]
+    },
+    // Continue with Feb, Mar, Apr, May, Jun, Jul, Aug, Sep similarly...
+  ];
+
+  // Get elements
+  const podcastListDiv = document.getElementById('podcastList');
+  const avatarImg = document.getElementById('avatarImg');
+  const dialogueDiv = document.getElementById('dialogue');
+  const bannerImg = document.getElementById('bannerImg');
+  const centerArea = document.getElementById('centerArea');
+
+  // Add event listeners to month buttons
+  document.querySelectorAll('.month-btn').forEach((button, index) => {
+    button.addEventListener('click', () => {
+      loadMonth(index);
+    });
+  });
+
+  function loadMonth(index) {
+    const data = podcastData[index];
+    // Update avatar, dialogue, banner
+    avatarImg.src = data.avatar;
+    dialogueDiv.textContent = data.dialogue;
+    bannerImg.src = data.banner;
+
+    // Show the center area
+    centerArea.style.display = 'block';
+
+    // Generate podcast list
+    generatePodcastList(data.podcasts);
+  }
+
+  function generatePodcastList(podcasts) {
+    podcastListDiv.innerHTML = '';
+    if (podcasts.length === 0) {
+      podcastListDiv.innerHTML = '<p style="color:#fff;text-align:center;">No podcasts available for this month.</p>';
+      return;
+    }
+    podcasts.forEach(p => {
+      const item = document.createElement('div');
+      item.className = 'podcast-item';
+
+      const title = document.createElement('div');
+      title.className = 'podcast-title';
+      title.textContent = p.title;
+
+      const date = document.createElement('div');
+      date.className = 'timestamp';
+      date.textContent = p.date;
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      const source = document.createElement('source');
+      source.src = p.src;
+      source.type = 'audio/mpeg';
+      audio.appendChild(source);
+
+      item.appendChild(title);
+      item.appendChild(date);
+      item.appendChild(audio);
+
+      podcastListDiv.appendChild(item);
+    });
+  }
+</script>
+
+</body>
+</html>
