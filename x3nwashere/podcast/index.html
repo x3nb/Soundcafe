@@ -1,1 +1,230 @@
-podcast incoming
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cyberpunk Podcast Playlist</title>
+<!-- Google Font for Cyberpunk vibe -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    color: #00ffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    padding: 2rem;
+    text-align: center;
+    background: rgba(10, 10, 10, 0.8);
+    width: 100%;
+    box-shadow: 0 0 20px #00ffff88;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    margin: 0;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  }
+
+  .playlist {
+    max-width: 1000px;
+    width: 90%;
+    margin: 2rem auto;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Single interview card style */
+  .card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #ff00ff;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 20px #ff00ff55;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px #ff00ffaa;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  }
+
+  .timestamp {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #aaa;
+  }
+
+  /* Style for audio controls */
+  audio {
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+  }
+
+  /* Footer style */
+  footer {
+    padding: 2rem;
+    text-align: center;
+    background: rgba(10, 10, 10, 0.8);
+    width: 100%;
+    margin-top: 2rem;
+    box-shadow: 0 0 20px #00ffff88;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 700px) {
+    .playlist {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Cyberpunk Podcast Playlist</h1>
+  <p>12 Interviews with Cyber Creators & Innovators</p>
+</header>
+
+<div class="playlist">
+  <!-- Repeat for each interview -->
+  <div class="card">
+    <div class="title">Interview 1: The Neon Visionaries</div>
+    <div class="timestamp">2025-10-01 10:00</div>
+    <audio controls>
+      <source src="https://example.com/audio1.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 2: Cyberpunk Artists</div>
+    <div class="timestamp">2025-10-02 11:30</div>
+    <audio controls>
+      <source src="https://example.com/audio2.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 3: Future Tech Innovators</div>
+    <div class="timestamp">2025-10-03 09:45</div>
+    <audio controls>
+      <source src="https://example.com/audio3.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 4: Synthwave Musicians</div>
+    <div class="timestamp">2025-10-04 14:20</div>
+    <audio controls>
+      <source src="https://example.com/audio4.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 5: Hackers & Coders</div>
+    <div class="timestamp">2025-10-05 16:00</div>
+    <audio controls>
+      <source src="https://example.com/audio5.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 6: Digital Dreamers</div>
+    <div class="timestamp">2025-10-06 13:15</div>
+    <audio controls>
+      <source src="https://example.com/audio6.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 7: Virtual Reality Pioneers</div>
+    <div class="timestamp">2025-10-07 12:00</div>
+    <audio controls>
+      <source src="https://example.com/audio7.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 8: Cybernetic Artists</div>
+    <div class="timestamp">2025-10-08 15:30</div>
+    <audio controls>
+      <source src="https://example.com/audio8.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 9: AI & Robot Creators</div>
+    <div class="timestamp">2025-10-09 10:45</div>
+    <audio controls>
+      <source src="https://example.com/audio9.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 10: Cyberpunk Writers</div>
+    <div class="timestamp">2025-10-10 17:00</div>
+    <audio controls>
+      <source src="https://example.com/audio10.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 11: Hologram Innovators</div>
+    <div class="timestamp">2025-10-11 14:45</div>
+    <audio controls>
+      <source src="https://example.com/audio11.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="card">
+    <div class="title">Interview 12: Cyberpunk Entrepreneurs</div>
+    <div class="timestamp">2025-10-12 09:30</div>
+    <audio controls>
+      <source src="https://example.com/audio12.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+</div>
+
+<!-- Optional footer -->
+<footer>
+  &copy; 2025 Cyberpunk Podcast. All rights reserved.
+</footer>
+
+<script>
+  // Optional: Add any scripts for enhanced interactions
+  // For example, collapse/expand, playlist filters, etc.
+</script>
+
+</body>
+</html>
