@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vampiric Cyberpunk Podcasts</title>
+<!-- Google Font for style -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #2e0854, #1c1c1c);
+    color: #b0c4de;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 1rem;
+    text-align: center;
+    background: rgba(44, 8, 84, 0.8);
+    box-shadow: 0 0 20px #4B0082aa;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #6495ed, 0 0 20px #6495ed;
+  }
+
+  .container {
+    display: flex;
+    flex: 1;
+    min-height: 80vh;
+  }
+
+  /* Left: main content */
+  .main-area {
+    flex: 3;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Right: sidebar with months */
+  .sidebar {
+    flex: 1;
+    background: rgba(44, 8, 84, 0.8);
+    border-left: 2px solid #8A2BE2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  /* Month buttons style */
+  .month-btn {
+    background: rgba(70, 0, 70, 0.4);
+    margin: 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ececec;
+    text-shadow: 0 0 3px #fff;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .month-btn:hover {
+    background: rgba(70, 0, 70, 0.6);
+    transform: scale(1.05);
+  }
+
+  /* Podcast list styles */
+  .podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .podcast-item {
+    background: rgba(20, 20, 20, 0.8);
+    padding: 10px;
+    border: 2px solid #8A2BE2;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #4B0082aa;
+  }
+  .podcast-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #f0f8ff;
+    text-shadow: 0 0 5px #8A2BE2;
+  }
+  .timestamp {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #ccc;
+  }
+  /* Center display for avatar/dialogue/banner */
+  .center-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    display: none;
+  }
+  #avatarImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #8A2BE2;
+    box-shadow: 0 0 20px #8A2BE2aa;
+    margin-bottom: 15px;
+  }
+  #dialogue {
+    background: rgba(25, 25, 25, 0.9);
+    border: 2px solid #4B0082;
+    border-radius: 20px;
+    padding: 15px;
+    font-size: 1.2rem;
+    color: #f0f8ff;
+    max-width: 80%;
+    margin: 0 auto 20px;
+    text-shadow: 0 0 5px #8A2BE2;
+  }
+  #bannerImg {
+    width: 100%;
+    max-width: 600px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #8A2BE2;
+    box-shadow: 0 0 20px #4B0082aa;
+    margin-bottom: 15px;
+  }
+  @media(max-width: 800px){
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #bannerImg {
+      height: 60px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 style="text-shadow: 0 0 10px #6495ed;">Vampiric Podcasters</h1>
+</header>
+
+<div class="container">
+  <!-- Main content -->
+  <div class="main-area" id="main-area">
+    <!-- Centered display: avatar, dialogue, banner -->
+    <div class="center-area" id="centerArea">
+      <img src="" id="avatarImg" alt="Avatar" />
+      <div id="bannerContainer">
+        <img src="" id="bannerImg" alt="Banner" />
+      </div>
+      <div id="dialogue">Select a month to hear the interviews.</div>
+    </div>
+    <!-- Podcasts list -->
+    <div class="podcast-list" id="podcastList">
+      <p style="color:#fff;text-align:center;">Please select a month from the right sidebar.</p>
+    </div>
+  </div>
+  <!-- Sidebar with months -->
+  <div class="sidebar">
+    <button class="month-btn" data-month="Oct" data-index="0">Oct</button>
+    <button class="month-btn" data-month="Nov" data-index="1">Nov</button>
+    <button class="month-btn" data-month="Dec" data-index="2">Dec</button>
+    <button class="month-btn" data-month="Jan" data-index="3">Jan</button>
+    <button class="month-btn" data-month="Feb" data-index="4">Feb</button>
+    <button class="month-btn" data-month="Mar" data-index="5">Mar</button>
+    <button class="month-btn" data-month="Apr" data-index="6">Apr</button>
+    <button class="month-btn" data-month="May" data-index="7">May</button>
+    <button class="month-btn" data-month="Jun" data-index="8">Jun</button>
+    <button class="month-btn" data-month="Jul" data-index="9">Jul</button>
+    <button class="month-btn" data-month="Aug" data-index="10">Aug</button>
+    <button class="month-btn" data-month="Sep" data-index="11">Sep</button>
+  </div>
+</div>
+
+<!-- Q&A Quest Section -->
+<div style="background-color: rgba(30, 0, 50, 0.8); padding: 20px; border-radius: 12px; margin: 50px auto; max-width: 900px; box-shadow: 0 0 20px #8A2BE2;">
+  <h2 style="color: #f0f8ff; text-align: center; text-shadow: 0 0 10px #8A2BE2;">The Shadowed Codex: Your Questions, Our Secrets</h2>
+  <p style="color:#ccc; text-align: center;">Whisper your curiosities. The night responds.</p>
+  <div id="qaContainer" style="margin-top: 20px;">
+    <!-- Questions will be dynamically inserted here -->
+  </div>
+</div>
+
+<!-- Footer -->
+<footer style="text-align:center; padding:1rem; background:rgba(10,10,10,0.8); box-shadow:0 0 20px #00ffff88; margin-top:20px;">
+  &copy; 2025 Vampiric Podcasters. All rights reserved.
+</footer>
+
+<script>
+  // Data for each month
+  const podcastData = [
+    {
+      month: 'Oct',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "Welcome to October's dark tales. Step into the shadows.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Oct Vampire Chat 1', date: '2025-10-01 10:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Oct Vampire Chat 2', date: '2025-10-02 11:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Nov',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "November whispers secrets from the abyss.",
+      banner: 'https://images.unsplash.com/photo-1573497019395-7ba8a66d2051?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Nov Vampire Tales 1', date: '2025-11-03 09:45', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Nov Vampire Tales 2', date: '2025-11-04 14:20', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Dec',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "December's frost hides ancient secrets.",
+      banner: 'https://images.unsplash.com/photo-1571572821722-4f98f0c2b3d4?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Dec Vampire Shadows', date: '2025-12-05 13:15', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Dec Vampire Shadows', date: '2025-12-06 16:00', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Jan',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "January awakens the eternal night.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Jan Vampire Legend', date: '2026-01-07 10:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Jan Vampire Legend', date: '2026-01-08 11:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Feb',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "February's dark kiss lingers.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Feb Vampire Tales', date: '2026-02-09 09:30', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Feb Vampire Tales', date: '2026-02-10 15:45', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Mar',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "March's shadows grow deeper.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Mar Vampire Tales', date: '2026-03-11 12:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Mar Vampire Tales', date: '2026-03-12 14:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Apr',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "April's moon hangs with a crimson glow.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Apr Vampire Mysteries', date: '2026-04-13 09:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Apr Vampire Mysteries', date: '2026-04-14 16:15', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'May',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "May's whispering winds carry haunted secrets.",
+      banner: 'https://images.unsplash.com/photo-1549887534-7c6808457b00?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'May Vampire Chronicles', date: '2026-05-15 11:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'May Vampire Chronicles', date: '2026-05-16 13:45', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Jun',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "June awakens the eternal night again.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Jun Vampire Sessions', date: '2026-06-17 10:30', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Jun Vampire Sessions', date: '2026-06-18 15:00', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Jul',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "July's blood moon rises over the crypts.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Jul Vampire Tales', date: '2026-07-19 12:00', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Jul Vampire Tales', date: '2026-07-20 14:30', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Aug',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "August's dark velvet curtains fall over the city.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Aug Vampire Nights', date: '2026-08-21 09:15', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Aug Vampire Nights', date: '2026-08-22 17:00', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    },
+    {
+      month: 'Sep',
+      avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.1&auto=format&fit=crop&w=150&q=80',
+      dialogue: "September's shadows stretch long and deep.",
+      banner: 'https://images.unsplash.com/photo-1610797927611-4b151a7e8f3b?ixlib=rb-4.0.1&auto=format&fit=crop&w=800&q=80',
+      podcasts: [
+        { title: 'Sep Vampire Chronicles', date: '2026-09-23 10:45', src: 'https://www.w3schools.com/html/horse.mp3' },
+        { title: 'Sep Vampire Chronicles', date: '2026-09-24 13:15', src: 'https://www.w3schools.com/html/horse.mp3' }
+      ]
+    }
+  ];
+
+  // Populate the podcast list for the selected month
+  const podcastListDiv = document.getElementById('podcastList');
+  const avatarImg = document.getElementById('avatarImg');
+  const dialogueDiv = document.getElementById('dialogue');
+  const bannerImg = document.getElementById('bannerImg');
+  const centerArea = document.getElementById('centerArea');
+
+  document.querySelectorAll('.month-btn').forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      loadMonth(index);
+    });
+  });
+
+  function loadMonth(index) {
+    const data = podcastData[index];
+    avatarImg.src = data.avatar;
+    dialogueDiv.textContent = data.dialogue;
+    bannerImg.src = data.banner;
+    centerArea.style.display = 'block';
+    generatePodcastList(data.podcasts);
+  }
+
+  function generatePodcastList(podcasts) {
+    podcastListDiv.innerHTML = '';
+    if (podcasts.length === 0) {
+      podcastListDiv.innerHTML = '<p style="color:#fff;text-align:center;">No podcasts available for this month.</p>';
+      return;
+    }
+    podcasts.forEach(p => {
+      const item = document.createElement('div');
+      item.className = 'podcast-item';
+
+      const title = document.createElement('div');
+      title.className = 'podcast-title';
+      title.textContent = p.title;
+
+      const date = document.createElement('div');
+      date.className = 'timestamp';
+      date.textContent = p.date;
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      const source = document.createElement('source');
+      source.src = p.src;
+      source.type = 'audio/mpeg';
+      audio.appendChild(source);
+
+      item.appendChild(title);
+      item.appendChild(date);
+      item.appendChild(audio);
+      podcastListDiv.appendChild(item);
+    });
+  }
+</script>
+</body>
+</html>
