@@ -245,6 +245,41 @@
       petal.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(petal);
     }
+    const video = document.getElementById('starVideo');
+const playBtn = document.getElementById('playBtn');
+
+// Auto-play once when the page loads or card flips
+function playGreeting() {
+  video.currentTime = 0;
+  video.play();
+  playBtn.style.display = 'none';
+}
+
+// Show play button when video ends
+video.addEventListener('ended', () => {
+  playBtn.style.display = 'block';
+});
+
+// Play button click to replay
+playBtn.addEventListener('click', () => {
+  playGreeting();
+});
+
+// Optionally, trigger auto-play when card flips
+function flipCard() {
+  const card = document.getElementById("starCard");
+  card.classList.toggle("flipped");
+
+  if (!video.playing) playGreeting();
+}
+
+// Helper property to check if video is playing
+Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
+  get: function() {
+    return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+  }
+});
+
   </script>
 </body>
 </html>
