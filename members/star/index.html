@@ -92,11 +92,10 @@
   .video-frame video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transform: scale(1.2); /* zooms in on the video */
+  object-fit: cover;      /* fills the frame while maintaining aspect ratio */
+  object-position: 50% 30%; /* horizontal 50%, vertical 30% to shift the video up */
   border-radius: 50%;
 }
-
 
     iframe {
       width: 100%;
