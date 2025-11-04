@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -87,23 +87,34 @@
       border: 4px solid rgba(210, 160, 255, 0.4);
       box-shadow: 0 0 25px 6px rgba(210, 160, 255, 0.6) inset,
                   0 0 30px rgba(210, 160, 255, 0.5);
-      background: radial-gradient(circle, rgba(180,100,255,0.3), rgba(110,60,180,0.15));
+      position: relative;
     }
-  .video-frame video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;      /* fills the frame while maintaining aspect ratio */
-  object-position: 50% 30%; /* horizontal 50%, vertical 30% to shift the video up */
-  border-radius: 50%;
-}
 
-
-    iframe {
+    .video-frame video {
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
+      object-position: 50% 30%; /* Adjust to center Star's face */
       border-radius: 50%;
-      background-color: rgba(180, 100, 255, 0.3);
+    }
+
+    #playBtn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 15px;
+      background: rgba(180,100,255,0.6);
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 0 10px rgba(210,160,255,0.6);
+      display: none;
+    }
+
+    #playBtn:hover {
+      background: rgba(180,100,255,0.9);
     }
 
     h1 {
@@ -177,7 +188,6 @@
       background: rgba(226,193,255,0.2);
       box-shadow: 0 0 15px rgba(226,193,255,0.5);
     }
-
   </style>
 </head>
 <body>
@@ -187,11 +197,10 @@
         <!-- Front Side -->
         <div class="card-side front">
           <div class="video-frame">
-  <video id="starVideo" src="Starmystery.mp4" playsinline></video>
-  <button id="playBtn" style="display:none;">🔊 Hear Greeting Again</button>
-</div>
-
-          <h1>Star — Heir of the Café</h1>
+            <video id="starVideo" src="Starmystery.mp4" playsinline></video>
+            <button id="playBtn">🔊 Hear Greeting Again</button>
+          </div>
+          <h1>Star — The Heir of the Café</h1>
 
           <div class="stats">
             <div class="stat"><span>Level:</span><span>47</span></div>
@@ -226,10 +235,39 @@
   </header>
 
   <script>
+    const video = document.getElementById('starVideo');
+    const playBtn = document.getElementById('playBtn');
+
+    // Auto-play once on page load or card flip
+    function playGreeting() {
+      video.currentTime = 0;
+      video.play();
+      playBtn.style.display = 'none';
+    }
+
+    // Show replay button when video ends
+    video.addEventListener('ended', () => {
+      playBtn.style.display = 'block';
+    });
+
+    // Replay button click
+    playBtn.addEventListener('click', () => {
+      playGreeting();
+    });
+
     // Card flip toggle
     function flipCard() {
-      document.getElementById("starCard").classList.toggle("flipped");
+      const card = document.getElementById("starCard");
+      card.classList.toggle("flipped");
+      if (!video.playing) playGreeting();
     }
+
+    // Helper property to check if video is playing
+    Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
+      get: function() {
+        return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+      }
+    });
 
     // Floating petals
     const numPetals = 25;
@@ -245,41 +283,6 @@
       petal.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(petal);
     }
-    const video = document.getElementById('starVideo');
-const playBtn = document.getElementById('playBtn');
-
-// Auto-play once when the page loads or card flips
-function playGreeting() {
-  video.currentTime = 0;
-  video.play();
-  playBtn.style.display = 'none';
-}
-
-// Show play button when video ends
-video.addEventListener('ended', () => {
-  playBtn.style.display = 'block';
-});
-
-// Play button click to replay
-playBtn.addEventListener('click', () => {
-  playGreeting();
-});
-
-// Optionally, trigger auto-play when card flips
-function flipCard() {
-  const card = document.getElementById("starCard");
-  card.classList.toggle("flipped");
-
-  if (!video.playing) playGreeting();
-}
-
-// Helper property to check if video is playing
-Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
-  get: function() {
-    return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
-  }
-});
-
   </script>
 </body>
 </html>
