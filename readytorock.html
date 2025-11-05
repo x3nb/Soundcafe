@@ -19,7 +19,6 @@
         color: #00eaff;
     }
 
-    /* Subtle Tron grid overlay */
     body::before {
         content: "";
         position: absolute;
@@ -32,7 +31,6 @@
         pointer-events: none;
     }
 
-    /* Container for the scene */
     #gateway {
         position: relative;
         text-align: center;
@@ -40,12 +38,12 @@
         transition: transform 1.5s ease-in-out;
     }
 
-    /* Placeholder Eye */
+    /* Ezekiel Eye Image */
     #eye {
-        width: 200px;
-        height: 200px;
+        width: 250px;
+        height: 250px;
         border-radius: 50%;
-        background: radial-gradient(circle at center, #00eaff 0%, #004477 60%, #000010 100%);
+        background: url('loadingeye.jpeg') center/cover no-repeat;
         box-shadow: 0 0 30px #00eaff, inset 0 0 40px #003355;
         animation: spin 30s linear infinite;
         transition: box-shadow 2s ease, transform 2s ease;
@@ -75,16 +73,15 @@
         to { text-shadow: 0 0 25px #b000ff, 0 0 45px #00ffff; }
     }
 
-    /* Dreamy sway effect */
     .sway {
         animation: swayMotion 6s ease-in-out infinite alternate;
     }
+
     @keyframes swayMotion {
         from { transform: rotate(1deg); }
         to { transform: rotate(-1deg); }
     }
 
-    /* Fade transition to terminal */
     #transition-overlay {
         position: fixed;
         inset: 0;
@@ -99,7 +96,6 @@
         opacity: 1;
     }
 
-    /* Terminal style */
     #terminal {
         display: none;
         position: absolute;
@@ -151,17 +147,14 @@ const terminalText = document.getElementById('terminal-text');
 
 let clickCount = 0;
 
-// Handle clicks on the eye
 eye.addEventListener('click', () => {
     clickCount++;
 
     if (clickCount === 1) {
-        // Stop rotation
         eye.style.animationPlayState = 'paused';
         eye.style.boxShadow = '0 0 60px #00ffff, inset 0 0 50px #7026ff';
         readyText.classList.add('show');
     } else if (clickCount === 2) {
-        // Transition begins
         document.body.classList.add('sway');
         overlay.classList.add('active');
 
@@ -175,7 +168,6 @@ eye.addEventListener('click', () => {
     }
 });
 
-// Typewriter effect for terminal text
 function typeText(text, delay = 30) {
     return new Promise((resolve) => {
         let i = 0;
@@ -190,7 +182,6 @@ function typeText(text, delay = 30) {
     });
 }
 
-// Terminal dialogue
 async function startTerminalSequence() {
     const messages = [
         "> System booting...",
@@ -220,7 +211,6 @@ async function startTerminalSequence() {
 
 function choose(name) {
     terminalText.innerHTML += `\n> You chose ${name}. Initializing portal... ⚡`;
-    // Placeholder for next sequence — could link to each character’s realm later
 }
 </script>
 
