@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ezekiel Eye Gateway | ComfortCafe TronVerse</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: radial-gradient(circle at center, #050510 0%, #000010 100%);
+        font-family: 'Orbitron', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #00eaff;
+    }
+
+    /* Subtle Tron grid overlay */
+    body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(#200044 1px, transparent 1px),
+            linear-gradient(90deg, #200044 1px, transparent 1px);
+        background-size: 60px 60px;
+        opacity: 0.08;
+        pointer-events: none;
+    }
+
+    /* Container for the scene */
+    #gateway {
+        position: relative;
+        text-align: center;
+        z-index: 10;
+        transition: transform 1.5s ease-in-out;
+    }
+
+    /* Placeholder Eye */
+    #eye {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: radial-gradient(circle at center, #00eaff 0%, #004477 60%, #000010 100%);
+        box-shadow: 0 0 30px #00eaff, inset 0 0 40px #003355;
+        animation: spin 30s linear infinite;
+        transition: box-shadow 2s ease, transform 2s ease;
+        cursor: pointer;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    #ready-text {
+        margin-top: 30px;
+        font-size: 1.5em;
+        opacity: 0;
+        text-shadow: 0 0 10px #7026ff;
+        transition: opacity 2s ease;
+    }
+
+    #ready-text.show {
+        opacity: 1;
+        animation: glowPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+        from { text-shadow: 0 0 10px #7026ff, 0 0 20px #00eaff; }
+        to { text-shadow: 0 0 25px #b000ff, 0 0 45px #00ffff; }
+    }
+
+    /* Dreamy sway effect */
+    .sway {
+        animation: swayMotion 6s ease-in-out infinite alternate;
+    }
+    @keyframes swayMotion {
+        from { transform: rotate(1deg); }
+        to { transform: rotate(-1deg); }
+    }
+
+    /* Fade transition to terminal */
+    #transition-overlay {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #0a0020, #000010);
+        opacity: 0;
+        transition: opacity 3s ease;
+        z-index: 50;
+        pointer-events: none;
+    }
+
+    #transition-overlay.active {
+        opacity: 1;
+    }
+
+    /* Terminal style */
+    #terminal {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, #050510 0%, #000010 100%);
+        padding: 40px;
+        font-size: 1.1em;
+        color: #00eaff;
+        line-height: 1.6;
+        overflow: hidden;
+    }
+
+    #terminal-text {
+        white-space: pre-wrap;
+        text-shadow: 0 0 10px #00aaff;
+    }
+
+    .choice {
+        color: #b000ff;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .choice:hover {
+        color: #00ffff;
+    }
+
+</style>
+</head>
+<body>
+
+<div id="gateway">
+    <div id="eye"></div>
+    <div id="ready-text">Ready to Rock?</div>
+</div>
+
+<div id="transition-overlay"></div>
+
+<div id="terminal">
+    <div id="terminal-text"></div>
+</div>
+
+<script>
+const eye = document.getElementById('eye');
+const readyText = document.getElementById('ready-text');
+const gateway = document.getElementById('gateway');
+const overlay = document.getElementById('transition-overlay');
+const terminal = document.getElementById('terminal');
+const terminalText = document.getElementById('terminal-text');
+
+let clickCount = 0;
+
+// Handle clicks on the eye
+eye.addEventListener('click', () => {
+    clickCount++;
+
+    if (clickCount === 1) {
+        // Stop rotation
+        eye.style.animationPlayState = 'paused';
+        eye.style.boxShadow = '0 0 60px #00ffff, inset 0 0 50px #7026ff';
+        readyText.classList.add('show');
+    } else if (clickCount === 2) {
+        // Transition begins
+        document.body.classList.add('sway');
+        overlay.classList.add('active');
+
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            gateway.style.display = 'none';
+            terminal.style.display = 'block';
+            document.body.classList.remove('sway');
+            startTerminalSequence();
+        }, 4000);
+    }
+});
+
+// Typewriter effect for terminal text
+function typeText(text, delay = 30) {
+    return new Promise((resolve) => {
+        let i = 0;
+        const interval = setInterval(() => {
+            terminalText.textContent += text[i];
+            i++;
+            if (i >= text.length) {
+                clearInterval(interval);
+                resolve();
+            }
+        }, delay);
+    });
+}
+
+// Terminal dialogue
+async function startTerminalSequence() {
+    const messages = [
+        "> System booting...",
+        "> Connection established to ComfortCafe TronVerse.",
+        "> Three signals detected within the neon code...",
+        "> STAR. MILO. MIKI. CHARI.",
+        "",
+        "> Who will you seek first?",
+        "[1] STAR  [2] MILO  [3] MIKI  [4] CHARI"
+    ];
+
+    for (const line of messages) {
+        await typeText(line + "\n");
+        await new Promise(r => setTimeout(r, 600));
+    }
+
+    const choices = document.createElement('div');
+    choices.innerHTML = `
+        <br>
+        <span class="choice" onclick="choose('STAR')">1: STAR</span> |
+        <span class="choice" onclick="choose('MILO')">2: MILO</span> |
+        <span class="choice" onclick="choose('MIKI')">3: MIKI</span> |
+        <span class="choice" onclick="choose('CHARI')">4: CHARI</span>
+    `;
+    terminalText.appendChild(choices);
+}
+
+function choose(name) {
+    terminalText.innerHTML += `\n> You chose ${name}. Initializing portal... ⚡`;
+    // Placeholder for next sequence — could link to each character’s realm later
+}
+</script>
+
+</body>
+</html>
