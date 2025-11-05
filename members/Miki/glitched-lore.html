@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfortCafe Chimera Cats: Glitched Lore Loading</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000, #1a1a1a);
+            color: #ffd700;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 3s ease-out;
+        }
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #loading-screen.glitch {
+            animation: glitch 0.3s infinite;
+        }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); color: #ffd700; }
+            20% { transform: translate(-3px, 3px); color: #ff0000; } /* Red for corruption */
+            40% { transform: translate(-3px, -3px); color: #ffff00; } /* Yellow for Miki tease */
+            60% { transform: translate(3px, 3px); color: #00ff00; } /* Green for Milo */
+            80% { transform: translate(3px, -3px); color: #8a2be2; } /* Violet for STAR */
+        }
+        #loading-screen.spin {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px #ffd700; }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 20px #ff4500; }
+        }
+        #animation {
+            font-size: 10px; /* Tighter for character details */
+            line-height: 1.1;
+            white-space: pre-wrap;
+            margin: 20px auto;
+            border: 2px solid #ffd700;
+            padding: 15px;
+            background-color: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            max-width: 700px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.5); }
+        }
+        .frame-description {
+            color: #ff4500;
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 1em;
+        }
+        .glitch-text {
+            color: #ff0000;
+            animation: flicker 0.2s infinite;
+            font-weight: bold;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .char-name {
+            color: #8a2be2; /* Violet for STAR */
+        }
+        .milo-name {
+            color: #00ff00; /* Mint for Milo */
+        }
+        .chari-name {
+            color: #e6e6fa; /* Lavender for Chari */
+        }
+        .miki-tease {
+            color: #ffff00; /* Yellow for Miki */
+            animation: flash 1s ease-in-out infinite;
+        }
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        #charlotte-intro {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            color: #f0f8ff;
+            text-align: left;
+            max-width: 600px;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+        }
+        #charlotte-intro.show {
+            opacity: 1;
+        }
+        #shop-interface {
+            position: relative;
+            z-index: 500;
+            display: none;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
+        #shop-interface.show {
+            display: block;
+            opacity: 1;
+        }
+        /* Minimal shop styles (reuse from before) */
+        .shop-section {
+            background: rgba(45, 27, 15, 0.8);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .portal-link {
+            padding: 10px 20px;
+            background: #ff4500;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .portal-link:hover {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Glitched Loading Screen with Characters -->
+    <div id="loading-screen">
+        <h1>COMFORTCAFE CHIMERA LORE: ESCAPE GLITCH</h1>
+        <p style="color: #ccc; font-size: 1em;">*Three siblings flee the lab... but a yellow shadow looms. Or does it?*</p>
+        
+        <div id="animation"></div>
+        <div id="description" class="frame-description"></div>
+
+        <!-- POOF! Charlotte's Intro -->
+        <div id="charlotte-intro">
+            <p>And so it begins. Hi, I'm Charlotte—yes, like the Spider, and yes, I am a spider. This story is mostly about a tribe of orphaned cats who escaped from a most unfortunate experiment, but I won't give that story away just yet. What am I doing here, you ask? Well, every cat's cafe needs its hand-selected beans (the kind that unlock hidden maps and quests, naturally), and a special guide to weave you through the web of adventures. I'm that guide. So join me, dear reader, and escape into the lore of the ComfortCafe Chimera Cats. But mind the threads—they tangle if you're not careful.</p>
+            <p><em>(Narrated by Charlotte, with a wink from the shadows. Ready for the glitchy truth? The cafe awaits...)</em></p>
+        </div>
+    </div>
+
+    <!-- Shop Interface -->
+    <div id="shop-interface">
+        <h2>ComfortCafe: Glitch Passed—Lore Awaits! 🕷️🐱☕</h2>
+        <p style="color: #ccc;">Siblings escaped, Miki incoming. Explore chapters or portals below.</p>
+        
+        <div class="shop-section">
+            <h3>Character Portals Unlocked</h3>
+            <a href="miki-music.html" target="_blank" class="portal-link">Miki's Mixtape Portal (Free Downloads) 🎸</a>
+            <p>More lore chapters brewing—bean quest to reveal 11-15?</p>
+        </div>
+        
+        <!-- Add your previous add-link form here if desired -->
+    </div>
+
+    <script>
+        // Glitched Story Frames: Focus on STAR, Milo, Chari + Miki Tease
+        const storyFrames = [
+            {
+                art: `Chapter Tease: The Three Siblings Awaken
+
+In Dr. Helix's Parisian lab—where French precision met genetic folly—three orphaned chimeras stirred. Not mere kittens, but hybrids of shadow and sparkle.
+
+<span class="char-name">STAR</span>, the eldest: Violet-streaked goth, snarky steward, Type-A edge sharp as a guillotine. "We'll escape, or I'll brew revolution in their beakers."
+
+<span class="milo-name">Milo</span>, the middle: Mint-green stripe from a Korean rift, Daoist poet at 23. "The path unfolds like a sonnet in the storm."
+
+<span class="chari-name">Chari</span>, the youngest: White waves with lavender, indigo-amber eyes, rats Blanche & Noir on shoulders. "What if we... can't?"
+
+[LOADING: 0% - Lab Shadows Lengthen]`,
+                desc: "A French escape brews... responsibility calls."
+            },
+            {
+                art: `The Dimensional Dash
+
+Thunder over Lyon suburbs. <span class="char-name">STAR</span> topples the vial: Dimensional Beans spill, portals yawn like absinthe dreams.
+
+<span class="milo-name">Milo</span> quotes Shakespeare: "To flee or not to flee?" They dash—Milo's zen guiding, Chari's rats scouting vents.
+
+<span class="chari-name">Chari</span> whispers doubts: "The lasers... they'll zap us like bad croissants." But STAR snaps: "Follow me, or stay caged."
+
+They tumble into parallel Paris, alley damp with untapped tea.
+
+[LOADING: 25% - Beans Ignite, Wings (Un)Clip]`,
+                desc: "Whimsy in the whirlwind— but edges cut deep."
+            },
+            {
+                art: `Cafe Foundations Form
+
+In the neon alley, <span class="char-name">STAR</span> claims the nook: "ComfortCafe—violet velvet, elite brews." Milo rakes a zen garden; Chari learns the till, rats nibbling receipts.
+
+Quests bloom from beans: Maps on napkins, lore in lattes. "We're a tribe now," STAR declares, snark softening.
+
+But a yellow hum echoes— a rift? "Something punky approaches," Milo proverbs.
+
+[LOADING: 50% - Siblings Bond, Shadows Stir]`,
+                desc: "Half escaped, half haunted. Like Alice, but with espresso."
+            },
+            {
+                art: `<span class="glitch-text">GLITCH: Corruption Cascade</span>
+
+Mid-tale stutter. <span class="char-name">STAR</span>'s violet static flickers— "The lab's tracing us!" <span class="milo-name">Milo</span>'s mint proverb warps: "The... path... spins?"
+
+<span class="chari-name">Chari</span>'s lavender fades, rats squeak error. A <span class="miki-tease">YELLOW SPIKE</span> pierces the void— Miki? "Oi, ledger's calling..."
+
+The screen... tears.
+
+[LOADING: 75% - <span class="glitch-text">ERROR: SIBLING RIFT DETECTED</span>]`,
+                desc: "Pause. Glitch. A punk shadow looms—fortune fractures."
+            },
+            {
+                art: ` 
+                 
+                 
+                 [SPINNING INTO THE YELLOW VOID]
+                 
+                 <span class="miki-tease">MIKI INCOMING: Spikes, Riffs, Revolution...</span>
+                 
+                 
+                 
+                 
+                 POOF! Darkness devours the escape... for now.
+                 
+                 
+                 
+                 
+                 [LOADING: 100% - LORE REBOOT: TRIBE ASSEMBLES]`,
+                desc: "Nothingness claims them. But from rifts, spiders spin anew."
+            }
+        ];
+
+        let currentFrame = 0;
+        const animationDiv = document.getElementById('animation');
+        const descriptionDiv = document.getElementById('description');
+        const loadingScreen = document.getElementById('loading-screen');
+        const charlotteIntro = document.getElementById('charlotte-intro');
+        const shopInterface = document.getElementById('shop-interface');
+
+        function updateFrame() {
+            const frame = storyFrames[currentFrame];
+            animationDiv.innerHTML = frame.art;
+            descriptionDiv.textContent = frame.desc;
+            
+            currentFrame++;
+            
+            // Glitch intensifies at frame 3
+            if (currentFrame === 3) {
+                loadingScreen.classList.add('glitch');
+                setTimeout(() => {
+                    loadingScreen.classList.remove('glitch');
+                    loadingScreen.classList.add('spin');
+                }, 3000); // Longer glitch for tension
+            }
+            
+            // End at frame 4: Spin 5s, POOF to Charlotte
+            if (currentFrame >= 4) {
+                setTimeout(() => {
+                    loadingScreen.classList.remove('spin');
+                    loadingScreen.classList.add('fade-out');
+                    charlotteIntro.classList.add('show');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        shopInterface.classList.add('show');
+                    }, 3000);
+                }, 5000);
+                return;
+            }
+        }
+
+        // Start: Dramatic pacing
+        updateFrame(); // Frame 0
+        setInterval(() => {
+            if (currentFrame < 4) updateFrame();
+        }, 3500); // 3.5s per frame
+    </script>
+</body>
+</html>
