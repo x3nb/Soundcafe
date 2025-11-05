@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComfortCafe Chimera Cats: Tron Glitch Protocol</title>
+<style>
+    body {
+        font-family: 'Orbitron', 'Courier New', monospace;
+        background: radial-gradient(circle at 50% 50%, #050510 0%, #000010 100%);
+        color: #00eaff;
+        text-align: center;
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Neon Grid Background */
+    body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(#220044 1px, transparent 1px),
+            linear-gradient(90deg, #220044 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.1;
+        pointer-events: none;
+        animation: grid-move 10s linear infinite;
+    }
+    @keyframes grid-move {
+        from { background-position: 0 0, 0 0; }
+        to { background-position: 40px 40px, 40px 40px; }
+    }
+
+    #loading-screen {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 0, 20, 0.98);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 3s ease-out;
+        overflow: hidden;
+    }
+    #loading-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    h1 {
+        font-size: 2em;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #00eaff, #b000ff, #7026ff, #00eaff);
+        -webkit-background-clip: text;
+        color: transparent;
+        animation: glowShift 3s linear infinite;
+    }
+    @keyframes glowShift {
+        0% { filter: drop-shadow(0 0 8px #00eaff); }
+        50% { filter: drop-shadow(0 0 18px #b000ff); }
+        100% { filter: drop-shadow(0 0 8px #00eaff); }
+    }
+
+    p {
+        color: #9cdcff;
+        text-shadow: 0 0 10px #0040ff;
+    }
+
+    #animation {
+        font-size: 10px;
+        white-space: pre-wrap;
+        line-height: 1.2;
+        margin: 20px auto;
+        border: 2px solid rgba(0, 255, 255, 0.6);
+        border-radius: 10px;
+        padding: 15px;
+        max-width: 700px;
+        background: rgba(10, 5, 30, 0.6);
+        box-shadow: 0 0 25px #4000ff, inset 0 0 20px rgba(0,255,255,0.2);
+        animation: panelPulse 3s ease-in-out infinite;
+        color: #c4cfff;
+    }
+    @keyframes panelPulse {
+        0%, 100% { box-shadow: 0 0 20px #4000ff, inset 0 0 10px rgba(0,255,255,0.2); }
+        50% { box-shadow: 0 0 40px #00eaff, inset 0 0 20px rgba(176,0,255,0.3); }
+    }
+
+    .frame-description {
+        color: #b000ff;
+        font-style: italic;
+        font-size: 1em;
+        margin-top: 10px;
+        text-shadow: 0 0 10px #4800ff;
+    }
+
+    /* Glitch Effect */
+    #loading-screen.glitch {
+        animation: glitchShift 0.3s infinite;
+    }
+    @keyframes glitchShift {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-3px, 3px); }
+        40% { transform: translate(-3px, -3px); }
+        60% { transform: translate(3px, 3px); }
+        80% { transform: translate(3px, -3px); }
+    }
+
+    .glitch-text {
+        color: #ff00ff;
+        text-shadow: 0 0 8px #00eaff;
+        animation: flicker 0.1s infinite;
+        font-weight: bold;
+    }
+    @keyframes flicker {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.2; }
+    }
+
+    .char-name { color: #b000ff; text-shadow: 0 0 10px #7026ff; }
+    .milo-name { color: #00ffff; text-shadow: 0 0 10px #00eaff; }
+    .chari-name { color: #b3a9ff; text-shadow: 0 0 10px #b3a9ff; }
+    .miki-tease { color: #ffea00; text-shadow: 0 0 15px #ffd700; }
+
+    #charlotte-intro {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #e3e8ff;
+        background: rgba(15, 0, 40, 0.85);
+        border: 1px solid #7026ff;
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 650px;
+        text-align: left;
+        box-shadow: 0 0 30px #4000ff, inset 0 0 20px rgba(0,255,255,0.3);
+        opacity: 0;
+        transition: opacity 2s ease-in;
+    }
+    #charlotte-intro.show {
+        opacity: 1;
+    }
+
+    #shop-interface {
+        display: none;
+        opacity: 0;
+        transition: opacity 2s ease-in;
+        position: relative;
+        z-index: 500;
+        max-width: 800px;
+        margin: 60px auto;
+    }
+    #shop-interface.show {
+        display: block;
+        opacity: 1;
+    }
+
+    .shop-section {
+        background: rgba(10, 0, 40, 0.8);
+        border: 1px solid #00eaff;
+        border-radius: 10px;
+        padding: 20px;
+        color: #d8f6ff;
+        box-shadow: 0 0 15px rgba(0,234,255,0.4);
+    }
+
+    .portal-link {
+        padding: 10px 20px;
+        background: linear-gradient(90deg, #00eaff, #7026ff);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: inherit;
+        text-decoration: none;
+        display: inline-block;
+        margin: 10px;
+        text-shadow: 0 0 8px #000;
+        transition: all 0.3s ease;
+    }
+    .portal-link:hover {
+        background: linear-gradient(90deg, #b000ff, #00eaff);
+        box-shadow: 0 0 15px #00eaff;
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-screen">
+    <h1>COMFORTCAFE CHIMERA LORE: TRON GLITCH PROTOCOL</h1>
+    <p>*Neon pulses... Data shards... Three siblings awaken in digital twilight.*</p>
+
+    <div id="animation"></div>
+    <div id="description" class="frame-description"></div>
+
+    <div id="charlotte-intro">
+        <p>And so it begins. I'm <strong>Charlotte</strong>—your web-weaver in this neon maze. These siblings aren’t just cats; they’re living code—fragments of a forbidden experiment. But hush... the grid hums, and the portal flickers. Join me as we unravel their story—each pixel hiding a secret brew of lore and light.</p>
+        <p><em>(Narrated by Charlotte—watch the light lines, they tangle if you stare too long...)</em></p>
+    </div>
+</div>
+
+<div id="shop-interface">
+    <h2>ComfortCafe: Grid Sequence Complete ☕💠</h2>
+    <p style="color: #9cdcff;">Neon threads restored. Lore awaits within the digital café.</p>
+
+    <div class="shop-section">
+        <h3>Unlocked Portals</h3>
+        <a href="mixtapeportal.html" target="_blank" class="portal-link">Miki’s Mixtape Portal 🎸</a>
+        <p>More Tron Beans loading... brew them wisely.</p>
+    </div>
+</div>
+
+<script>
+const storyFrames = [
+    {
+        art: `[BOOTING LORE SEQUENCE]
+
+Three hybrid signals detected.
+<span class="char-name">STAR</span>—violet data storm, leader of the lost.
+<span class="milo-name">MILO</span>—mint-stream poet, harmony code.
+<span class="chari-name">CHARI</span>—lavender spark, youngest in the web.
+
+[DATA: 0% - Containment Fields Failing]`,
+        desc: "Three pulses flicker within the void."
+    },
+    {
+        art: `[ESCAPE SEQUENCE INITIATED]
+
+Thunder rolls across neon Paris. Portals crack open like broken mirrors.
+<span class="char-name">STAR</span>: “We run now.”
+<span class="milo-name">MILO</span>: “Flow follows fracture.”
+<span class="chari-name">CHARI</span>: “But... will we survive reboot?”
+
+[DATA: 25% - Neon Storm Rising]`,
+        desc: "Glitchlight floods their path."
+    },
+    {
+        art: `[CAFE NODE FOUND]
+
+Alley dust becomes code.
+<span class="char-name">STAR</span> claims a corner booth—‘ComfortCafe’.
+<span class="milo-name">MILO</span> hums digital haiku.
+<span class="chari-name">CHARI</span> feeds her rats data crumbs.
+
+[DATA: 50% - Neural Bonds Rewriting]`,
+        desc: "The café breathes. The grid remembers."
+    },
+    {
+        art: `<span class="glitch-text">[CRITICAL ERROR: CODE BREACH]</span>
+
+<span class="miki-tease">YELLOW SPIKE INCOMING...</span>
+Signal interference: MIKI detected.
+
+<span class="char-name">STAR</span>: “He’s tracing the source!”
+<span class="milo-name">MILO</span>: “Harmony collapsing...”
+System distortion overload.
+
+[DATA: 75% - REALITY SPLIT DETECTED]`,
+        desc: "Punk static corrupts their coordinates."
+    },
+    {
+        art: `[END SEQUENCE: VOID SPIRAL]
+
+<span class="miki-tease">MIKI REBOOTING...</span>
+Silence. Then pulse. Then everything resets.
+
+[DATA: 100% - LORE RESTART SUCCESSFUL]`,
+        desc: "From glitch to glow—rebirth begins."
+    }
+];
+
+let currentFrame = 0;
+const animationDiv = document.getElementById('animation');
+const descriptionDiv = document.getElementById('description');
+const loadingScreen = document.getElementById('loading-screen');
+const charlotteIntro = document.getElementById('charlotte-intro');
+const shopInterface = document.getElementById('shop-interface');
+
+function updateFrame() {
+    const frame = storyFrames[currentFrame];
+    animationDiv.innerHTML = frame.art;
+    descriptionDiv.textContent = frame.desc;
+    currentFrame++;
+
+    if (currentFrame === 3) {
+        loadingScreen.classList.add('glitch');
+        setTimeout(() => {
+            loadingScreen.classList.remove('glitch');
+        }, 2500);
+    }
+
+    if (currentFrame >= 4) {
+        setTimeout(() => {
+            loadingScreen.classList.add('fade-out');
+            charlotteIntro.classList.add('show');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                shopInterface.classList.add('show');
+            }, 3000);
+        }, 4000);
+        return;
+    }
+}
+
+updateFrame();
+setInterval(() => {
+    if (currentFrame < 4) updateFrame();
+}, 3500);
+</script>
+</body>
+</html>
