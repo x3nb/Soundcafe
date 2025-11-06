@@ -36,47 +36,53 @@
   </div>
 
   <!-- Track List -->
-  <div id="tracks">
-    <div class="track hidden">
-      <div class="track-title">Miki's Lore</div>
-      <audio preload="none">
-        <source src="assets/MikisLore.mp3" type="audio/mpeg">
-      </audio>
-      <a href="assets/MikisLore.mp3" class="download-btn" download>Download</a>
-    </div>
-
-    <div class="track hidden">
-      <div class="track-title">Miki's Lore Edge-Version</div>
-      <audio preload="none">
-        <source src="assets/MikisLore2.mp3" type="audio/mpeg">
-      </audio>
-      <a href="assets/MikisLore2.mp3" class="download-btn" download>Download</a>
-    </div>
-
-    <div class="track hidden">
-      <div class="track-title">Not Of This World</div>
-      <audio preload="none">
-        <source src="assets/notw.mp3" type="audio/mpeg">
-      </audio>
-      <a href="assets/notw.mp3" class="download-btn" download>Download</a>
-    </div>
-
-    <div class="track hidden">
-      <div class="track-title">Not Of This World 2.0</div>
-      <audio preload="none">
-        <source src="assets/notwpt2.mp3" type="audio/mpeg">
-      </audio>
-      <a href="assets/notwpt2.mp3" class="download-btn" download>Download</a>
-    </div>
-
-    <div class="track hidden">
-      <div class="track-title">Cageless</div>
-      <audio preload="none">
-        <source src="assets/Mikisescape.mp3" type="audio/mpeg">
-      </audio>
-      <a href="assets/Mikisescape.mp3" class="download-btn" download>Download</a>
-    </div>
+  <!-- Player -->
+<div id="player">
+  <div id="current-track">
+    <span id="track-title">No track playing yet</span>
   </div>
+  <button id="play-pause-btn">▶️ Play</button>
+</div>
+
+<!-- Hidden tracks container (only for logic) -->
+<div id="tracks" style="display:none;">
+  <div class="track hidden">
+    <div class="track-title">Miki's Lore</div>
+    <audio preload="none">
+      <source src="assets/MikisLore.mp3" type="audio/mpeg">
+    </audio>
+    <a href="assets/MikisLore.mp3" class="download-btn" download>Download</a>
+  </div>
+  <div class="track hidden">
+    <div class="track-title">Miki's Lore Edge-Version</div>
+    <audio preload="none">
+      <source src="assets/MikisLore2.mp3" type="audio/mpeg">
+    </audio>
+    <a href="assets/MikisLore2.mp3" class="download-btn" download>Download</a>
+  </div>
+  <div class="track hidden">
+    <div class="track-title">Not Of This World</div>
+    <audio preload="none">
+      <source src="assets/notw.mp3" type="audio/mpeg">
+    </audio>
+    <a href="assets/notw.mp3" class="download-btn" download>Download</a>
+  </div>
+  <div class="track hidden">
+    <div class="track-title">Not Of This World 2.0</div>
+    <audio preload="none">
+      <source src="assets/notwpt2.mp3" type="audio/mpeg">
+    </audio>
+    <a href="assets/notwpt2.mp3" class="download-btn" download>Download</a>
+  </div>
+  <div class="track hidden">
+    <div class="track-title">Cageless</div>
+    <audio preload="none">
+      <source src="assets/Mikisescape.mp3" type="audio/mpeg">
+    </audio>
+    <a href="assets/Mikisescape.mp3" class="download-btn" download>Download</a>
+  </div>
+</div>
+
 
   <footer>
     *Free downloads for cafe kin only. Share the rift, not the spikes. © Miki's Road Riffs, Parallel Paris.*
