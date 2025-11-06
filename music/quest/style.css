@@ -50,8 +50,8 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;      /* smaller size */
-    height: 100px;     /* smaller size */
+    width: 150px;      /* smaller size */
+    height: 150px;     /* smaller size */
     max-width: 100%;  /* ensure it never exceeds container */
     max-height: 100%;
     border-radius: 50%;
