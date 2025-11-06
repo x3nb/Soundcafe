@@ -1,107 +1,160 @@
+// -------------------------
+// MIKI'S MIXTAPE PORTAL JS
+// -------------------------
+
+// Player elements
+const playPauseBtn = document.getElementById('play-pause-btn');
+const trackTitle = document.getElementById('track-title');
+
+// Unlock button
 const unlockBtn = document.getElementById('unlock-btn');
-const tracksContainer = document.getElementById('tracks');
-const mikiGreeting = document.getElementById('miki-greeting');
-const allTracks = document.querySelectorAll('#tracks .track audio');
-const trackDivs = document.querySelectorAll('#tracks .track');
 
-const riddles = [
-  { question: "What color are Miki's spikes?", answer: "yellow" },
-  { question: "What city does Miki riff from?", answer: "parallel paris" },
-  { question: "What's the name of Miki's anthem?", answer: "not of this world" }
-];
+// All track divs and audio elements
+const trackDivs = Array.from(document.querySelectorAll('#tracks .track'));
+const allTracks = trackDivs.map(track => track.querySelector('audio'));
 
-let currentRiddleIndex = 0;
+let currentTrackIndex = -1; // starts with no track
 let unlockedTracks = 0;
-let currentTrackIndex = 0;
 let isPlaying = false;
 
-// Elements for riddle zone
-const riddleZone = document.getElementById('riddle-zone');
-const riddleQuestion = document.getElementById('riddle-question');
-const riddleAnswer = document.getElementById('riddle-answer');
-const riddleSubmit = document.getElementById('riddle-submit');
-const riddleFeedback = document.getElementById('riddle-feedback');
+// -------------------------
+// RIDDLE & UNLOCK LOGIC
+// -------------------------
 
-// Unlock button click
-unlockBtn.addEventListener('click', () => {
-  unlockBtn.style.display = 'none';
-  mikiGreeting.textContent = "Miki: Ready to prove you know my code? Solve my riddles to unlock the riffs.";
-  riddleZone.classList.remove('hidden');
-  askNextRiddle();
-});
+// Example riddles for each track
+const riddles = [
+  {
+    question: "What color are Miki's signature spikes?",
+    answer: "yellow"
+  },
+  {
+    question: "Miki loves parallel chases. What does she escape from?",
+    answer: "lab"
+  },
+  {
+    question: "Miki wrote an anthem for those who live again in Christ. True or False?",
+    answer: "true"
+  },
+  {
+    question: "What is Miki's favorite mode of transport in Parallel Paris?",
+    answer: "rift"
+  },
+  {
+    question: "Miki is caged. Does she escape? Yes or No?",
+    answer: "yes"
+  }
+];
 
-// Ask current riddle
-function askNextRiddle() {
-  if(currentRiddleIndex < riddles.length) {
-    riddleQuestion.textContent = riddles[currentRiddleIndex].question;
-    riddleAnswer.value = '';
-    riddleFeedback.textContent = '';
+// Show riddle prompt and handle response
+function askRiddle(trackIndex) {
+  const riddle = riddles[trackIndex];
+  const userAnswer = prompt(riddle.question + " (Type your answer)");
+
+  if (!userAnswer) {
+    // User canceled or left blank, redirect to lore page
+    window.location.href = "miki-lore.html"; // <-- replace with actual lore link
+    return;
+  }
+
+  if (userAnswer.trim().toLowerCase() === riddle.answer.toLowerCase()) {
+    unlockTrack(trackIndex);
   } else {
-    // All riddles answered
-    riddleZone.classList.add('hidden');
-    mikiGreeting.textContent = "Miki: You know me well, runner. The portal is yours.";
+    alert("Hmm, that's not quite right. Learn more about Miki's lore!");
+    window.location.href = "miki-lore.html"; // <-- replace with actual lore link
   }
 }
 
-// Submit riddle answer
-riddleSubmit.addEventListener('click', () => {
-  const userAnswer = riddleAnswer.value.trim().toLowerCase();
-  if(userAnswer === riddles[currentRiddleIndex].answer.toLowerCase()) {
-    riddleFeedback.textContent = "Miki: Correct! Unlocking the next track...";
-    unlockNextTrack();
-    currentRiddleIndex++;
-    askNextRiddle();
-  } else {
-    riddleFeedback.innerHTML = `Miki: Hmm... not quite. <a href="https://yourlorelink.com" target="_blank">Read my lore</a> first.`;
-  }
-});
-
-// Unlock a track
-function unlockNextTrack() {
-  if(unlockedTracks < trackDivs.length) {
-    const track = trackDivs[unlockedTracks];
-    track.classList.remove('hidden');
-    track.classList.add('revealed');
-    playTrack(unlockedTracks);
-    unlockedTracks++;
-  }
-}
-
-// Play a track by index
-function playTrack(index) {
-  // Stop others
-  allTracks.forEach(a => { a.pause(); a.currentTime = 0; });
-  trackDivs.forEach(t => t.classList.remove('playing'));
-
-  currentTrackIndex = index;
-  const audio = allTracks[index];
+// -------------------------
+// UNLOCK TRACK & PLAY
+// -------------------------
+function unlockTrack(index) {
   const trackDiv = trackDivs[index];
+  const audio = allTracks[index];
 
-  audio.play().then(() => { isPlaying = true; })
-       .catch(err => console.warn("Autoplay blocked:", err));
+  // Reveal download button
+  const downloadBtn = trackDiv.querySelector('.download-btn');
+  downloadBtn.classList.remove('hidden');
 
-  trackDiv.classList.add('playing');
+  // Show pat-on-back message
+  const patMsg = trackDiv.querySelector('.pat-msg');
+  patMsg.classList.remove('hidden');
+  setTimeout(() => {
+    patMsg.classList.add('hidden');
+  }, 3000);
+
+  // Update unlocked tracks count
+  unlockedTracks = index + 1;
+  currentTrackIndex = index;
+
+  // Update visible title
+  trackTitle.textContent = trackDiv.querySelector('.track-title').textContent;
+
+  // Play audio
+  audio.play().then(() => {
+    isPlaying = true;
+    playPauseBtn.textContent = '⏸️ Pause';
+  }).catch(err => console.warn("Autoplay blocked:", err));
+
+  // Listen for track end
+  audio.addEventListener('ended', () => {
+    if (currentTrackIndex + 1 < unlockedTracks) {
+      currentTrackIndex++;
+      playTrack(currentTrackIndex);
+    } else {
+      isPlaying = false;
+      playPauseBtn.textContent = '▶️ Play';
+    }
+  });
 }
 
-// Auto-advance when a track ends
-allTracks.forEach((audio, index) => {
-  audio.addEventListener('ended', () => {
-    if(index + 1 < unlockedTracks) {
-      playTrack(index + 1);
-    }
+// -------------------------
+// PLAY SELECTED TRACK
+// -------------------------
+function playTrack(index) {
+  const trackDiv = trackDivs[index];
+  const audio = allTracks[index];
+
+  // Stop previous track
+  allTracks.forEach((t, i) => { if(i !== index) t.pause(); });
+
+  trackTitle.textContent = trackDiv.querySelector('.track-title').textContent;
+
+  audio.play().then(() => {
+    isPlaying = true;
+    playPauseBtn.textContent = '⏸️ Pause';
   });
+}
+
+// -------------------------
+// PLAY/PAUSE BUTTON
+// -------------------------
+playPauseBtn.addEventListener('click', () => {
+  if (currentTrackIndex < 0) return; // No track unlocked yet
+
+  const audio = allTracks[currentTrackIndex];
+
+  if (isPlaying) {
+    audio.pause();
+    playPauseBtn.textContent = '▶️ Play';
+    isPlaying = false;
+  } else {
+    audio.play();
+    playPauseBtn.textContent = '⏸️ Pause';
+    isPlaying = true;
+  }
 });
 
-// Allow user to click any unlocked track to play/pause
-trackDivs.forEach((trackDiv, index) => {
-  trackDiv.addEventListener('click', () => {
-    if(trackDiv.classList.contains('playing')) {
-      allTracks[index].pause();
-      trackDiv.classList.remove('playing');
-      isPlaying = false;
-    } else {
-      playTrack(index);
-    }
-  });
+// -------------------------
+// INITIAL UNLOCK BUTTON CLICK
+// -------------------------
+unlockBtn.addEventListener('click', () => {
+  if (unlockedTracks === 0) {
+    askRiddle(0); // start with first track riddle
+  } else if (unlockedTracks < trackDivs.length) {
+    askRiddle(unlockedTracks); // ask riddle for next track
+  } else {
+    alert("All tracks unlocked! Enjoy the mix!");
+  }
 });
+
 
