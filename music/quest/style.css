@@ -1,166 +1,110 @@
-/* TRON: Legacy inspired theme */
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
   background-color: #000;
   color: #0ff;
   text-align: center;
-  overflow-x: hidden;
+}
+
+#container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 h1 {
-  color: #7b3ff3;
-  text-shadow: 0 0 12px #7b3ff3;
-  margin-top: 30px;
-  letter-spacing: 2px;
+  font-size: 2.5em;
+  color: #00ffff;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #8a2be2;
 }
 
-.intro {
-  color: #ccc;
-  width: 80%;
-  margin: 20px auto;
-  max-width: 700px;
+#miki-avatar img {
+  width: 150px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #0ff, 0 0 40px #8a2be2;
+  margin: 20px 0;
 }
 
-#unlock-btn {
-  background: transparent;
-  color: #0ff;
-  border: 2px solid #0ff;
-  padding: 12px 24px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-family: 'Orbitron', sans-serif;
+#portal img {
+  width: 200px;
+  animation: swirl 8s linear infinite;
+  box-shadow: 0 0 30px #0ff, 0 0 60px #8a2be2;
 }
 
-#unlock-btn:hover {
-  background: #0ff;
+@keyframes swirl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+button {
+  background-color: #0ff;
+  border: none;
   color: #000;
-  box-shadow: 0 0 20px #0ff;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #8a2be2;
 }
 
-#portal-container {
-  position: relative;
-  margin: 60px auto;
-  width: 350px;
-  height: 350px;
+button:hover {
+  background-color: #8a2be2;
+  color: #fff;
 }
 
-#portal {
-  width: 100%;
-  animation: slowspin 20s linear infinite;
-  filter: drop-shadow(0 0 20px #0ff);
-}
-
-#portal-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
-  animation: pulse 4s ease-in-out infinite;
-  z-index: -1;
-}
-
-@keyframes slowspin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-/* Miki avatar section */
-#miki-container {
-  margin: 40px auto;
-  position: relative;
-  display: inline-block;
-}
-
-#miki-avatar {
-  width: 140px;
-  border-radius: 50%;
-  border: 2px solid #7b3ff3;
-  filter: drop-shadow(0 0 15px #7b3ff3);
-  z-index: 2;
-  position: relative;
-}
-
-#miki-glow {
-  position: absolute;
-  inset: -15px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(123,63,243,0.25), transparent 70%);
-  animation: pulse 3s infinite;
-}
-
-#miki-greeting {
-  margin-top: 10px;
-  color: #0ff;
-  font-size: 0.9em;
-  opacity: 0.85;
-}
-
-/* Tracks */
 #tracks {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  transition: opacity 1s ease-in-out;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
+  margin-top: 30px;
 }
 
 .track {
-  width: 80%;
-  max-width: 600px;
-  background: rgba(10, 10, 10, 0.7);
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 15px rgba(0,255,255,0.3);
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #0ff;
+  border-radius: 5px;
+  transition: box-shadow 0.3s, transform 0.3s;
 }
 
-.track-title {
-  color: #7b3ff3;
-  font-weight: bold;
+.track.playing {
+  box-shadow: 0 0 20px #0ff, 0 0 40px #8a2be2;
+  transform: scale(1.05);
 }
 
-.track audio {
-  width: 100%;
-  margin-top: 10px;
+.track.hidden {
+  display: none;
 }
 
 .download-btn {
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 5px;
   color: #0ff;
   text-decoration: none;
   border: 1px solid #0ff;
-  padding: 6px 10px;
-  border-radius: 4px;
-  transition: 0.3s;
+  padding: 5px 10px;
+  border-radius: 3px;
 }
 
 .download-btn:hover {
-  background: #0ff;
+  background-color: #0ff;
   color: #000;
-  box-shadow: 0 0 10px #0ff;
 }
 
-.track.playing {
-  box-shadow: 0 0 25px #7b3ff3;
-  border-color: #7b3ff3;
+#riddle-zone {
+  margin: 20px 0;
 }
 
-footer {
-  color: #666;
-  margin: 40px 0 20px;
-  font-size: 0.8em;
+.hidden {
+  display: none;
+}
+
+input {
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #0ff;
+  background-color: #000;
+  color: #0ff;
+}
+
+input::placeholder {
+  color: #888;
 }
