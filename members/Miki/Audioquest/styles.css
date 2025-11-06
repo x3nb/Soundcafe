@@ -1,0 +1,166 @@
+/* TRON: Legacy inspired theme */
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000;
+  color: #0ff;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+h1 {
+  color: #7b3ff3;
+  text-shadow: 0 0 12px #7b3ff3;
+  margin-top: 30px;
+  letter-spacing: 2px;
+}
+
+.intro {
+  color: #ccc;
+  width: 80%;
+  margin: 20px auto;
+  max-width: 700px;
+}
+
+#unlock-btn {
+  background: transparent;
+  color: #0ff;
+  border: 2px solid #0ff;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Orbitron', sans-serif;
+}
+
+#unlock-btn:hover {
+  background: #0ff;
+  color: #000;
+  box-shadow: 0 0 20px #0ff;
+}
+
+#portal-container {
+  position: relative;
+  margin: 60px auto;
+  width: 350px;
+  height: 350px;
+}
+
+#portal {
+  width: 100%;
+  animation: slowspin 20s linear infinite;
+  filter: drop-shadow(0 0 20px #0ff);
+}
+
+#portal-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes slowspin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Miki avatar section */
+#miki-container {
+  margin: 40px auto;
+  position: relative;
+  display: inline-block;
+}
+
+#miki-avatar {
+  width: 140px;
+  border-radius: 50%;
+  border: 2px solid #7b3ff3;
+  filter: drop-shadow(0 0 15px #7b3ff3);
+  z-index: 2;
+  position: relative;
+}
+
+#miki-glow {
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(123,63,243,0.25), transparent 70%);
+  animation: pulse 3s infinite;
+}
+
+#miki-greeting {
+  margin-top: 10px;
+  color: #0ff;
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+/* Tracks */
+#tracks {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  transition: opacity 1s ease-in-out;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track {
+  width: 80%;
+  max-width: 600px;
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,255,255,0.3);
+}
+
+.track-title {
+  color: #7b3ff3;
+  font-weight: bold;
+}
+
+.track audio {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 10px;
+  color: #0ff;
+  text-decoration: none;
+  border: 1px solid #0ff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.download-btn:hover {
+  background: #0ff;
+  color: #000;
+  box-shadow: 0 0 10px #0ff;
+}
+
+.track.playing {
+  box-shadow: 0 0 25px #7b3ff3;
+  border-color: #7b3ff3;
+}
+
+footer {
+  color: #666;
+  margin: 40px 0 20px;
+  font-size: 0.8em;
+}
