@@ -56,51 +56,57 @@ riddleSubmit.addEventListener('click', () => {
   }
 });
 
-// Unlock a track
+const playPauseBtn = document.getElementById('play-pause-btn');
+const trackTitle = document.getElementById('track-title');
+
+let currentTrackIndex = 0;
+let unlockedTracks = 0;
+let isPlaying = false;
+
+// Unlock next track (after correct riddle)
 function unlockNextTrack() {
   if(unlockedTracks < trackDivs.length) {
-    const track = trackDivs[unlockedTracks];
-    track.classList.remove('hidden');
-    track.classList.add('revealed');
-    playTrack(unlockedTracks);
     unlockedTracks++;
+    currentTrackIndex = unlockedTracks - 1;
+    const trackDiv = trackDivs[currentTrackIndex];
+    const audio = allTracks[currentTrackIndex];
+    
+    trackTitle.textContent = trackDiv.querySelector('.track-title').textContent;
+    audio.play().then(() => {
+      isPlaying = true;
+      playPauseBtn.textContent = '⏸️ Pause';
+    }).catch(err => console.warn("Autoplay blocked:", err));
+    
+    audio.addEventListener('ended', () => {
+      if(currentTrackIndex + 1 < unlockedTracks) {
+        currentTrackIndex++;
+        const nextAudio = allTracks[currentTrackIndex];
+        const nextDiv = trackDivs[currentTrackIndex];
+        trackTitle.textContent = nextDiv.querySelector('.track-title').textContent;
+        nextAudio.play();
+      } else {
+        isPlaying = false;
+        playPauseBtn.textContent = '▶️ Play';
+      }
+    });
   }
 }
 
-// Play a track by index
-function playTrack(index) {
-  // Stop others
-  allTracks.forEach(a => { a.pause(); a.currentTime = 0; });
-  trackDivs.forEach(t => t.classList.remove('playing'));
-
-  currentTrackIndex = index;
-  const audio = allTracks[index];
-  const trackDiv = trackDivs[index];
-
-  audio.play().then(() => { isPlaying = true; })
-       .catch(err => console.warn("Autoplay blocked:", err));
-
-  trackDiv.classList.add('playing');
-}
-
-// Auto-advance when a track ends
-allTracks.forEach((audio, index) => {
-  audio.addEventListener('ended', () => {
-    if(index + 1 < unlockedTracks) {
-      playTrack(index + 1);
-    }
-  });
+// Play/pause button
+playPauseBtn.addEventListener('click', () => {
+  const audio = allTracks[currentTrackIndex];
+  if(!audio) return;
+  
+  if(isPlaying) {
+    audio.pause();
+    playPauseBtn.textContent = '▶️ Play';
+    isPlaying = false;
+  } else {
+    audio.play();
+    playPauseBtn.textContent = '⏸️ Pause';
+    isPlaying = true;
+  }
 });
 
-// Allow user to click any unlocked track to play/pause
-trackDivs.forEach((trackDiv, index) => {
-  trackDiv.addEventListener('click', () => {
-    if(trackDiv.classList.contains('playing')) {
-      allTracks[index].pause();
-      trackDiv.classList.remove('playing');
-      isPlaying = false;
-    } else {
-      playTrack(index);
-    }
   });
 });
