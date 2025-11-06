@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miki's Mixtape Portal</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div id="container">
+  <h1>MIKI'S MIXTAPE PORTAL</h1>
+  
+  <!-- Miki Avatar -->
+  <div id="miki-avatar">
+    <img src="https://via.placeholder.com/150" alt="Miki">
+  </div>
+  
+  <!-- Portal -->
+  <div id="portal">
+    <img src="assets/crystalheavenportal-removebg-preview.png" alt="Portal">
+  </div>
+
+  <!-- Greeting -->
+  <p id="miki-greeting">Oi, rift-runners — the riffs await. Brew a bean to begin.</p>
+  
+  <!-- Unlock button -->
+  <button id="unlock-btn">Bean Unlock: Reveal the Riffs 🌀</button>
+  
+  <!-- Riddle Zone -->
+  <div id="riddle-zone" class="hidden">
+    <p id="riddle-question"></p>
+    <input type="text" id="riddle-answer" placeholder="Type your answer here">
+    <button id="riddle-submit">Submit</button>
+    <p id="riddle-feedback"></p>
+  </div>
+
+  <!-- Track List -->
+  <div id="tracks">
+    <div class="track hidden">
+      <div class="track-title">Miki's Lore</div>
+      <audio preload="none">
+        <source src="assets/MikisLore.mp3" type="audio/mpeg">
+      </audio>
+      <a href="assets/MikisLore.mp3" class="download-btn" download>Download</a>
+    </div>
+
+    <div class="track hidden">
+      <div class="track-title">Miki's Lore Edge-Version</div>
+      <audio preload="none">
+        <source src="assets/MikisLore2.mp3" type="audio/mpeg">
+      </audio>
+      <a href="assets/MikisLore2.mp3" class="download-btn" download>Download</a>
+    </div>
+
+    <div class="track hidden">
+      <div class="track-title">Not Of This World</div>
+      <audio preload="none">
+        <source src="assets/notw.mp3" type="audio/mpeg">
+      </audio>
+      <a href="assets/notw.mp3" class="download-btn" download>Download</a>
+    </div>
+
+    <div class="track hidden">
+      <div class="track-title">Not Of This World 2.0</div>
+      <audio preload="none">
+        <source src="assets/notwpt2.mp3" type="audio/mpeg">
+      </audio>
+      <a href="assets/notwpt2.mp3" class="download-btn" download>Download</a>
+    </div>
+
+    <div class="track hidden">
+      <div class="track-title">Cageless</div>
+      <audio preload="none">
+        <source src="assets/Mikisescape.mp3" type="audio/mpeg">
+      </audio>
+      <a href="assets/Mikisescape.mp3" class="download-btn" download>Download</a>
+    </div>
+  </div>
+
+  <footer>
+    *Free downloads for cafe kin only. Share the rift, not the spikes. © Miki's Road Riffs, Parallel Paris.*
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
