@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000;
+  color: #0ff;
+  text-align: center;
+}
+
+#container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2.5em;
+  color: #00ffff;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #8a2be2;
+}
+
+#miki-avatar img {
+  width: 150px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #0ff, 0 0 40px #8a2be2;
+  margin: 20px 0;
+}
+
+#portal img {
+  width: 200px;
+  animation: swirl 8s linear infinite;
+  box-shadow: 0 0 30px #0ff, 0 0 60px #8a2be2;
+}
+
+@keyframes swirl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+button {
+  background-color: #0ff;
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #8a2be2;
+}
+
+button:hover {
+  background-color: #8a2be2;
+  color: #fff;
+}
+
+#tracks {
+  margin-top: 30px;
+}
+
+.track {
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #0ff;
+  border-radius: 5px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.track.playing {
+  box-shadow: 0 0 20px #0ff, 0 0 40px #8a2be2;
+  transform: scale(1.05);
+}
+
+.track.hidden {
+  display: none;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 5px;
+  color: #0ff;
+  text-decoration: none;
+  border: 1px solid #0ff;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+.download-btn:hover {
+  background-color: #0ff;
+  color: #000;
+}
+
+#riddle-zone {
+  margin: 20px 0;
+}
+
+.hidden {
+  display: none;
+}
+
+input {
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #0ff;
+  background-color: #000;
+  color: #0ff;
+}
+
+input::placeholder {
+  color: #888;
+}
