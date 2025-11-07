@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Patrick Hand Laser Playlist with Progress & Info</title>
+<!-- Google Font Patrick Hand -->
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
+<style>
+  body {
+    margin: 0; font-family: 'Patrick Hand', cursive; background: #fff; color: #000; overflow: hidden; position: relative;
+  }
+  #songTitle {
+    position: absolute; top: 10px; width: 100%; text-align: center; font-size: 2em; font-weight: bold; z-index: 10;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  }
+  #songInfo {
+    position: absolute; top: 40px; width: 100%; text-align: center; font-size: 1.2em; z-index: 10; padding: 0 20px;
+    display: none; /* Hidden initially, reveal after selecting song */
+  }
+  /* Progress bar container with violet style */
+  .progress-container {
+    position: absolute; top: 80px; width: 90%; left: 50%; transform: translateX(-50%);
+    height: 10px; background: #ccc; border-radius: 5px; cursor: pointer; z-index: 10;
+  }
+  #progressBar {
+    height: 100%; width: 0%; background: violet; border-radius: 5px;
+  }
+  /* Playlist and search styling */
+  .search-container {
+    position: absolute; top: 100px; width: 100%; display: flex; justify-content: center; margin-bottom: 10px; z-index: 10;
+  }
+  #searchInput {
+    width: 300px; padding: 8px; font-family: 'Patrick Hand', cursive; font-size: 1em; border: 2px solid #000; border-radius: 10px;
+  }
+  .playlist {
+    position: absolute; top: 150px; left: 50%; transform: translateX(-50%); max-height: 200px; overflow-y: auto; width: 90%; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 10px; border: 2px solid #000; z-index: 10; font-family: 'Patrick Hand', cursive;
+  }
+  .song {
+    padding: 8px; margin: 4px 0; cursor: pointer; border-radius: 8px; transition: background 0.2s;
+  }
+  .song:hover { background: #eee; }
+  .song.active { background: #ddd; font-weight: bold; }
+
+  #laserWeb {
+    position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:80vmin; height:80vmin; z-index:1;
+  }
+  .laser-line {
+    position: absolute; bottom:0; left:50%; width:2px; height:50%; background:#000; transform-origin:bottom center; 
+    transform: rotate(var(--angle));
+    opacity:0.8; animation: scaleAnim var(--duration) ease-in-out infinite; --scale:1;
+  }
+  @keyframes scaleAnim {
+    0%,100% { transform: scaleY(var(--scale)); }
+    50% { transform: scaleY(1); }
+  }
+</style>
+</head>
+<body>
+
+<div id="songTitle">Click anywhere to start</div>
+<div id="songInfo"></div>
+
+<!-- Progress bar -->
+<div class="progress-container" id="progressContainer">
+  <div id="progressBar"></div>
+</div>
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search songs..." />
+</div>
+<div class="playlist" id="playlist"></div>
+<div id="laserWeb"></div>
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+const tracks = [
+  { title: "Miki's Lore", src: "https://x3nb.github.io/Soundcafe/members/Miki/MikisLore.mp3", info: "Escape with Miki and learn her Lore (3:47)" },
+  { title: "Miki's Lore Edge-Version", src: "assets/MikisLore2.mp3", info: "Escape with Miki and learn her Lore. (3:40)" },
+  { title: "Not Of This World", src: "assets/notw.mp3", info: "Miki's anthem; She wrote this one for all who have risen above and choose to live again in Christ. (1:49)" },
+  { title: "Not Of This World 2.0", src: "assets/notwpt2.mp3", info: "Miki's Anthem. (3:10)" },
+  { title: "Cageless", src: "assets/Mikisescape.mp3", info: "Contemplating no more, Miki Escapes! (4:36)" }
+];
+
+const playlistDiv = document.getElementById('playlist');
+const searchInput = document.getElementById('searchInput');
+const audio = document.getElementById('audio');
+const titleDiv = document.getElementById('songTitle');
+const infoDiv = document.getElementById('songInfo');
+const progressBar = document.getElementById('progressBar');
+const progressContainer = document.getElementById('progressContainer');
+const web = document.getElementById('laserWeb');
+
+let currentTrackIndex = -1;
+let isPlaying = false;
+let contextStarted = false;
+
+// Create laser web pattern
+function createLaserWeb(linesCount=60) {
+  for (let i=0; i<linesCount; i++) {
+    const line = document.createElement('div');
+    line.className='laser-line';
+    const angleDeg = (i / linesCount) * 360;
+    line.style.setProperty('--angle', `${angleDeg}deg`);
+    const duration = (Math.random()*2+2).toFixed(2);
+    line.style.setProperty('--duration', `${duration}s`);
+    line.style.setProperty('--scale', (Math.random()*0.5+0.75).toFixed(2));
+    web.appendChild(line);
+  }
+}
+
+function displayPlaylist() {
+  playlistDiv.innerHTML='';
+  const filterText = searchInput.value.toLowerCase();
+  tracks.forEach((track, index) => {
+    if (track.title.toLowerCase().includes(filterText)) {
+      const div = document.createElement('div');
+      div.className='song';
+      div.textContent=track.title;
+      div.addEventListener('click', ()=> {
+        currentTrackIndex=index; loadTrack(); if (isPlaying) { play(); }
+      });
+      playlistDiv.appendChild(div);
+    }
+  });
+}
+
+function loadTrack() {
+  if (currentTrackIndex>=0 && currentTrackIndex<tracks.length) {
+    audio.src=tracks[currentTrackIndex].src;
+    titleDiv.textContent=tracks[currentTrackIndex].title;
+    infoDiv.textContent=tracks[currentTrackIndex].info;
+    infoDiv.style.display='block'; // Show info after selecting
+    // highlight selected
+    document.querySelectorAll('.song').forEach((s,i)=>{
+      s.classList.toggle('active', i===currentTrackIndex);
+    });
+  }
+}
+
+function play() {
+  if (!contextStarted) {
+    if (window.AudioContext) {
+      window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = window.audioCtx.createMediaElementSource(audio);
+      window.analyser = window.audioCtx.createAnalyser();
+      source.connect(window.analyser);
+      window.analyser.connect(window.audioCtx.destination);
+      window.analyser.fftSize=256;
+      window.dataArray=new Uint8Array(window.analyser.fftSize);
+    }
+    contextStarted=true;
+  }
+  if (window.audioCtx && window.audioCtx.state==='suspended') {
+    window.audioCtx.resume();
+  }
+  audio.play();
+  isPlaying=true;
+  titleDiv.textContent='Now Playing: ' + tracks[currentTrackIndex].title;
+}
+
+function pause() {
+  audio.pause();
+  isPlaying=false;
+}
+
+// Update progress bar
+function updateProgress() {
+  if (audio.duration) {
+    const progressPercent = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = progressPercent + '%';
+  }
+  requestAnimationFrame(updateProgress);
+}
+
+// Seek on progress bar click
+document.getElementById('progressContainer').addEventListener('click', e => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const width = rect.width;
+  if (audio.duration) {
+    audio.currentTime = (clickX / width) * audio.duration;
+  }
+});
+
+// Event handlers
+document.getElementById('searchInput').addEventListener('input', () => {
+  displayPlaylist();
+});
+document.getElementById('playlist').addEventListener('click', (e) => {
+  if (e.target.classList.contains('song')) {
+    currentTrackIndex=Array.from(document.querySelectorAll('.song')).indexOf(e.target);
+    loadTrack(); if (isPlaying) { play(); }
+  }
+});
+document.getElementById('play').addEventListener('click', () => {
+  if (!isPlaying) {
+    if (window.audioCtx && window.audioCtx.state==='suspended') {
+      window.audioCtx.resume().then(play);
+    } else { play(); }
+  } else { pause(); }
+});
+document.getElementById('prev').addEventListener('click', () => {
+  if (currentTrackIndex>0){ currentTrackIndex--; loadTrack(); if (isPlaying) { play(); } }
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (currentTrackIndex<tracks.length-1){ currentTrackIndex++; loadTrack(); if (isPlaying) { play(); } }
+});
+audio.addEventListener('ended', () => {
+  if (currentTrackIndex<tracks.length-1){ currentTrackIndex++; loadTrack(); if (isPlaying) { play(); } }
+});
+
+// Initialize
+createLaserWeb(60);
+displayPlaylist();
+
+// Animate web pulsing with music
+function animate() {
+  if (window.analyser) {
+    window.analyser.getByteTimeDomainData(window.dataArray);
+    let sum=0;
+    for(let i=0;i<window.dataArray.length;i++) {
+      let v=(window.dataArray[i]-128)/128;
+      sum+=v*v;
+    }
+    let rms=Math.sqrt(sum/window.dataArray.length);
+    web.style.transform=`translate(-50%, -50%) scale(${1+0.5*rms})`;
+    document.querySelectorAll('.laser-line').forEach(line => {
+      line.style.setProperty('--scale', (0.75+0.75*rms).toFixed(2));
+    });
+  }
+  requestAnimationFrame(animate);
+}
+
+// Start animation on first user click
+document.body.addEventListener('click', () => {
+  if (window.audioCtx && window.audioCtx.state==='suspended') {
+    window.audioCtx.resume();
+  }
+  animate();
+});
+
+// Update progress bar continuously
+updateProgress();
+
+</script>
+</body>
+</html>
