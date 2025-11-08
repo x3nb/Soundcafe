@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legendary Tea Quest</title>
+<!-- Google Font similar to Applepie -->
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet" />
+<style>
+  /* Reset and base styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Indie Flower', cursive;
+    background: linear-gradient(to right, #fcdab7, #f7e8c8);
+    color: #333;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+  }
+
+  /* Mailbox Button */
+  .mailbox {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff6f61;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2em;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    transition: background 0.3s;
+  }
+
+  .mailbox:hover {
+    background: #ff3b2e;
+  }
+
+  /* Sections (Floors) */
+  section {
+    height: 100vh;
+    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  /* Navigation Buttons (Elevator) */
+  .navigation {
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 999;
+  }
+
+  button.floor-btn {
+    padding: 8px 12px;
+    font-family: 'Indie Flower', cursive;
+    background: #ffd700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.2s;
+    /* Glitch effect on hover */
+    position: relative;
+    overflow: hidden;
+  }
+
+  button.floor-btn:hover {
+    background: #ffcc00;
+    animation: glitch 0.3s infinite;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+
+  /* Glitchy Button Effect */
+  .glitch-btn {
+    position: relative;
+    display: inline-block;
+    padding: 15px 30px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.5em;
+    background: #8e44ad;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .glitch-btn:hover {
+    animation: glitchy 0.3s infinite;
+  }
+
+  @keyframes glitchy {
+    0% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 0);
+    }
+    40% {
+      transform: translate(2px, 0);
+    }
+    60% {
+      transform: translate(-2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+    100% {
+      transform: translate(0);
+    }
+  }
+
+  /* Modal for the mailbox letter */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  .modal-content {
+    background-color: #fff8dc;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 700px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2em;
+    position: relative;
+  }
+
+  .close {
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2em;
+    cursor: pointer;
+  }
+
+  /* Heading styles for sections */
+  h2 {
+    font-family: 'Indie Flower', cursive;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Mailbox Greeting Button -->
+<div class="mailbox" id="mailboxBtn" title="Click for greeting!">
+  📬 Mailbox
+</div>
+
+<!-- Navigation (Elevator) -->
+<div class="navigation">
+  <button class="floor-btn" data-target="#intro">Introduction</button>
+  <button class="floor-btn" data-target="#earl">Earl's TeaRoom</button>
+  <button class="floor-btn" data-target="#quests">Quests</button>
+  <button class="floor-btn" data-target="#games">Games</button>
+  <button class="floor-btn" data-target="#academy">Academy</button>
+  <button class="floor-btn" data-target="#friends">Friends</button>
+  <button class="floor-btn" data-target="#paris">Paris</button>
+  <button class="floor-btn" data-target="#japan">Japan</button>
+  <button class="floor-btn" data-target="#mission">Mission</button>
+</div>
+
+<!-- Sections -->
+<section id="intro">
+  <h2>Introduction</h2>
+  Welcome to your legendary tea quest adventures! Embark on a journey filled with mysteries, friends, and fun.
+</section>
+
+<section id="earl">
+  <h2>Earl's TeaRoom</h2>
+  Sip some legendary brews and relax in Earl's cozy TeaRoom.
+</section>
+
+<section id="quests">
+  <h2>Quests</h2>
+  Dive into epic quests and unlock hidden secrets!
+</section>
+
+<section id="games">
+  <h2>Games</h2>
+  Play fun mini-games and challenge your friends.
+</section>
+
+<section id="academy">
+  <h2>Academy</h2>
+  Learn the secrets of the legendary tea masters.
+</section>
+
+<section id="friends">
+  <h2>Friends</h2>
+  Meet your legendary friends and share adventures.
+</section>
+
+<section id="paris">
+  <h2>Paris</h2>
+  Discover the charm of Parisian tea culture.
+</section>
+
+<section id="japan">
+  <h2>Japan</h2>
+  Experience the serene tea ceremonies of Japan.
+</section>
+
+<section id="mission">
+  <h2>Mission</h2>
+  Complete your legendary mission and become a tea hero!
+</section>
+
+<!-- Modal for greeting letter -->
+<div id="letterModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2>Greetings, Legendary Friends!</h2>
+    <p>Thank you for accepting the invitation to embark on this epic tea quest adventure. Enjoy your journey, explore new realms, and make legendary memories!</p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Smooth scroll to sections
+  document.querySelectorAll('.floor-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.querySelector(btn.dataset.target);
+      target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Mailbox modal logic
+  const mailboxBtn = document.getElementById('mailboxBtn');
+  const modal = document.getElementById('letterModal');
+  const closeModal = document.getElementById('closeModal');
+
+  mailboxBtn.onclick = () => {
+    modal.style.display = 'block';
+  };
+
+  closeModal.onclick = () => {
+    modal.style.display = 'none';
+  };
+
+  window.onclick = (event) => {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+</script>
+
+</body>
+</html>
