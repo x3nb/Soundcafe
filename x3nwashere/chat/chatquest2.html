@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stella's Cafe: The Oddity Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne+Tactile&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  
+  <style>
+  body {
+    font-family: 'Georgia', serif;
+    background-color: #f7f4ef;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  #chat {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    height: 70vh;
+  }
+
+  .message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .message.user {
+    justify-content: flex-end;
+  }
+
+  .message img.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 10px;
+    object-fit: cover;
+  }
+
+  .message.miss-poppins img.avatar {
+    order: 0;
+  }
+
+  .message.user img.avatar {
+    order: 1;
+  }
+
+  .bubble {
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    line-height: 1.5;
+  }
+
+  .message.user .bubble {
+    background-color: #d9f2e3;
+    border: 1px solid #bde0c2;
+  }
+
+  .message.miss-poppins .bubble {
+    background-color: #f4e8ff;
+    border: 1px solid #d1b3ff;
+  }
+
+  #inputArea {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  #userInput {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Georgia', serif;
+  }
+
+  #sendButton {
+    background-color: #b27de0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+  }
+
+  #sendButton:hover {
+    background-color: #a469d4;
+  }
+
+  /* Typing animation */
+  .typing-dots {
+    display: inline-block;
+    width: 1em;
+    text-align: left;
+  }
+  .typing-dots::after {
+    content: "...";
+    animation: dots 1s steps(3, end) infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    40% { color: black; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    60% { text-shadow: .25em 0 0 black, .5em 0 0 rgba(0,0,0,0); }
+    80%, 100% { text-shadow: .25em 0 0 black, .5em 0 0 black; }
+  }
+</style>
+
+<div id="chat">
+  <div class="message miss-poppins">
+    <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" class="avatar" alt="Miss Poppins Umbrella">
+    <div class="bubble">Good day, dearie! Miss Poppins here — ready to pour a bit of calm and courage into your cup?</div>
+  </div>
+</div>
+
+<div id="inputArea">
+  <input id="userInput" type="text" placeholder="Type here, dearie…" />
+  <button id="sendButton" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+const userInput = document.getElementById("userInput");
+
+// Track current quest level
+let questLevel = 0;
+
+// Miss Poppins’ Proper Replies
+const responses = {
+  "hello": "Well, hello there, dear heart! How lovely of you to drop by. Let’s pour a bit of peace into the moment and see the day through calm and cheerful eyes.",
+  "hi": "Cheerio, love! You’ve arrived right on divine time. Let’s settle in with a proper cup and a touch of serenity — both do wonders for one’s outlook.",
+
+  "tea": "Ah, tea — the most proper companion for reflection! Now then, which shall we discuss today?<br><br>🍂 <strong>black tea</strong><br>🍵 <strong>matcha</strong><br>🌰 <strong>chai</strong><br>🍋 <strong>earl grey</strong><br><br>Simply type the one you fancy, dear.",
+  "black tea": "Black tea — bold, comforting, and ever so proper. It reminds one to stand tall and speak truth, even when life gets a bit draughty.",
+  "matcha": "Matcha — a green marvel! Earthy and elegant, it whispers, ‘Steady now — peace and focus are your birthright.’",
+  "chai": "Chai — the merry dance of spice and sweetness! It warms the heart and cheers the soul — a hug in a cup, if ever there was one.",
+  "earl grey": "Earl Grey — fragrant and refined. A cup fit for clarity and conversation, kissed by bergamot and British charm.",
+
+  "chat": "A bit of a chin-wag, is it? Splendid! I do adore a proper conversation — thoughtful, kind, and sprinkled with laughter. What shall we talk about today — courage, calm, or kindness?",
+
+  // --- Quest ---
+  "quest": "The wind is just right, dearie! Let’s begin your Proper Quest for Calm & Courage.<br><br><strong>Level 1 – The Cup of Calm:</strong><br>Breathe deeply; take three mindful sips of tea or water and notice each one.<br><br>Type <em>level 1 complete</em> when you’re ready to proceed.",
+  "start quest": "Splendid! The Quest begins at once — <strong>Level 1: The Cup of Calm.</strong> Breathe deeply now; the day’s chatter fades as stillness settles. Your task: three mindful sips of tea (or water).",
+
+  "level 1 complete": "Splendidly done! You’ve found stillness in simplicity.<br><br><em>Reflection:</em> 'Peace spoken within becomes peace around.'<br><em>Blessing:</em> May quiet grace follow your every step.<br><br>Next up, <strong>Level 2: The Brew of Bravery.</strong> Take one small bold action today, and do it with grace.",
+  "level 2 complete": "Bravo! You’ve shown courage with charm.<br><br><em>Reflection:</em> 'Faith is fear turned the right way up.'<br><em>Blessing:</em> May you always trust your own splendid strength.<br><br>Now then — <strong>Level 3: The Teapot of Truth.</strong> Write one belief that feels heavy, and one that feels light. Keep the light one, let the heavy drift away.",
+  "level 3 complete": "Wonderful work! Honesty suits you, dear.<br><br><em>Reflection:</em> 'When the soul is tidy, truth shines like polished silver.'<br><em>Blessing:</em> May clarity fill your cup and spill over with ease.<br><br>Next, <strong>Level 4: The Kettle of Kindness.</strong> Today, share one thoughtful act — with yourself or another soul.",
+  "level 4 complete": "How very sweet of you! Kindness becomes you.<br><br><em>Reflection:</em> 'What we give returns with joyful insistence.'<br><em>Blessing:</em> May your kindness ripple wider than you’ll ever know.<br><br>Finally, <strong>Level 5: The Brew of Becoming.</strong> Reflect on all you’ve learned and choose one small ritual to keep the peace flowing.",
+  "level 5 complete": "Splendid! You’ve brewed brilliance — calm, courage, kindness, and clarity all in one pot.<br><br><em>Reflection:</em> 'You are in tune with divine order — a perfect note in life’s grand melody.'<br><em>Blessing:</em> May your steps be sure, your tea warm, and your heart forever light.",
+
+  "thank you": "You’re ever so welcome, dearie. Gratitude is the finest blend of all — warms the heart and sweetens the soul!",
+  "goodbye": "Farewell for now, my dear! May your steps be sure, your tea be warm, and your thoughts ever so tidy.",
+  "default": "Spit-spot! Let’s carry on — you may <em>start quest</em>, simply type <em>quest</em>, or choose a tea to begin."
+};
+
+// Send message with typing effect
+function sendMessage() {
+  const text = userInput.value.trim().toLowerCase();
+  if (!text) return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "message user";
+  userMsg.innerHTML = `
+    <div class="bubble">${userInput.value}</div>
+    <img src="https://cdn-icons-png.flaticon.com/512/744/744922.png" class="avatar" alt="Tea Cup Avatar">
+  `;
+  chat.appendChild(userMsg);
+
+  const typingMsg = document.createElement("div");
+  typingMsg.className = "message miss-poppins";
+  typingMsg.innerHTML = `
+    <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" class="avatar" alt="Miss Poppins Umbrella">
+    <div class="bubble"><span class="typing-dots"></span></div>
+  `;
+  chat.appendChild(typingMsg);
+  chat.scrollTop = chat.scrollHeight;
+
+  const reply = responses[text] || responses["default"];
+
+  setTimeout(() => {
+    typingMsg.querySelector(".bubble").innerHTML = reply;
+    chat.scrollTop = chat.scrollHeight;
+  }, 1300); // 1.3 second pause before response
+
+  userInput.value = "";
+}
+
+// Allow Enter key to send
+userInput.addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+</script>
+</body>
+</html>
