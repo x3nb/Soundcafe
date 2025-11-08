@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Café Adventure Playlist</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    color: #fff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Background Gradient */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #1a0033, #4b0082, #2e0854, #191970);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    z-index: -2;
+  }
+
+  /* Floating Bubbles */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 50px 50px;
+    animation: bubbleFloat 15s linear infinite;
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes bubbleFloat {
+    from { background-position: 0 0; }
+    to { background-position: 0 -1000px; }
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .player-container {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+  }
+
+  .avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.4);
+    margin-bottom: 20px;
+  }
+
+  .audio-player {
+    width: 80%;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  }
+
+  .track-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .track-list {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+  }
+
+  .track-list h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .track-item {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .track-item:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .track-item.active {
+    background: rgba(255,255,255,0.4);
+    font-weight: bold;
+  }
+
+  audio {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #ddd;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="player-container">
+      <header>☕ Café Adventure Playlist 🎶</header>
+      <div class="avatar">
+        <img src="https://via.placeholder.com/120" alt="Avatar">
+      </div>
+      <div class="audio-player">
+        <div class="track-title" id="trackTitle">Select a track to play</div>
+        <audio id="audio" controls></audio>
+        <footer>✨ Parisian nights, Café secrets…</footer>
+      </div>
+    </div>
+
+    <div class="track-list" id="trackList">
+      <h3>Track List</h3>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song1.mp3">Chimera Escape</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song2.mp3">Yeshua’s Café</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song3.mp3">Coffee Adventure</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song4.mp3">Mystery Lab</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song5.mp3">Parisian Tango</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song6.mp3">Gnostic Lounge</div>
+      <div class="track-item" data-src="https://github.com/x3nb/Soundcafe/blob/1ac3d7195241577f99db392446d3c0b7f30f4dc2/starlightcafe.mp3">Starlight Cafe</div>
+      <div class="track-item" data-src="https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/song8.mp3">Whispers of Steam</div>
+    </div>
+  </div>
+
+<script>
+  const audio = document.getElementById('audio');
+  const trackTitle = document.getElementById('trackTitle');
+  const trackItems = document.querySelectorAll('.track-item');
+  let currentTrackIndex = -1;
+
+  function playTrack(index) {
+    if (index < 0) index = trackItems.length - 1;
+    if (index >= trackItems.length) index = 0;
+    currentTrackIndex = index;
+
+    const track = trackItems[index];
+    const src = track.dataset.src;
+    audio.src = src;
+    trackTitle.textContent = track.textContent;
+    audio.play();
+
+    trackItems.forEach(t => t.classList.remove('active'));
+    track.classList.add('active');
+  }
+
+  trackItems.forEach((item, index) => {
+    item.addEventListener('click', () => playTrack(index));
+  });
+
+  audio.addEventListener('ended', () => playTrack(currentTrackIndex + 1));
+</script>
+</body>
+</html>
