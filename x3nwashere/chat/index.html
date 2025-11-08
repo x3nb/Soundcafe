@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Stellar's Cafe Chat</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+<!-- For a more cyberpunk vibe, include a neon-inspired font (optional) -->
+<!-- <link href="https://fonts.googleapis.com/css2?family=Neon+Tubes&display=swap" rel="stylesheet" /> -->
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #222; /* darker background to match the vibe */
+    display: flex; justify-content: center; align-items: center; height: 100vh;
+    margin: 0;
+  }
+
+  #chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 520px;
+  }
+
+  /* Banner style */
+  #banner {
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f8e1f4; /* soft pinkish-purple */
+    background: linear-gradient(135deg, #6b4f8b, #b668a7); /* dreamy purple to rose gradient */
+    box-shadow: 0 0 15px rgba(182, 104, 167, 0.7), inset 0 0 10px rgba(182, 104, 167, 0.5);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+  }
+
+  #chatbox {
+    width: 100%;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    background: #fff;
+  }
+  #messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Message styles */
+  .message {
+    display: flex;
+    margin: 8px 0;
+  }
+  /* Agent on left, User on right */
+  .message.agent {
+    justify-content: flex-start;
+  }
+  .message.user {
+    justify-content: flex-end;
+  }
+  /* Avatar styles */
+  .avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  /* Bubble styles */
+  .bubble {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  /* Agent bubble - on left */
+  .message.agent .bubble {
+    background: #fff;
+    color: #222;
+    margin-left: 8px;
+  }
+  /* User bubble - on right */
+  .message.user .bubble {
+    background-color: #8a2be2;
+    color: #fff;
+    margin-right: 8px;
+  }
+
+  /* Input area styling */
+  #input-area {
+    display: flex;
+    padding: 10px;
+    background: #f0f0f0;
+  }
+  #user-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  #send-btn {
+    padding: 8px 14px;
+    margin-left: 8px;
+    background: #8a2be2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #send-btn:hover {
+    background: #7a1be1;
+  }
+</style>
+</head>
+<body>
+<div id="chat-container">
+  <!-- Banner -->
+  <div id="banner">Stellar's Cafe Chat</div>
+  
+  <!-- Chatbox -->
+  <div id="chatbox">
+    <div id="messages"></div>
+    <div id="input-area">
+      <input type="text" id="user-input" placeholder="Ask me about teas..." />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const messagesDiv = document.getElementById('messages');
+
+// Avatars
+const ladyAvatar = "https://3society.neocities.org/ICON.CHAT/emoteacatgirl000.jpeg";
+const userAvatar = "https://3society.neocities.org/ICON.CHAT/icons8-cat-80.png";
+
+// Responses with personality, humor, and relatability
+const responses = {
+  "hello": "Hey there! Ready to sip some serenity in a cup? Or just here to pretend you're relaxing? I get it, life’s a hectic brew.",
+  "hi": "Hi! Looking for a little tea therapy? Trust me, a good cup can fix almost anything. Well, almost.",
+  "good morning": "Morning! Or evening, or whenever you need a break. Here’s some tea to make your day (or night) better.",
+  "good evening": "Good evening! Time to unwind with a brew that’s as refined as your taste buds—and as relaxed as you wish to be.",
+  "tea": "Ah, tea—the elixir of the gods and the cure for stress. Ask me about the best brews, weird rituals, or how to make it just right.",
+  "black tea": "Black tea—bold, robust, and perfect for pretending you’re sophisticated while binge-watching your favorite show.",
+  "matcha": "Matcha—earthy, energizing, and so fancy it’s basically a green velvet robe for your soul.",
+  "bergamot": "Bergamot in Earl Grey—like a citrusy hug from the Queen herself, if she were into tea that is.",
+  "boba": "Boba pearls—chewy little happiness bombs. Sip, chew, repeat. It’s the snack that keeps on giving.",
+  "chai": "Chai—spicy, warming, and just the thing to turn your stress into a distant memory.",
+  "how was your day": "My day? Oh, just brewing up some wisdom and a little sass. How about you? Need a tea to chill out?",
+  "tell me more": "More? Well, did you know that the perfect steeping time is like a good joke—timing is everything. Want tips?",
+  "default": "Ask me anything about tea, or tell me how stressed you are—either way, I’ve got something calming for you."
+};
+
+const responsesOrder = [
+  "how was your day",
+  "tell me more",
+  "black tea",
+  "matcha",
+  "bergamot",
+  "boba",
+  "chai",
+  "hello",
+  "hi",
+  "good morning",
+  "good evening",
+  "tea",
+  "default"
+];
+
+function getResponse(inputText) {
+  const lower = inputText.toLowerCase();
+  for (const key of responsesOrder) {
+    if (lower.includes(key)) {
+      return responses[key];
+    }
+  }
+  return responses["default"];
+}
+
+/// Function to add messages
+function addMessage(sender, text) {
+  const msg = document.createElement('div');
+  if (sender === 'You') {
+    msg.className = 'message user'; // right
+  } else {
+    msg.className = 'message agent'; // left
+  }
+
+  const avatar = document.createElement('img');
+  avatar.className = 'avatar';
+  avatar.src = sender === 'You' ? userAvatar : ladyAvatar;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = text;
+
+  if (sender === 'You') {
+    // user message: bubble on right
+    msg.appendChild(bubble);
+    msg.appendChild(avatar);
+  } else {
+    // agent message: avatar on left
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+  }
+
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// On load, agent greets with personality, humor, and warmth
+window.onload = () => {
+  addMessage('Lady', "Greetings, tea lover! I am the ultimate teasnob—here to guide you through the refined world of teas. Ask me anything about the most exquisite brews. Remember, life is too short for bad tea, so choose wisely, sip slowly, and relax—you've earned it.");
+};
+  
+// Send message
+const inputBox = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+
+sendBtn.onclick = () => {
+  const text = inputBox.value.trim();
+  if (!text) return;
+  addMessage('You', text);
+  const reply = getResponse(text);
+  addMessage('Lady', reply);
+  inputBox.value = '';
+};
+</script>
+</body>
+</html>
