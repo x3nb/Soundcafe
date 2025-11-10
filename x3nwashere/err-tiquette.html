@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Miss Mischief’s Tea Parlour ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Square+Peg&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  background: radial-gradient(circle at center, #1a1a2e, #16213e, #0f3460);
+  color: #f0e6ff;
+  overflow: hidden;
+  transition: background 2s ease; /* For dynamic room transition */
+}
+
+/* Next Room Styles (Initially Hidden) */
+.next-room {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #2a1b3d, #3d2b5a, #5a3d7a); /* New chaotic, starry background */
+  transition: opacity 2s ease;
+  z-index: 20;
+}
+.next-room.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.next-room .floating-teacup {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 4C18 4 6 16 2 30h60C58 16 46 4 32 4zM32 30v18M32 48a6 6 0 0 0 0 12"/></svg>') no-repeat center;
+  background-size: contain;
+  animation: float 3s ease-in-out infinite;
+  cursor: pointer;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Layout */
+.parlour-container {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 4rem;
+  transition: opacity 2s ease; /* For fading out */
+}
+
+/* Rain */
+.rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.raindrop {
+  position: absolute;
+  top: -10px;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, #b790ff, #cdb4ff);
+  border-radius: 50%;
+  animation: fall linear infinite;
+  box-shadow: 0 0 2px #b790ff;
+}
+@keyframes fall {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(20px) translateY(100vh);
+  }
+}
+
+/* Umbrella */
+.umbrella-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  z-index: 10;
+}
+.umbrella-button svg {
+  width: 60px;
+  height: 80px;
+  fill: none;
+  stroke: #b790ff;
+  stroke-width: 2;
+  transition: transform 0.8s ease, width 0.8s ease, opacity 0.4s ease;
+}
+.umbrella-button.glow svg {
+  filter: drop-shadow(0 0 10px #cdb4ff);
+}
+
+/* Pulse while idle */
+@keyframes pulse {
+  0%,100%{filter: drop-shadow(0 0 5px #b790ff);}
+  50%{filter: drop-shadow(0 0 15px #cdb4ff);}
+}
+.umbrella-button {
+  animation: pulse 4s ease-in-out infinite;
+}
+
+/* Shimmer line (magic rise) */
+.shimmer {
+  position: absolute;
+  left: 50%;
+  bottom: 15px;
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to top, rgba(183,144,255,0.2), rgba(255,255,255,0.8));
+  border-radius: 2px;
+  transform: translateX(-50%) scaleY(0);
+  opacity: 0;
+}
+
+/* Music Control */
+.music-control {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #f0e6ff;
+  font-size: 0.9rem;
+  z-index: 25;
+}
+
+/* Chat */
+.chat-container {
+  position: absolute;
+  bottom: 130px;
+  width: 320px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 1.2rem;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  box-shadow: 0 0 20px rgba(183,144,255,0.4);
+  z-index: 15;
+  max-height: 300px;
+  overflow: hidden; /* Hide overflow for scrolling effect */
+}
+.chat-container.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.chat-header {
+  font-family: 'Courier New', monospace; /* Typewriter detective font */
+  font-weight: 400;
+  font-size: 1.925rem; /* Increased for better laptop viewing */
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #b790ff; /* Purple for thematic detective vibe */
+}
+.chat-messages {
+  position: relative;
+  height: 200px; /* Fixed height for scrolling */
+  overflow-y: auto; /* Add manual scrollbar for reading */
+  margin-bottom: 0.8rem;
+}
+.scrolling-text {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  animation: scrollUp 15s linear infinite; /* Gentle upward glide */
+}
+.chat-container:hover .scrolling-text {
+  animation-play-state: paused; /* Pause on hover */
+}
+@keyframes scrollUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); } /* Scrolls to reveal new messages */
+}
+.chat-message {
+  font-family: 'Courier New', monospace; /* Typewriter detective font */
+  font-size: 1.425rem; /* Increased for better readability */
+  line-height: 1.5;
+  margin-bottom: 1rem; /* Space between messages */
+  color: #b790ff; /* Purple for thematic detective vibe */
+  display: block;
+}
+.chat-message.user {
+  text-align: right;
+  color: #cdb4ff;
+}
+.chat-input {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Cinzel', serif; /* Keep Cinzel for input readability */
+  background-color: rgba(255,255,255,0.15);
+  color: #fff;
+  outline: none;
+}
+.chat-input::placeholder {
+  color: #d0c1f7;
+}
+
+/* Quiz Buttons */
+.quiz-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.quiz-button {
+  background: rgba(183,144,255,0.2);
+  border: 1px solid #b790ff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #b790ff; /* Purple to match */
+  font-family: 'Courier New', monospace; /* Consistent typewriter font */
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+.quiz-button:hover {
+  background: rgba(183,144,255,0.4);
+}
+.quiz-button.correct {
+  background: #4caf50;
+}
+.quiz-button.wrong {
+  background: #f44336;
+}
+</style>
+</head>
+<body>
+<audio id="backgroundMusic" loop volume="0.2">
+  <source src="https://www.freesound.org/data/previews/316/316847_5123451-lq.mp3" type="audio/mpeg"> <!-- Replace with your chime file if needed -->
+  Your browser does not support the audio element.
+</audio>
+<button id="musicControl" class="music-control">🔊 Mute Music</button>
+
+<div id="rainContainer" class="rain-container"></div>
+<div id="nextRoom" class="next-room">
+  <!-- Next Room Content: Wonder Party -->
+  <div class="floating-teacup" style="top: 20%; left: 10%;" onclick="teacupClick()"></div>
+  <div class="floating-teacup" style="top: 50%; left: 80%;" onclick="teacupClick()"></div>
+  <div class="floating-teacup" style="top: 70%; left: 50%;" onclick="teacupClick()"></div>
+  <div class="parlour-container" style="z-index: 25;">
+    <div id="nextChatContainer" class="chat-container active">
+      <div class="chat-header">Miss Mischief's Wonder Party</div>
+      <div class="chat-messages">
+        <div class="scrolling-text" id="nextScrollingText">
+          <div class="chat-message">Welcome to the chaos, dear! Now that you're here, let's blow up some teacups and wonder at the stars. What's your first wild idea? ✨💥</div>
+        </div>
+      </div>
+      <input class="chat-input" placeholder="Share your mischief..." />
+    </div>
+  </div>
+</div>
+<div id="mainScene" class="parlour-container">
+  <!-- Chat -->
+  <div id="chatContainer" class="chat-container">
+    <div class="chat-header">Miss Mischief</div>
+    <div class="chat-messages">
+      <div class="scrolling-text" id="scrollingText">
+        <div class="chat-message">“Oh, hello there, you curious wanderer! I'm Miss Mischief – a dash of proper tea, a sprinkle of wonder, and a rebellious kick. Fancy joining me for a tea party that's equal parts etiquette lesson and madcap adventure? Let's chat a bit first, shall we?” ☕✨</div>
+      </div>
+    </div>
+    <input id="chatInput" class="chat-input" placeholder="Type your response here..." />
+  </div>
+
+  <!-- Umbrella -->
+  <button id="umbrellaButton" class="umbrella-button glow">
+    <svg id="umbrellaClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <path d="M32 2C28 10 25 18 25 26h14C39 18 36 10 32 2zM32 26v22M32 48a6 6 0 0 0 0 12" />
+    </svg>
+    <svg id="umbrellaOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="display:none;">
+      <path d="M32 4C18 4 6 16 2 30h60C58 16 46 4 32 4zM32 30v18M32 48a6 6 0 0 0 0 12" />
+      <path d="M4 30C12 18 24 12 32 12s20 6 28 18" stroke-linecap="round" />
+    </svg>
+    <div id="shimmer" class="shimmer"></div>
+  </button>
+</div>
+
+<script>
+const umbrellaBtn = document.getElementById('umbrellaButton');
+const chat = document.getElementById('chatContainer');
+const umbrellaClosed = document.getElementById('umbrellaClosed');
+const umbrellaOpen = document.getElementById('umbrellaOpen');
+const shimmer = document.getElementById('shimmer');
+const rainContainer = document.getElementById('rainContainer');
+const scrollingText = document.getElementById('scrollingText');
+const chatInput = document.getElementById('chatInput');
+const mainScene = document.getElementById('mainScene');
+const nextRoom = document.getElementById('nextRoom');
+const nextScrollingText = document.getElementById('nextScrollingText');
+const backgroundMusic = document.getElementById('backgroundMusic');
+const musicControl = document.getElementById('musicControl');
+let isOpen = false;
+let conversationStep = 0; // Track the interview progress
+let isMuted = false;
+let lessonStep = 0; // Track lesson progress
+
+// Auto-play music on load (may be blocked by browser)
+backgroundMusic.volume = 0.2;
+backgroundMusic.play().catch(() => {
+  // Handle autoplay block
+});
+
+// Music control
+musicControl.addEventListener('click', () => {
+  if (isMuted) {
+    backgroundMusic.play();
+    musicControl.textContent = '🔊 Mute Music';
+  } else {
+    backgroundMusic.pause();
+    musicControl.textContent = '🔇 Unmute Music';
+  }
+  isMuted = !isMuted;
+});
+
+function startRain() {
+  for (let i = 0; i < 30; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'raindrop';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.animationDelay = Math.random() * 4 + 's';
+    drop.style.animationDuration = (Math.random() * 2 + 4) + 's';
+    rainContainer.appendChild(drop);
+  }
+}
+
+function stopRain() {
+  rainContainer.innerHTML = '';
+}
+
+function appendMessage(text, isUser = false, container = scrollingText) {
+  const msg = document.createElement('div');
+  msg.className = 'chat-message' + (isUser ? ' user' : '');
+  msg.textContent = text;
+  container.appendChild(msg);
+  // Reset animation to start scrolling again
+  container.style.animation = 'none';
+  setTimeout(() => {
+    container.style.animation = 'scrollUp 15s linear infinite';
+  }, 10);
+}
+
+function handleResponse(response) {
+  appendMessage(response, true); // User's message
+  chatInput.value = ''; // Clear input
+
+  if (conversationStep === 0) {
+    // After initial invite, ask first question (Celia Wander-inspired curiosity)
+    setTimeout(() => {
+      appendMessage("“Splendid! Now, tell me, dear – what’s the most wondrous thing you’ve ever stumbled upon, like a rabbit hole or a talking teacup? I’m all ears (and a bit of mischief)!”");
+      conversationStep = 1;
+    }, 1000);
+  } else if (conversationStep === 1) {
+    // After first response, ask second question (Miss Primrose-inspired wit)
+    setTimeout(() => {
+      appendMessage("“How delightfully curious! Etiquette tip from me: Always stir your tea clockwise for good luck, unless you’re feeling rebellious. What’s your favorite way to break the rules at a proper gathering?”");
+      conversationStep = 2;
+    }, 1000);
+  } else if (conversationStep === 2) {
+    // Third question (Kira Tank doozy)
+    if (response.toLowerCase().trim() === 'yes') {
+      setTimeout(() => {
+        appendMessage("“YES? Oh, you magnificent troublemaker! Let’s dive in – hold onto your hat!”");
+        // Trigger dynamic transition to next room
+        setTimeout(() => {
+          mainScene.style.opacity = '0';
+          nextRoom.classList.add('active');
+          startLesson1();
+        }, 1500);
+      }, 1000);
+    } else {
+      // If not YES, prompt again or loop
+      setTimeout(() => {
+        appendMessage
