@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Chez-Xen</title>
+<style>
+  :root{
+    --violet:#7c3aed;
+    --hotpink:#ff77a9;
+    --glass: rgba(48,0,48,0.55);
+    --bg-dark: #05020a;
+  }
+  html,body { height:100%; margin:0; font-family: 'Cinzel', serif; background: radial-gradient(circle at 30% 20%, #0b0b12 10%, #000 60%), var(--bg-dark); color:#eee; scroll-behavior:smooth; }
+  a { color:inherit; text-decoration:none; }
+
+  /* TV overlay (initial B&W effect) */
+  .tv-overlay {
+    position:fixed; inset:0;
+    background: rgba(255,255,255,0.18);
+    filter: grayscale(100%) contrast(140%) brightness(.86);
+    pointer-events:none;
+    z-index:9999;
+    transition: opacity .9s ease;
+  }
+  body.alive .tv-overlay { opacity:0; display:none; }
+
+  /* Top anchor (for back-to-web) */
+  #top { position:relative; height:0; }
+
+  /* ORB WEB HEADER */
+  .web-header {
+    position:relative;
+    height:66vh;
+    min-height:420px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* canvas for web threads */
+  canvas#webCanvas {
+    position:absolute; inset:0; width:100%; height:100%; z-index:1;
+  }
+
+  /* sparkles generic */
+  .sparkle {
+    position:fixed;
+    width:6px; height:6px;
+    background: linear-gradient(180deg,#fff, #ffd3ff);
+    border-radius:50%;
+    opacity:0;
+    pointer-events:none;
+    z-index:20;
+    filter: drop-shadow(0 0 6px rgba(255,120,200,0.4));
+  }
+
+  /* resting sparkle style (brighter) */
+  .resting {
+    width:8px; height:8px;
+    background: radial-gradient(circle at 30% 30%, #fff, var(--hotpink));
+    opacity:0;
+    transform: translate(-50%,-50%) scale(.6);
+    transition: opacity .6s ease, transform .6s ease;
+    z-index:6;
+    pointer-events:none;
+    filter: drop-shadow(0 0 10px rgba(255,120,200,0.6));
+  }
+
+  /* Room node buttons (small circles on the web) */
+  .node {
+    position:absolute;
+    z-index:8;
+    width:64px; height:64px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(255,119,169,0.12));
+    border:2px solid rgba(124,58,237,0.7);
+    color:#ddd; font-weight:700; font-size:0.92rem;
+    text-align:center;
+    transition: transform .22s ease, box-shadow .22s ease, filter .35s ease, background .35s ease;
+    filter: grayscale(100%) contrast(130%) brightness(.85);
+  }
+  /* when hovered, node lights up (even while TV overlay exists) */
+  .node:hover{
+    filter:none;
+    transform:scale(1.18);
+    box-shadow: 0 0 22px var(--violet), 0 0 36px var(--hotpink);
+    background: linear-gradient(135deg,var(--violet),var(--hotpink));
+    color:#fff;
+  }
+
+  /* spider */
+  #spider {
+    position:absolute; z-index:12; width:40px; height:40px; font-size:28px;
+    transform: translate(-50%,-50%);
+    transition: transform 900ms cubic-bezier(.2,.9,.32,1);
+    pointer-events:none;
+    filter: drop-shadow(0 0 8px rgba(0,0,0,.6));
+  }
+  /* spider subtle twitch */
+  @keyframes spiderTwitch {
+    0%,92%,100%{ transform: translate(-50%,-50%) rotate(0deg); }
+    94%{ transform: translate(-50%,-50%) rotate(8deg); }
+    96%{ transform: translate(-50%,-50%) rotate(-8deg); }
+  }
+  #spider.twitch { animation: spiderTwitch 8s infinite; }
+
+  /* header text over the web */
+  .hub-title{
+    position:absolute; top:28px; left:50%; transform:translateX(-50%); z-index:9;
+    font-size:clamp(18px,2.6vw,34px);
+    color:var(--hotpink);
+    text-shadow: 0 0 10px rgba(255,120,200,0.5);
+    pointer-events:none;
+  }
+
+  /* SECTION styling (rooms below) */
+  main { position:relative; z-index:3; }
+  section.room {
+    min-height:75vh;
+    padding:48px 20px;
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    justify-content:center;
+    border-top:1px solid rgba(200,150,255,0.06);
+    background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.32));
+  }
+  .room-inner {
+    width:min(1100px,96%);
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+  }
+  .room-visual { flex:1; min-width:300px; height:340px; border-radius:12px; background-size:cover; background-position:center; border:2px solid rgba(255,119,169,0.12); position:relative; overflow:hidden; }
+  .room-panel { width:360px; min-width:260px; background:var(--glass); padding:18px; border-radius:12px; border:1px solid rgba(124,58,237,0.35); color:#fff; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+  .room-panel h2 { margin:0 0 8px 0; color: #ffd6ef; }
+  .room-panel p { margin:0 0 14px 0; color: #eee; line-height:1.45; }
+
+  .btn {
+    display:inline-block; padding:10px 14px; border-radius:10px; background:var(--hotpink); color:#120007; font-weight:800; border:none; cursor:pointer; text-decoration:none;
+  }
+  .back-top { margin-top:18px; display:inline-block; background:transparent; border:1px solid rgba(255,255,255,0.12); color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; }
+
+  /* responsive tweaks */
+  @media (max-width:900px){
+    .room-inner{ flex-direction:column-reverse; align-items:center;}
+    .room-panel{ width:95%; }
+    .room-visual{ width:95%; height:260px; }
+    .node{ width:56px;height:56px;font-size:.85rem }
+  }
+</style>
+</head>
+<body>
+  <div id="top"></div>
+
+  <!-- TV overlay (B&W initial) -->
+  <div class="tv-overlay" id="tvOverlay" aria-hidden="true"></div>
+
+  <!-- WEB HEADER -->
+  <header class="web-header" id="webHeader" role="banner" aria-label="Orb web floorplan">
+    <canvas id="webCanvas" aria-hidden="true"></canvas>
+
+    <!-- hub title -->
+    <div class="hub-title">X-en's Orbweaver Map — Click a node to descend</div>
+
+    <!-- spider -->
+    <div id="spider" class="twitch" aria-hidden="true">🕷️</div>
+
+    <!-- nodes (positions are % across the header) -->
+    <a href="#tea" class="node" id="node-tea" style="top:18%; left:28%;">Tea</a>
+    <a href="#office" class="node" id="node-office" style="top:20%; left:72%;">Office</a>
+    <a href="#art" class="node" id="node-art" style="top:62%; left:26%;">Art</a>
+    <a href="#favorites" class="node" id="node-fav" style="top:64%; left:72%;">Favorites</a>
+    <a href="#cellar" class="node" id="node-cellar" style="top:46%; left:52%;">Cellar</a>
+    <a href="#lounge" class="node" id="node-lounge" style="top:50%; left:46%;">Lounge</a>
+  </header>
+
+  <!-- sparkles container (floating) -->
+  <div id="sparkleContainer" aria-hidden="true"></div>
+
+  <main>
+    <!-- Tea Room -->
+    <section id="tea" class="room" aria-labelledby="tea-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1517959105826-9e1b89f0d7e9?auto=format&fit=crop&w=1200&q=60');">
+          <!-- little thematic floating leaves (CSS pseudo could be used, keep simple for now) -->
+        </div>
+        <aside class="room-panel">
+          <h2 id="tea-title">Tea Room</h2>
+          <p>Cozy corner for tea photos, character notes inspired by blends, and polls about favorite rituals. I craft characters around tea — come smell the imagination.</p>
+          <a class="btn" href="#teaMore" onclick="alert('Load tea content or external link')">Tea Archive</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Office -->
+    <section id="office" class="room" aria-labelledby="office-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=60');"></div>
+        <aside class="room-panel">
+          <h2 id="office-title">Office</h2>
+          <p>Where projects hatch — planning boards, spiritual notes, and collaboration seeds. Links to proposals and contact for collaborators live here.</p>
+          <a class="btn" href="#officeMore" onclick="alert('Open projects or contact form')">Project List</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Art Room -->
+    <section id="art" class="room" aria-labelledby="art-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=60');"></div>
+        <aside class="room-panel">
+          <h2 id="art-title">Art Room</h2>
+          <p>Brush strokes, sketches, WIPs and digital experiments. This is where color and texture live — polls and process notes included.</p>
+          <a class="btn" href="#artMore" onclick="alert('Open art gallery')">View Gallery</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Favorites -->
+    <section id="favorites" class="room" aria-labelledby="fav-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=1200&q=60');"></div>
+        <aside class="room-panel">
+          <h2 id="fav-title">Favorites</h2>
+          <p>Books, music, phrases, and tiny obsessions that keep the heart beating. A curated snapshot of what inspires me daily.</p>
+          <a class="btn" href="#favMore" onclick="alert('Show favorites')">See Favorites</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Cellar -->
+    <section id="cellar" class="room" aria-labelledby="cellar-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=1200&q=60');"></div>
+        <aside class="room-panel">
+          <h2 id="cellar-title">The Cellar</h2>
+          <p>Ideas incubate here — brainstorming, collabs, Q&amp;A, and project boards. Drop suggestions and join experiments.</p>
+          <a class="btn" href="#cellarMore" onclick="alert('Open collab form')">Join Collab</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Lounge -->
+    <section id="lounge" class="room" aria-labelledby="lounge-title">
+      <div class="room-inner">
+        <div class="room-visual" style="background-image:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1505691723518-36a0f9f8b2b8?auto=format&fit=crop&w=1200&q=60');"></div>
+        <aside class="room-panel">
+          <h2 id="lounge-title">Lounge</h2>
+          <p>A cozy place to sit, sip and reflect. The cat naps here and you’re invited to stay awhile — polls and gentle conversation happen here.</p>
+          <a class="btn" href="#loungeMore" onclick="alert('Open lounge extras')">Lounge Extras</a>
+          <br><a class="back-top" href="#top">Back to Web ↑</a>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+/* ---------- Canvas: draw web (rings + spokes) ---------- */
+(function(){
+  const canvas = document.getElementById('webCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    draw();
+  }
+  function draw(){
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0,0,w,h);
+    const cx = w/2, cy = h/2;
+    // subtle glow background on web area
+    for(let i=0;i<6;i++){
+      const r = (i+1) * Math.min(w,h) * 0.07;
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(180,140,255,${0.06 + i*0.01})`;
+      ctx.lineWidth = 1;
+      ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.stroke();
+    }
+    // spokes
+    const spokes = 12;
+    for(let s=0;s<spokes;s++){
+      const angle = s * (Math.PI*2/spokes) + (Date.now()%60000)/60000 * Math.PI*0.02; // tiny movement
+      const rmax = Math.min(w,h)*0.35;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.lineTo(cx + Math.cos(angle)*rmax, cy + Math.sin(angle)*rmax);
+      ctx.strokeStyle = `rgba(200,160,255,0.06)`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  // animate subtle shimmer by redrawing slowly
+  function loop(){
+    draw();
+    requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  loop();
+})();
+
+/* ---------- Sparkles: floating + resting on intersections ---------- */
+(function(){
+  const sparkleContainer = document.getElementById('sparkleContainer');
+  const header = document.getElementById('webHeader');
+  const canvas = document.getElementById('webCanvas');
+
+  // compute intersection points (rings x spokes)
+  function getIntersections(){
+    const rect = canvas.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const rings = 6;
+    const spokes = 12;
+    const maxR = Math.min(rect.width, rect.height) * 0.35;
+    const radii = [];
+    for(let r=1;r<=rings;r++) radii.push(r * maxR / rings);
+    const points = [];
+    for(const radius of radii){
+      for(let s=0;s<spokes;s++){
+        const angle = s * (Math.PI*2/spokes);
+        points.push({ x: cx + Math.cos(angle)*radius, y: cy + Math.sin(angle)*radius });
+      }
+    }
+    return points;
+  }
+
+  // create a drifting sparkle (free-floating)
+  function createFloating(){
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    document.body.appendChild(el);
+    const startX = Math.random()*window.innerWidth;
+    const startY = Math.random()*window.innerHeight;
+    el.style.left = startX + 'px';
+    el.style.top = startY + 'px';
+    const dur = 4000 + Math.random()*7000;
+    const driftX = (Math.random()-0.5) * 200;
+    const driftY = -100 - Math.random()*400;
+    el.animate([
+      { transform:`translate(0,0) scale(.2)`, opacity:0 },
+      { transform:`translate(${driftX/2}px, ${driftY/2}px) scale(.9)`, opacity:1 },
+      { transform:`translate(${driftX}px, ${driftY}px) scale(.2)`, opacity:0 }
+    ], { duration: dur, iterations:1, easing:'ease-in-out' });
+    setTimeout(()=> el.remove(), dur+50);
+  }
+
+  // resting sparkle: pick a random intersection point, land, glow, then float away
+  async function createResting(){
+    const pts = getIntersections();
+    if(!pts.length) return;
+    const p = pts[Math.floor(Math.random() * pts.length)];
+    const el = document.createElement('div');
+    el.className = 'resting';
+    el.style.left = p.x + 'px';
+    el.style.top = p.y + 'px';
+    document.body.appendChild(el);
+    // fade in and scale
+    requestAnimationFrame(()=> {
+      el.style.opacity = 1;
+      el.style.transform = 'translate(-50%,-50%) scale(1)';
+    });
+    // stay for a while
+    const stay = 2500 + Math.random()*4000;
+    await new Promise(r => setTimeout(r, stay));
+    // fade out and float away slightly
+    el.style.opacity = 0;
+    el.style.transform = 'translate(-50%,-60%) scale(0.6)';
+    setTimeout(()=> el.remove(), 800);
+  }
+
+  // intervals
+  setInterval(()=> { if(Math.random() < 0.65) createFloating(); }, 350);
+  setInterval(()=> { if(Math.random() < 0.42) createResting(); }, 1800);
+
+  // also create some initial ones
+  for(let i=0;i<6;i++) createFloating();
+  for(let i=0;i<3;i++) setTimeout(()=> createResting(), 400 + i*600);
+})();
+
+/* ---------- Spider movement + node behavior + scrolling ---------- */
+(function(){
+  const spider = document.getElementById('spider');
+  const nodes = document.querySelectorAll('.node');
+  const tv = document.getElementById('tvOverlay');
+
+  // position spider initially at center of header (center of canvas)
+  function initSpiderPosition(){
+    const canvas = document.getElementById('webCanvas');
+    const rect = canvas.getBoundingClientRect();
+    spider.style.left = (rect.left + rect.width/2) + 'px';
+    spider.style.top  = (rect.top + rect.height/2) + 'px';
+  }
+  initSpiderPosition();
+  window.addEventListener('resize', initSpiderPosition);
+
+  // when hovering node, move spider toward it (center)
+  nodes.forEach(node => {
+    node.addEventListener('mouseenter', (e)=>{
+      const rect = node.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      spider.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+    });
+    // on click: scroll to section; also remove TV overlay (awaken)
+    node.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      const href = node.getAttribute('href');
+      // awaken full page color on first navigation click
+      document.body.classList.add('alive');
+      if(tv) tv.style.display = 'none';
+      if(href && href.startsWith('#')){
+        const target = document.querySelector(href);
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      } else if (href && href !== '#') {
+        // if external or other page (not used here), go there
+        window.location.href = href;
+      }
+    });
+  });
+
+  // if user clicks anywhere on the header (not only nodes) awaken page
+  const header = document.getElementById('webHeader');
+  header.addEventListener('click', (e)=>{
+    // if click on node, earlier click handles it; but this also ensures first click awakens
+    document.body.classList.add('alive');
+    if(tv) tv.style.display = 'none';
+  });
+
+  // return spider to center after mouse leaves header for a while
+  let leaveTimer = null;
+  header.addEventListener('mouseleave', ()=>{
+    clearTimeout(leaveTimer);
+    leaveTimer = setTimeout(()=> {
+      const canvas = document.getElementById('webCanvas');
+      const rect = canvas.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      spider.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+    }, 900);
+  });
+
+  // update spider if page is scrolled/resized (so coordinates stay correct)
+  window.addEventListener('resize', initSpiderPosition);
+  window.addEventListener('scroll', ()=> {
+    // keep spider visually consistent by nudging to computed current transform target
+    // do nothing heavy here; nodes compute their own positions on hover
+  });
+})();
+
+/* ---------- Back-to-web buttons: smooth scroll to top anchor ---------- */
+(function(){
+  document.querySelectorAll('.back-top').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const top = document.getElementById('top');
+      if(top) top.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+})();
+
+/* ---------- Accessibility: allow keyboard focus jump to sections by pressing Enter on nodes ---------- */
+(function(){
+  document.querySelectorAll('.node').forEach(node => {
+    node.setAttribute('tabindex','0');
+    node.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') { node.click(); }
+    });
+  });
+})();
+
+</script>
+</body>
+</html>
