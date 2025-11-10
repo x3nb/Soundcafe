@@ -402,4 +402,93 @@ function handleResponse(response) {
     } else {
       // If not YES, prompt again or loop
       setTimeout(() => {
-        appendMessage
+        appendMessage("“Not quite ready? That’s fine – but are you prepared to toss aside the teacups, question the Queen of Hearts, and maybe even blow up a few norms? Just say YES if you dare!”");
+      }, 1000);
+    }
+  }
+}
+
+function startLesson1() {
+  // Start Lesson 1: Dinner Etiquette - Table Manners
+  setTimeout(() => {
+    appendMessage("“Welcome to Lesson 1: Dinner Etiquette - Table Manners! Imagine Kira Tank at the table – she's tying her napkin around her neck like a bandana, ready for a food fight! But Miss Primrose would say, 'Don't wear your napkin like a 'bib' for the mob – put it on your lap, not your cap!' Now, test your knowledge: Where should you place your napkin at the start of a meal? A) On your lap, B) Around your neck, C) On the table?”", false, nextScrollingText);
+    // Add quiz buttons
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'quiz-buttons';
+    buttonsContainer.innerHTML = `
+      <button class="quiz-button" onclick="checkAnswer('A')">A) On your lap</button>
+      <button class="quiz-button" onclick="checkAnswer('B')">B) Around your neck</button>
+      <button class="quiz-button" onclick="checkAnswer('C')">C) On the table</button>
+    `;
+    nextScrollingText.parentNode.appendChild(buttonsContainer);
+  }, 2000);
+}
+
+function checkAnswer(answer) {
+  const buttons = document.querySelectorAll('.quiz-button');
+  buttons.forEach(btn => btn.disabled = true); // Disable buttons after answer
+  if (answer === 'A') {
+    buttons[0].classList.add('correct');
+    appendMessage("“Correct! You're a natural – Miss Primrose would be proud. Kira Tank might rebel, but you know better!”", false, nextScrollingText);
+    // Proceed to next part of lesson or next lesson
+    setTimeout(() => {
+      appendMessage("“Great job! Next up: Serving tea properly. Kira Tank might slosh it everywhere, but Miss Primrose teaches poise. Ready for more?”", false, nextScrollingText);
+      // Add a 'Continue' button or auto-progress
+    }, 3000);
+  } else {
+    buttons[answer === 'B' ? 1 : 2].classList.add('wrong');
+    appendMessage("“Oops, that's more Kira Tank than tea party! Try again – etiquette is key!”", false, nextScrollingText);
+    // Re-enable buttons for retry
+    setTimeout(() => {
+      buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('wrong');
+      });
+    }, 2000);
+  }
+}
+
+function teacupClick() {
+  // Fun interaction: Clicking teacups reveals a random fact or pun
+  const facts = [
+    "“Did you know? In France, don't clink glasses too hard – it's bad luck!”",
+    "“Pun time: Why did the teacup go to school? To get a little 'tea'-ching!”",
+    "“Kira Tank tip: Sometimes, just eat with your hands – rules are for squares!”"
+  ];
+  const randomFact = facts[Math.floor(Math.random() * facts.length)];
+  appendMessage(randomFact, false, nextScrollingText);
+}
+
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && chatInput.value.trim()) {
+    handleResponse(chatInput.value.trim());
+  }
+});
+
+umbrellaBtn.addEventListener('click', () => {
+  isOpen = !isOpen;
+  if (isOpen) {
+    umbrellaClosed.style.display = 'none';
+    umbrellaOpen.style.display = 'block';
+    umbrellaBtn.querySelector('svg').style.width = '90px';
+    umbrellaBtn.querySelector('svg').style.transform = 'translateY(-10px)';
+    chat.classList.add('active');
+    shimmer.style.opacity = '1';
+    shimmer.animate([
+      {transform:'translateX(-50%) scaleY(0)', opacity:0},
+      {transform:'translateX(-50%) scaleY(1)', opacity:1},
+      {transform:'translateX(-50%) translateY(-60px) scaleY(0.2)', opacity:0}
+    ],{duration:1500, easing:'ease-out'});
+    startRain();
+  } else {
+    umbrellaClosed.style.display = 'block';
+    umbrellaOpen.style.display = 'none';
+    umbrellaBtn.querySelector('svg').style.width = '60px';
+    umbrellaBtn.querySelector('svg').style.transform = 'translateY(0)';
+    chat.classList.remove('active');
+    stopRain();
+  }
+});
+</script>
+</body>
+</html>
