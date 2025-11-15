@@ -44,43 +44,7 @@
     }
 
     /* Top sliding translucent images (carousel). Each slide is the full hub width, height 60px, center cropped */
-    .top-carousel{
-      position:relative;
-      height: calc(var(--slideHeight) * 1px);
-      height: var(--slideHeight);
-      overflow:hidden;
-      border-radius: 6px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
-      margin-bottom: 22px;
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .slides{
-      display:flex;
-      height:100%;
-      width:100%;
-      transition: transform 700ms cubic-bezier(.2,.9,.2,1);
-    }
-
-    .slide{
-      flex:0 0 100%;
-      height:100%;
-      position:relative;
-      background-size: cover;
-      background-position: center; /* center crop so middle shows */
-      filter: grayscale(.8) contrast(.9) brightness(.8);
-      transform-origin:center;
-      transition: filter .45s ease, transform .45s ease;
-    }
-
-    /* translucent lavender & purple overlay with gaussian blur */
-    .slide::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: linear-gradient(90deg, rgba(138,43,226,0.12), rgba(148,0,211,0.15));
-      mix-blend-mode: overlay;
-      backdrop-filter: blur(3px) saturate(1.1);
+    
     }
 
     /* on hover reveal true colors */
