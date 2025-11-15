@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual — Cybersynth Nexus</title>
+
+<!-- Vampire / Dark Gothic Font -->
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+
+<style>
+/* ---------------------------------------------------
+   GLOBAL + BACKGROUND
+--------------------------------------------------- */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0c;
+    font-family: 'UnifrakturCook', serif;
+    color: rgba(190,190,190,0.4);
+    overflow-x: hidden;
+    height: 100vh;
+    --vamp-purple: #6b00b3;
+    --vamp-cerulean: #1b8cff;
+    --vamp-violet: #b000ff;
+}
+
+/* Holographic shifting mist */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 40% 60%, rgba(102,0,255,0.15), transparent 55%)
+              ,radial-gradient(circle at 70% 30%, rgba(0,130,255,0.15), transparent 60%);
+    filter: blur(40px);
+    opacity: 0.3;
+    animation: mistMove 18s ease-in-out infinite alternate;
+    z-index: -3;
+}
+
+@keyframes mistMove {
+    0% {transform: scale(1) translate(0,0);}
+    100% {transform: scale(1.2) translate(-20px,20px);}
+}
+
+/* Subtle grid */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: .15;
+    mix-blend-mode: overlay;
+    z-index: -2;
+}
+
+/* ---------------------------------------------------
+   HOVER REVEAL COLOR THEME
+--------------------------------------------------- */
+.reveal-color:hover {
+    color: var(--vamp-purple);
+    text-shadow: 0 0 10px var(--vamp-violet), 0 0 20px var(--vamp-cerulean);
+    transition: all .4s ease;
+}
+
+/* ---------------------------------------------------
+   HEADLINE
+--------------------------------------------------- */
+#headline {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 4rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 6px;
+    text-shadow: 0 0 15px rgba(180,0,255,0.3);
+    transition: all 0.6s ease;
+    opacity: 0.3;
+}
+
+#headline:hover {
+    opacity: 1;
+    transform: scale(1.04);
+    color: var(--vamp-violet);
+    text-shadow: 0 0 15px var(--vamp-violet), 0 0 25px var(--vamp-cerulean);
+}
+
+/* ---------------------------------------------------
+   BOTTOM ICON BUTTON BAR
+--------------------------------------------------- */
+#iconBar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    align-items: center;
+    background: rgba(20,20,25,0.2);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(140,0,255,0.2);
+    z-index: 20;
+}
+
+.icon-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    background: rgba(120,120,140,0.2);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .35s ease;
+    color: rgba(170,170,170,0.5);
+    font-size: 1.6rem;
+}
+
+.icon-btn:hover {
+    background: rgba(120,0,255,0.35);
+    color: #fff;
+    box-shadow: 0 0 20px var(--vamp-purple), inset 0 0 20px var(--vamp-violet);
+    transform: translateY(-5px);
+}
+
+/* ---------------------------------------------------
+   FLOATING HOLOGRAM CONTENT
+--------------------------------------------------- */
+.holoContent {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(50px);
+    width: 80%;
+    max-width: 900px;
+    background: rgba(30,30,40,0.1);
+    padding: 25px;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(140,0,255,0.4);
+    box-shadow: 0 0 30px rgba(80,0,150,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .7s cubic-bezier(.22,.61,.36,1);
+    color: #cfcfcf;
+}
+
+.holoContent.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(-20px);
+}
+
+/* Forum-like indentation */
+.thread {
+    padding-left: 15px;
+    border-left: 1px solid rgba(200,200,200,0.1);
+    margin-bottom: 12px;
+}
+
+.thread.level2 { padding-left: 25px; opacity: .9; }
+.thread.level3 { padding-left: 40px; opacity: .8; }
+
+/* --------------------------------------------------- */
+</style>
+</head>
+<body>
+
+<!-- HEADLINE -->
+<div id="headline" class="reveal-color">
+    XENUSUAL // CYBERSYNTH ARCHIVE
+</div>
+
+
+<!-- HOLOGRAM CONTENT PANELS -->
+<div id="contentBox" class="holoContent"></div>
+
+<!-- BOTTOM ICON BAR -->
+<div id="iconBar">
+
+    <div class="icon-btn" data-target="about">🜁</div>
+    <div class="icon-btn" data-target="projects">⚙️</div>
+    <div class="icon-btn" data-target="favorites">✧</div>
+    <div class="icon-btn" data-target="tools">🧿</div>
+    <div class="icon-btn" data-target="social">☄️</div>
+    <div class="icon-btn" data-target="gallery">🖼️</div>
+
+</div>
+
+<script>
+/* ----------------------------------------------
+   CONTENT PAYLOAD
+---------------------------------------------- */
+const content = {
+    about: `
+        <h2>About Xen</h2>
+        <div class="thread">A wandering mind in a violet-lit digital dusk.</div>
+        <div class="thread level2">Hybrid of intuition, code, and dream logic.</div>
+        <div class="thread level3">Always observing the static between worlds.</div>
+    `,
+    projects: `
+        <h2>Projects</h2>
+        <div class="thread">• Cyber-sculpted audio-reactive portals</div>
+        <div class="thread level2">• Holo-grid mapping experiments</div>
+        <div class="thread level3">• DreamCore resonance archives</div>
+    `,
+    favorites: `
+        <h2>Favorites</h2>
+        <div class="thread">• Cerulean plasma tones</div>
+        <div class="thread level2">• Night-bloom tech & bioluminescent motifs</div>
+        <div class="thread level3">• Archive ruins & forgotten code</div>
+    `,
+    tools: `
+        <h2>Tools</h2>
+        <div class="thread">• Synth modules + reactive shaders</div>
+        <div class="thread level2">• Custom spectral analyzers</div>
+        <div class="thread level3">• Portal forging utilities</div>
+    `,
+    social: `
+        <h2>Social</h2>
+        <div class="thread">• Transmission links</div>
+        <div class="thread level2">• Signal pings</div>
+        <div class="thread level3">• Ghost channels</div>
+    `,
+    gallery: `
+        <h2>Art Gallery</h2>
+        <div class="thread">• Hologram portraits</div>
+        <div class="thread level2">• Plasma fragments</div>
+        <div class="thread level3">• Violet chromatic anomalies</div>
+    `
+};
+
+/* ----------------------------------------------
+   INTERACTION LOGIC
+---------------------------------------------- */
+const box = document.getElementById("contentBox");
+
+document.querySelectorAll(".icon-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        let key = btn.dataset.target;
+        box.innerHTML = content[key];
+        box.classList.add("visible");
+    });
+});
+
+// Clicking content box closes it
+box.addEventListener("click", () => {
+    box.classList.remove("visible");
+});
+</script>
+
+</body>
+</html>
