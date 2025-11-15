@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Geisha Academy Hub — Purple Ombre Portal</title>
+
+  <!-- Fonts: swap these for your preferred goth-readable font if you recall the name -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-1: #1a0026; /* very deep purple */
+      --bg-2: #3b0b5a; /* purple */
+      --bg-3: #5b2fa5; /* violet */
+      --accent: #7f4bff; /* punchy violet */
+      --cornflower: #6ea0ff;
+      --cerulean: #2da0d8;
+      --muted: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.03);
+      --text: #efe9ff;
+      --card-bg: rgba(20,10,25,0.55);
+      --blur: 8px;
+      --slideHeight: 60px; /* requested */
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    /* Page background: deep purple -> cornflower -> cerulean ombre */
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 35%, var(--bg-3) 60%, var(--cornflower) 85%, var(--cerulean) 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+
+    .container{
+      max-width:1100px;
+      margin: 30px auto;
+      padding: 24px;
+      backdrop-filter: blur(var(--blur));
+    }
+
+    /* Top sliding translucent images (carousel). Each slide is the full hub width, height 60px, center cropped */
+    .top-carousel{
+      position:relative;
+      height: calc(var(--slideHeight) * 1px);
+      height: var(--slideHeight);
+      overflow:hidden;
+      border-radius: 6px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+      margin-bottom: 22px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .slides{
+      display:flex;
+      height:100%;
+      width:100%;
+      transition: transform 700ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    .slide{
+      flex:0 0 100%;
+      height:100%;
+      position:relative;
+      background-size: cover;
+      background-position: center; /* center crop so middle shows */
+      filter: grayscale(.8) contrast(.9) brightness(.8);
+      transform-origin:center;
+      transition: filter .45s ease, transform .45s ease;
+    }
+
+    /* translucent lavender & purple overlay with gaussian blur */
+    .slide::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(138,43,226,0.12), rgba(148,0,211,0.15));
+      mix-blend-mode: overlay;
+      backdrop-filter: blur(3px) saturate(1.1);
+    }
+
+    /* on hover reveal true colors */
+    .top-carousel:hover .slide{
+      filter: none;
+      transform: scale(1.02);
+    }
+
+    /* small pager controls left/right */
+    .carousel-controls{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+    .ctrl{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      pointer-events:auto;
+      background: rgba(10,8,12,0.35);
+      border:1px solid rgba(255,255,255,0.05);
+      color:var(--text);
+      padding:6px 8px;
+      border-radius:6px;
+      cursor:pointer;
+      backdrop-filter: blur(6px);
+      font-size:13px;
+      user-select:none;
+    }
+    .ctrl.left{ left:8px; }
+    .ctrl.right{ right:8px; }
+
+    /* Main hub card area */
+    .hub{
+      background: linear-gradient(180deg, rgba(15,6,20,0.45), rgba(15,6,20,0.35));
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header.hub-header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
+
+    h1{
+      margin:0;
+      font-family: "Cinzel", serif;
+      letter-spacing: 1px;
+      font-size:20px;
+      color:var(--text);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    nav.links{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size:13px;
+      cursor:pointer;
+      color:var(--text);
+      backdrop-filter: blur(6px);
+    }
+    .btn.ghost{
+      background: transparent;
+      border: 1px dashed rgba(255,255,255,0.04);
+    }
+    .btn.accent{
+      background: linear-gradient(90deg, var(--accent), rgba(127,75,255,0.75));
+      color:#fff;
+      font-weight:600;
+      box-shadow: 0 6px 20px rgba(127,75,255,0.12);
+    }
+
+    /* content columns */
+    .cols{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:18px;
+      margin-top:12px;
+    }
+
+    article.card{
+      background: var(--card-bg);
+      border-radius:10px;
+      padding:14px;
+      min-height:260px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(6px);
+    }
+
+    aside.side{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .poem{
+      font-style:italic;
+      line-height:1.45;
+      color: rgba(239,233,255,0.9);
+    }
+
+    /* Hidden drawers: small circular hotspots that reveal drawers when riddle solved */
+    .hotspot{
+      width:28px;height:28px;border-radius:50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.06);
+      position: absolute;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color:var(--text);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      transition: transform .18s;
+    }
+    .hotspot:active{ transform: scale(.92); }
+
+    /* location the hotspots are placed around hub (adjust as desired) */
+    .hot1{ right:12px; top:60px; }
+    .hot2{ left:14px; top:140px; }
+    .hot3{ right:34px; bottom:36px; }
+
+    /* drawer panels (hidden until unlocked) */
+    .drawer{
+      position: absolute;
+      min-width:240px;
+      max-width:360px;
+      background: linear-gradient(180deg, rgba(12,6,20,0.9), rgba(18,8,30,0.85));
+      border:1px solid rgba(255,255,255,0.04);
+      padding:12px;
+      border-radius:10px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+      display:none;
+      z-index:40;
+    }
+    .drawer.open{ display:block; animation: pop .28s cubic-bezier(.2,.9,.2,1) both; }
+    @keyframes pop{ from{ transform: translateY(10px) scale(.98); opacity:0 } to{ transform:none; opacity:1 } }
+
+    .drawer .title{ font-family:"Cinzel", serif; margin-bottom:6px; font-size:15px; }
+    .drawer .msg{ font-size:13px; color:rgba(239,233,255,0.86); margin-bottom:8px; }
+    .drawer .tiny { font-size:12px; color:rgba(239,233,255,0.6) }
+
+    /* music icon (hidden control). It's tucked near the header. */
+    .music-toggle{
+      width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
+      border:1px solid rgba(255,255,255,0.04);
+      cursor:pointer;
+      position:relative;
+      overflow:visible;
+    }
+    .music-toggle svg{ width:22px;height:22px; opacity:0.95; }
+
+    /* footer with geisha image at the foot (desaturated grey until hovered) */
+    footer.site-foot{
+      margin-top:22px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      padding-top:18px;
+    }
+
+    .geisha-wrap{
+      width:220px;
+      height:320px;
+      border-radius:10px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+      border: 1px solid rgba(255,255,255,0.03);
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:12px;
+      position:relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .geisha-wrap img{
+      max-width:100%;
+      min-height:100%;
+      object-fit:cover;
+      object-position:center;
+      filter: grayscale(.8) contrast(.85) brightness(.86) sepia(.15);
+      transition: filter .45s ease, transform .6s ease;
+      transform: translateY(6px);
+    }
+    .geisha-wrap:hover img{
+      filter:none;
+      transform:translateY(0);
+    }
+
+    .members{
+      align-self:flex-start;
+    }
+
+    /* small helpers */
+    .muted{ color: rgba(239,233,255,0.65); font-size:13px }
+    .note { font-size:13px; color: rgba(239,233,255,0.8); }
+
+    /* modal overlay for riddles */
+    .modal{
+      position:fixed; inset:0; display:none; place-items:center; z-index:99;
+      background: linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+    }
+    .modal.open{ display:grid; }
+    .modal .box{
+      width:360px; max-width:92%; border-radius:12px; padding:18px; background: linear-gradient(180deg, rgba(20,10,25,0.96), rgba(20,10,25,0.95));
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.7);
+    }
+    .riddle-choices{ display:flex; gap:8px; margin-top:12px; justify-content:flex-end; }
+    .riddle-choices button{ min-width:64px; }
+
+    /* responsive */
+    @media (max-width:920px){
+      .cols{ grid-template-columns: 1fr; }
+      .geisha-wrap{ display:none; }
+      .top-carousel{ margin-bottom:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="hubRoot">
+
+    <!-- Top carousel: replace slide background images in JS or via data-slide attributes -->
+    <div class="top-carousel" aria-hidden="false" title="Hover to reveal true colors of the banner images">
+      <div class="slides" id="slides">
+        <!-- Slides are created via JS to make it easy to swap images -->
+        <div class="slide" data-src="https://3society.neocities.org/11-15-2026/7.jpeg" style="background-image: url('https://3society.neocities.org/11-15-2026/7.jpeg')"></div>
+        <div class="slide" data-src="assets/slide2.jpg" style="background-image: url('https://3society.neocities.org/11-15-2026/7.jpeg')"></div>
+        <div class="slide" data-src="assets/slide3.jpg" style="background-image: url('assets/slide3.jpg')"></div>
+      </div>
+
+      <div class="carousel-controls" aria-hidden="false">
+        <div class="ctrl left" id="prevBtn" aria-label="previous">◀</div>
+        <div class="ctrl right" id="nextBtn" aria-label="next">▶</div>
+      </div>
+    </div>
+
+    <div class="hub" role="main" aria-labelledby="site-title">
+
+      <header class="hub-header">
+        <h1 id="site-title">The Academy of Tea & Quiet Shadows</h1>
+
+        <nav class="links" aria-label="primary links">
+          <button class="btn" onclick="openSection('academy')">Academy</button>
+          <button class="btn" onclick="openSection('poems')">Poems & Riddles</button>
+          <button class="btn" onclick="openSection('history')">Herbalist Histories</button>
+          <a class="btn ghost" href="/members" id="membersLink" aria-label="Members only (replace link)">Members</a>
+
+          <!-- music toggle: hidden control under spider/coffee icon -->
+          <div class="music-toggle" id="musicToggle" title="Music (click to show controls)">
+            <!-- simple spider-web icon (SVG) -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 3v18" />
+              <path d="M3 12h18" />
+              <path d="M4.9 4.9l14.2 14.2" />
+              <path d="M19.1 4.9L4.9 19.1" />
+            </svg>
+          </div>
+        </nav>
+      </header>
+
+      <div class="cols">
+
+        <article class="card" id="mainContent">
+          <section id="academy" style="display:block">
+            <h2 style="font-family:Cinzel,serif;margin-top:0">Academy for Tea Ceremony</h2>
+            <p class="note">An academy that studies etiquette, herbal lore and quiet rituals. Places for Parisian refinement, Japanese calm, and the wisdom of elders.</p>
+
+            <div style="margin-top:12px" class="poem">
+              <p>“A spider hangs in a palace lintel — unseen weight, steady loom. Humble watchers learn the court’s small truths.”</p>
+            </div>
+
+            <h3 style="margin-top:12px;font-size:15px;">Sections</h3>
+            <ul class="muted" style="padding-left:18px">
+              <li>Parallels of Parisian etiquette & Japanese tea grace</li>
+              <li>Aramaic fragments, short hermetic-inspired notes</li>
+              <li>Pliny & Socrates: reflections on nature and inquiry</li>
+              <li>Short tea-tag messages tucked into drawers and surprises</li>
+            </ul>
+
+            <p style="margin-top:14px;">Hidden drawers hold short poems and hope-notes — discover them by solving a tiny riddle.</p>
+          </section>
+
+          <section id="poems" style="display:none">
+            <h2 style="font-family:Cinzel,serif">Poems, Haikus & Snarky Lines</h2>
+            <p class="muted">Emotional Japanese haikus, snarky British couplets, and quiet hermetic prompts.</p>
+            <div style="margin-top:10px">
+              <blockquote class="poem">"In the cup, a mirror — steam lifts and returns what was not lost."</blockquote>
+              <blockquote class="poem">"Not all small things go unnoticed; the spider keeps a court at dawn."</blockquote>
+            </div>
+          </section>
+
+          <section id="history" style="display:none">
+            <h2 style="font-family:Cinzel,serif">Herbalists & Elders</h2>
+            <p class="muted">Short histories and riddle-flavored facts: tea, coffee, medicines of old — a respectful, scholarly tone.</p>
+            <ul class="muted" style="padding-left:18px">
+              <li>Profiles: Pliny the Elder — nature’s observer</li>
+              <li>Hermes notes: symbolic prompts (no occult practice)</li>
+              <li>Scripture-inspired reflections centering God and humility</li>
+            </ul>
+          </section>
+        </article>
+
+        <aside class="side" aria-label="sidebar">
+          <div class="card" style="padding:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="muted">Now Playing</div>
+                <div id="trackTitle" class="note">[Replace music.mp3] — ambient loop</div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button id="playBtn" class="btn">Play</button>
+                <button id="stopBtn" class="btn ghost">Stop</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;font-size:13px;color:rgba(239,233,255,0.8)">
+              <div class="tiny">Hidden notes and small riddles live inside tea-tag drawers. Find them, claim a small rhyme of hope.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 style="margin-top:0;font-family:Cinzel,serif">Quick Links</h4>
+            <ul style="padding-left:16px" class="muted">
+              <li><button class="btn ghost" onclick="openSection('academy')">Tea Academy</button></li>
+              <li><button class="btn ghost" onclick="openSection('poems')">Poems & Riddles</button></li>
+              <li><a class="btn ghost" href="/members">Members (replace)</a></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="muted">Philosophical Touch</div>
+            <div class="note" style="margin-top:6px">Hermes — messenger of learning. Socrates — questions. Pliny — observation. Jesus — mercy and light.</div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- hotspots for hidden drawers -->
+      <div style="position:relative;">
+        <div class="hotspot hot1" title="A hush of a brass knob" data-drawer="drawer1">?</div>
+        <div class="hotspot hot2" title="A tucked tea tag" data-drawer="drawer2">✝</div>
+        <div class="hotspot hot3" title="A tiny keyhole" data-drawer="drawer3">⚑</div>
+
+        <!-- drawer panels -->
+        <div class="drawer" id="drawer1" style="right:44px; top:84px">
+          <div class="title">Tea-Tag: A Quiet Hope</div>
+          <div class="msg" id="drawer1Content">Hidden until unlocked...</div>
+          <div class="tiny">A poem, a short riddle, and a tea-note tucked inside.</div>
+        </div>
+
+        <div class="drawer" id="drawer2" style="left:18px; top:190px">
+          <div class="title">Elder's Fragment</div>
+          <div class="msg" id="drawer2Content">Hidden until unlocked...</div>
+          <div class="tiny">Scripture-inspired reflection honoring God and humility.</div>
+        </div>
+
+        <div class="drawer" id="drawer3" style="right:34px; bottom:40px">
+          <div class="title">Court Spider</div>
+          <div class="msg" id="drawer3Content">Hidden until unlocked...</div>
+          <div class="tiny">Poetry and small wisdom.</div>
+        </div>
+      </div>
+
+      <!-- modal for riddle prompt -->
+      <div class="modal" id="riddleModal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="box" id="riddleBox">
+          <div id="riddleText" style="font-size:15px;margin-bottom:6px">Riddle here</div>
+          <div class="muted" id="riddleSub">Answer with two quick yes/no responses.</div>
+
+          <div style="margin-top:12px; display:flex; gap:8px; align-items:center; justify-content:space-between;">
+            <div>
+              <div style="font-size:13px; margin-bottom:6px">Question 1</div>
+              <div class="riddle-choices">
+                <button class="btn" data-answer="yes" id="q1Yes">Yes</button>
+                <button class="btn ghost" data-answer="no" id="q1No">No</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:13px; margin-bottom:6px">Question 2</div>
+              <div class="riddle-choices">
+                <button class="btn" data-answer="yes" id="q2Yes">Yes</button>
+                <button class="btn ghost" data-answer="no" id="q2No">No</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+            <button class="btn ghost" id="cancelRiddle">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="site-foot">
+        <div>
+          <div class="muted">Hidden messages appear in drawers — gentle riddles, hope-notes, and short poems.</div>
+          <div style="margin-top:6px" class="note">Place God in high regard. No magic or occult content — only mystery, wonder and reverence.</div>
+          <div style="margin-top:8px">
+            <a class="btn ghost" href="#" onclick="alert('Replace with real legal / privacy / contact links')">Legal / Contact</a>
+          </div>
+        </div>
+
+        <!-- Geisha image at the foot (replace src with your geisha goth lady image) -->
+        <div class="geisha-wrap" aria-hidden="false">
+          <img id="geishaImg" src="https://3society.neocities.org/11-15-2026/0STAR0.jpeg" alt="Geisha portrait (replace with your image)">
+        </div>
+      </footer>
+
+    </div> <!-- hub end -->
+  </div> <!-- container end -->
+
+  <!-- Audio element (single loop track). Replace src with your music file -->
+  <audio id="bgAudio" loop preload="auto" src="assets/music.mp3" aria-hidden="true"></audio>
+
+  <script>
+    /***************
+     * CONFIG
+     * Replace these arrays/strings with your real images/mp3 and text.
+     ***************/
+    const SLIDES = [
+      {src:'assets/slide1.jpg', alt:'Lavender palace, center-focused'},
+      {src:'assets/slide2.jpg', alt:'Tea steam and violet curtain'},
+      {src:'assets/slide3.jpg', alt:'Court shadow tapestry'}
+    ];
+
+    const MEMBERS_URL = '/members'; // replace with Ko-fi or desired membership page
+
+    // Drawer content (tea-tag messages / poems). Keep it short and reverent.
+    const DRAWER_CONTENT = {
+      drawer1: {
+        title: "Tea-Tag: A Quiet Hope",
+        message: "Hope: 'Light gathers in the small cup. Be gentle, rest in grace.'"
+      },
+      drawer2: {
+        title: "Elder's Fragment",
+        message: "Reflection: 'Observe the small webs; humility is the highest seat.'"
+      },
+      drawer3: {
+        title: "Court Spider",
+        message: "Poem: 'When the palace quiets, the small watch weaves answers in silence.'"
+      }
+    };
+
+    // Riddles for unlocking drawers: Each riddle requires two yes/no answers. Define correct combos.
+    // For example: drawer1 expects [yes,no] etc. Adjust as you like.
+    const RIDDLES = {
+      drawer1: {
+        text: "A tea question: Is the cup warm at dawn? Do you sip in silence?",
+        q1: {label:'Is the cup warm at dawn?', correct:'yes'},
+        q2: {label:'Do you sip in silence?', correct:'yes'},
+        successCombo: ['yes','yes']
+      },
+      drawer2: {
+        text: "An elder asks: Is humility your guide? Will you honor the small?",
+        q1: {label:'Is humility your guide?', correct:'yes'},
+        q2: {label:'Will you honor the small?', correct:'yes'},
+        successCombo: ['yes','yes']
+      },
+      drawer3: {
+        text: "A courtly whisper: Is the spider humble? Do you look up when alone?",
+        q1: {label:'Is the spider humble?', correct:'yes'},
+        q2: {label:'Do you look up when alone?', correct:'yes'},
+        successCombo: ['yes','yes']
+      }
+    };
+
+    /***************
+     * END CONFIG
+     ***************/
+
+    // --- Carousel behavior
+    (function(){
+      const slidesEl = document.getElementById('slides');
+      const slideEls = slidesEl.querySelectorAll('.slide');
+      let idx = 0;
+      const total = slideEls.length;
+
+      function show(i){
+        idx = ((i%total)+total)%total;
+        slidesEl.style.transform = `translateX(${ -100 * idx }%)`;
+      }
+
+      document.getElementById('prevBtn').addEventListener('click', ()=> show(idx-1));
+      document.getElementById('nextBtn').addEventListener('click', ()=> show(idx+1));
+
+      // Optionally auto-advance
+      let auto = setInterval(()=> show(idx+1), 4500);
+      // pause on hover
+      document.querySelector('.top-carousel').addEventListener('mouseenter', ()=> clearInterval(auto));
+      document.querySelector('.top-carousel').addEventListener('mouseleave', ()=> auto = setInterval(()=> show(idx+1), 4500));
+
+      // if using JS to populate slides (in case you want dynamic images)
+      // (placeholder logic: already set via HTML; but here's a safe refresh)
+      const configured = SLIDES;
+      const slideNodes = document.querySelectorAll('.slide');
+      slideNodes.forEach((n,i)=> {
+        if(configured[i]) n.style.backgroundImage = `url('${configured[i].src}')`;
+      });
+    })();
+
+    // --- Sections toggling
+    function openSection(id){
+      ['academy','poems','history'].forEach(s => {
+        document.getElementById(s).style.display = (s===id) ? 'block' : 'none';
+      });
+    }
+
+    // --- Members link
+    document.getElementById('membersLink').href = MEMBERS_URL;
+
+    // --- Music controls and hidden spider icon toggling
+    const bgAudio = document.getElementById('bgAudio');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const musicToggle = document.getElementById('musicToggle');
+
+    // clicking the spider icon toggles a tiny tooltip with controls (reveal/hide play/stop)
+    musicToggle.addEventListener('click', (e)=>{
+      // we'll toggle the right-side play/stop by focusing it (simple UX)
+      const isPlaying = !bgAudio.paused;
+      if(isPlaying){
+        bgAudio.pause();
+        playBtn.textContent = 'Play';
+      } else {
+        bgAudio.play().catch(()=>{ /* autoplay may be blocked */});
+        playBtn.textContent = 'Playing';
+      }
+    });
+
+    playBtn.addEventListener('click', ()=> {
+      bgAudio.play().catch(()=>{ alert('Playback blocked — user interaction required. Click the spider/coffee icon to toggle.'); });
+    });
+    stopBtn.addEventListener('click', ()=> {
+      bgAudio.pause();
+      bgAudio.currentTime = 0;
+    });
+
+    // Also allow keyboard M to toggle music
+    window.addEventListener('keydown', e=> {
+      if(e.key.toLowerCase()==='m') {
+        if(bgAudio.paused) bgAudio.play().catch(()=>{});
+        else { bgAudio.pause(); }
+      }
+    });
+
+    // --- Hidden drawers & riddle flow
+    const hotspots = document.querySelectorAll('.hotspot');
+    const modal = document.getElementById('riddleModal');
+    const riddleText = document.getElementById('riddleText');
+    const cancelRiddle = document.getElementById('cancelRiddle');
+
+    let currentDrawer = null;
+    let answers = { q1:null, q2:null };
+
+    hotspots.forEach(h => {
+      h.addEventListener('click', (ev)=>{
+        const did = h.dataset.drawer;
+        currentDrawer = did;
+        openRiddleFor(did);
+      });
+    });
+
+    function openRiddleFor(id){
+      const r = RIDDLES[id];
+      if(!r) return;
+      riddleText.textContent = r.text;
+      answers = { q1:null, q2:null };
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+
+      // bind responses
+      document.getElementById('q1Yes').onclick = ()=> clickAnswer('q1','yes');
+      document.getElementById('q1No').onclick = ()=> clickAnswer('q1','no');
+      document.getElementById('q2Yes').onclick = ()=> clickAnswer('q2','yes');
+      document.getElementById('q2No').onclick = ()=> clickAnswer('q2','no');
+    }
+
+    cancelRiddle.addEventListener('click', ()=> closeModal());
+
+    function clickAnswer(q, val){
+      answers[q] = val;
+      // visual micro-feedback (can be expanded)
+      // if both answered, test
+      if(answers.q1 && answers.q2){
+        evaluateAnswers();
+      }
+    }
+
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); currentDrawer = null; }
+
+    function evaluateAnswers(){
+      const r = RIDDLES[currentDrawer];
+      const got = [answers.q1, answers.q2];
+      const ok = (got[0] === r.successCombo[0] && got[1] === r.successCombo[1]);
+      closeModal();
+      if(ok){
+        unlockDrawer(currentDrawer);
+      } else {
+        // small negative feedback
+        flashMessage("The drawer remains still. Try listening closely.");
+      }
+    }
+
+    function flashMessage(msg){
+      // ephemeral toast
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.position='fixed';
+      t.style.left='50%';
+      t.style.top='16%';
+      t.style.transform='translateX(-50%)';
+      t.style.background='linear-gradient(180deg, rgba(20,10,25,0.96), rgba(30,14,40,0.96))';
+      t.style.padding='12px 18px';
+      t.style.borderRadius='10px';
+      t.style.zIndex=9999;
+      t.style.border='1px solid rgba(255,255,255,0.04)';
+      document.body.appendChild(t);
+      setTimeout(()=> t.style.opacity='0', 1800);
+      setTimeout(()=> t.remove(), 2600);
+    }
+
+    // Play F note via WebAudio when drawer opens
+    const audioCtx = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
+    function playFNote(){
+      if(!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      // F4 frequency = 349.23 Hz (approx)
+      o.frequency.value = 349.23;
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      g.gain.value = 0.0001;
+      o.start();
+      // ramp
+      g.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 0.02);
+      setTimeout(()=> {
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+        setTimeout(()=> { o.stop(); }, 1400);
+      }, 60);
+    }
+
+    function unlockDrawer(id){
+      const d = document.getElementById(id);
+      if(!d) return;
+      // populate content
+      const content = DRAWER_CONTENT[id];
+      const el = document.getElementById(id + 'Content');
+      if(el) el.textContent = content.message;
+
+      // show
+      d.classList.add('open');
+
+      // Play an F synth note
+      // resume audio context on user gesture
+      if(audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().then(()=> playFNote()).catch(()=> {});
+      } else { playFNote(); }
+
+      // auto-hide after some time (or leave open)
+      setTimeout(()=> d.classList.remove('open'), 12000);
+    }
+
+    // Close drawer if clicked outside
+    document.addEventListener('click', (e)=>{
+      if(e.target.closest('.hotspot') || e.target.closest('.drawer')) return;
+      document.querySelectorAll('.drawer.open').forEach(d=> d.classList.remove('open'));
+    });
+
+    // Provide instruction where to put your files (helpful comments)
+    console.log('Replace assets/slide1.jpg, assets/slide2.jpg, assets/slide3.jpg, assets/geisha.jpg and assets/music.mp3 with your images and audio.');
+
+    // small accessibility: allow clicking geisha to reveal name or detail
+    document.getElementById('geishaImg').addEventListener('click', ()=>{
+      alert('This is the geisha portrait. Replace the image file at assets/geisha.jpg. Your name may be overlayed here in final design.');
+    });
+
+    // Optional: lazy-load slide backgrounds if large (here just a placeholder)
+    // If you'd like to fetch dynamic external content (RSS, twitter, etc.), add your fetch calls here.
+
+  </script>
+</body>
+</html>
