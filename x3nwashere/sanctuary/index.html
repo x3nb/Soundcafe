@@ -43,50 +43,51 @@
       backdrop-filter: blur(var(--blur));
     }
 
-  <div class="neo-slider-container">
-  <div class="neo-slider">
-      <img src="7.jpeg" alt="Test">
-  </div>
-</div>
+    /* Top sliding translucent images (carousel). Each slide is the full hub width, height 60px, center cropped */
+    .top-carousel{
+      position:relative;
+      height: calc(var(--slideHeight) * 1px);
+      height: var(--slideHeight);
+      overflow:hidden;
+      border-radius: 6px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+      margin-bottom: 22px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
 
-<style>
-.neo-slider-container {
-    width: 100%;
-    height: 60px;
-    overflow: hidden;
-    position: relative;
-    background: radial-gradient(circle at center,
-      rgba(200,0,255,0.15) 0%, 
-      rgba(0,0,0,0.7) 80%);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 22px rgba(140,0,255,0.35);
-}
+    .slides{
+      display:flex;
+      height:100%;
+      width:100%;
+      transition: transform 700ms cubic-bezier(.2,.9,.2,1);
+    }
 
-/* glowing cyber scroll */
-.neo-slider {
-    display: flex;
-    width: max-content;
-    animation: neonSlide 18s linear infinite;
-    filter: drop-shadow(0 0 6px rgba(160,0,255,0.5));
-}
+    .slide{
+      flex:0 0 100%;
+      height:100%;
+      position:relative;
+      background-size: cover;
+      background-position: center; /* center crop so middle shows */
+      filter: grayscale(.8) contrast(.9) brightness(.8);
+      transform-origin:center;
+      transition: filter .45s ease, transform .45s ease;
+    }
 
-.neo-slider img {
-    height: 100%;
-    width: auto;
-    opacity: 0.6;
-    object-fit: cover;
-    object-position: center;
-    filter: brightness(1.2) contrast(1.1)
-            drop-shadow(0 0 6px rgba(122,0,255,0.6));
-    backdrop-filter: blur(2px);
-}
+    /* translucent lavender & purple overlay with gaussian blur */
+    .slide::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(138,43,226,0.12), rgba(148,0,211,0.15));
+      mix-blend-mode: overlay;
+      backdrop-filter: blur(3px) saturate(1.1);
+    }
 
-@keyframes neonSlide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-</style>
-
+    /* on hover reveal true colors */
+    .top-carousel:hover .slide{
+      filter: none;
+      transform: scale(1.02);
+    }
 
     /* small pager controls left/right */
     .carousel-controls{
@@ -324,8 +325,8 @@
     <div class="top-carousel" aria-hidden="false" title="Hover to reveal true colors of the banner images">
       <div class="slides" id="slides">
         <!-- Slides are created via JS to make it easy to swap images -->
-        <div class="slide" data-src="logofavi.png" style="background-image: url('https://3society.neocities.org/11-15-2026/7.jpeg')"></div>
-        <div class="slide" data-src="assets/slide2.jpg" style="background-image: url('https://3society.neocities.org/11-15-2026/7.jpeg')"></div>
+        <div class="slide" data-src="assets/slide1.jpg" style="background-image: url('assets/slide1.jpg')"></div>
+        <div class="slide" data-src="assets/slide2.jpg" style="background-image: url('assets/slide2.jpg')"></div>
         <div class="slide" data-src="assets/slide3.jpg" style="background-image: url('assets/slide3.jpg')"></div>
       </div>
 
@@ -503,7 +504,7 @@
 
         <!-- Geisha image at the foot (replace src with your geisha goth lady image) -->
         <div class="geisha-wrap" aria-hidden="false">
-          <img id="geishaImg" src="https://3society.neocities.org/11-15-2026/0STAR0.jpeg" alt="Geisha portrait (replace with your image)">
+          <img id="geishaImg" src="assets/geisha.jpg" alt="Geisha portrait (replace with your image)">
         </div>
       </footer>
 
@@ -782,3 +783,4 @@
   </script>
 </body>
 </html>
+
