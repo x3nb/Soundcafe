@@ -46,9 +46,34 @@
    /*
    old carousel removed
 */
+.slider-container {
+    width: 100%;
+    height: 60px; /* Only show the middle slice */
+    overflow: hidden; /* Hide the top/bottom of images */
+    position: relative;
+    filter: blur(0.5px) brightness(0.9);
+}
 
-    
-    }
+.slider img {
+    width: 100%;
+    height: auto;
+    opacity: 0.55;
+    object-fit: cover;
+    object-position: center; /* SHOW MIDDLE SECTION */
+    filter: drop-shadow(0 0 6px rgba(100, 0, 150, 0.6));
+}
+
+.slider {
+    display: flex;
+    width: max-content;
+    animation: slide 22s linear infinite;
+}
+
+@keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Adjust if more images */
+}
+
 
     /* on hover reveal true colors */
     .top-carousel:hover .slide{
