@@ -43,40 +43,50 @@
       backdrop-filter: blur(var(--blur));
     }
 
-  .slider-container {
+  <div class="neo-slider-container">
+  <div class="neo-slider">
+      <img src="7.jpeg" alt="Test">
+  </div>
+</div>
+
+<style>
+.neo-slider-container {
     width: 100%;
-    height: 60px; /* Only show the middle slice */
+    height: 60px;
     overflow: hidden;
     position: relative;
-    filter: blur(0.5px) brightness(0.9);
+    background: radial-gradient(circle at center,
+      rgba(200,0,255,0.15) 0%, 
+      rgba(0,0,0,0.7) 80%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 0 22px rgba(140,0,255,0.35);
 }
 
-.slider {
+/* glowing cyber scroll */
+.neo-slider {
     display: flex;
     width: max-content;
-    animation: slide 22s linear infinite;
+    animation: neonSlide 18s linear infinite;
+    filter: drop-shadow(0 0 6px rgba(160,0,255,0.5));
 }
 
-.slider img {
-    width: 100%;
-    height: auto;
-    opacity: 0.55;
+.neo-slider img {
+    height: 100%;
+    width: auto;
+    opacity: 0.6;
     object-fit: cover;
-    object-position: center; /* centers the middle */
-    filter: drop-shadow(0 0 6px rgba(100, 0, 150, 0.6));
+    object-position: center;
+    filter: brightness(1.2) contrast(1.1)
+            drop-shadow(0 0 6px rgba(122,0,255,0.6));
+    backdrop-filter: blur(2px);
 }
 
-@keyframes slide {
+@keyframes neonSlide {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
 }
+</style>
 
-
-    /* on hover reveal true colors */
-    .top-carousel:hover .slide{
-      filter: none;
-      transform: scale(1.02);
-    }
 
     /* small pager controls left/right */
     .carousel-controls{
