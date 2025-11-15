@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Channel Cover</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace; /* Synthwave font for a retro-futuristic vibe */
+            background: linear-gradient(45deg, #0a0a0a, #1a0033, #000000); /* Dark, mysterious gradient */
+            color: #ff00ff; /* Neon pink for text */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Synthwave background textures */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(90deg, transparent 0%, rgba(255, 0, 255, 0.05) 50%, transparent 100%);
+            animation: synthWave 10s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes synthWave {
+            0% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(1deg); opacity: 0.8; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+        }
+
+        /* Glitchy grid overlay for mystery */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: glitch 5s infinite;
+            z-index: -1;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2px, 2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #ff00ff; /* Neon pink border */
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.5),
+                inset 0 0 20px rgba(0, 255, 255, 0.3); /* Glowing halo */
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(255, 0, 255, 0.8), inset 0 0 40px rgba(0, 255, 255, 0.5); }
+        }
+
+        .channel-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff); /* Synth neon gradient */
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s ease;
+            animation: buttonPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 0, 255, 0.8); }
+        }
+
+        .channel-btn:hover {
+            animation: glitchHover 0.5s infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes glitchHover {
+            0% { transform: translate(0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Floating particles for extra mystery */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 0, 255, 0.7);
+            border-radius: 50%;
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Circle with Avatar -->
+        <div class="avatar-container">
+            <img src="https://3society.neocities.org/X3NUSUAL1.0/logofavi2-removebg-preview%20(1).png" alt="Avatar" class="avatar">
+        </div>
+
+        <!-- Button -->
+        <a href="https://www.youtube.com/@Xenusual" class="channel-btn">Visit Channel</a>
+    </div>
+
+    <!-- JavaScript for dynamic particles and effects -->
+    <script>
+        // Create floating particles for synth mystery
+        function createParticles() {
+            const body = document.body;
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                body.appendChild(particle);
+            }
+        }
+
+        // Add subtle audio-like synth hum (visual only, no actual sound)
+        function synthHum() {
+            const hum = document.createElement('div');
+            hum.style.position = 'absolute';
+            hum.style.top = '50%';
+            hum.style.left = '50%';
+            hum.style.width = '200px';
+            hum.style.height = '200px';
+            hum.style.border = '2px solid rgba(0, 255, 255, 0.3)';
+            hum.style.borderRadius = '50%';
+            hum.style.animation = 'hum 2s ease-in-out infinite';
+            document.body.appendChild(hum);
+        }
+
+        @keyframes hum {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        // Initialize effects
+        createParticles();
+        synthHum();
+    </script>
+</body>
+</html>
