@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Mist Portal</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Cinzel', serif;
+  color: white;
+}
+
+/* Cyber mist tunnel effect */
+#mistTunnel {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at center,
+              rgba(138,43,226,0.3) 0%,
+              rgba(75,0,130,0.6) 40%,
+              rgba(0,0,0,1) 100%);
+  animation: pulseMist 8s infinite alternate;
+  z-index: 0;
+}
+@keyframes pulseMist {
+  from { transform: scale(1) rotate(0deg); filter: blur(20px); }
+  to   { transform: scale(1.2) rotate(5deg); filter: blur(40px); }
+}
+
+/* Portal button */
+#portal {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #8a2be2, #4b0082);
+  box-shadow: 0 0 30px #8a2be2, inset 0 0 20px #4b0082;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 2s ease;
+  z-index: 2;
+}
+#portal.expanded {
+  width: 90%;
+  height: 80%;
+  border-radius: 20px;
+  box-shadow: 0 0 120px #b19cd9, inset 0 0 60px #4b0082;
+  background: radial-gradient(circle, #b19cd9, #8a2be2);
+}
+
+/* Portal text */
+#portal span {
+  font-size: 1.2em;
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  text-shadow: 0 0 10px #fff;
+}
+
+/* Password overlay */
+#passwordContainer {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: rgba(0,0,0,0.7);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 3;
+  display: none;
+  text-align: center;
+}
+#passwordContainer input {
+  padding: 8px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+#passwordContainer button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background: #6a0dad;
+  color: white;
+  cursor: pointer;
+}
+#passwordContainer button:hover {
+  background: #8a2be2;
+}
+
+/* Cursor trail canvas */
+#cursorCanvas {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  pointer-events: none;
+  z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<div id="mistTunnel"></div>
+
+<canvas id="cursorCanvas"></canvas>
+
+<div id="portal"><span>Enter the Portal</span></div>
+
+<div id="passwordContainer">
+  <p>Enter the 7-letter password:</p>
+  <input type="password" id="passwordInput" maxlength="7">
+  <br>
+  <button id="submitPassword">Unlock</button>
+</div>
+
+<audio id="portalSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c69e6c2126.mp3?filename=deep-whoosh-1-81163.mp3" preload="auto"></audio>
+
+<script>
+// Elements
+const portal = document.getElementById("portal");
+const passwordBox = document.getElementById("passwordContainer");
+const passwordInput = document.getElementById("passwordInput");
+const submitPassword = document.getElementById("submitPassword");
+const portalSound = document.getElementById("portalSound");
+
+const SECRET = "SECRET!"; // 7-letter password
+
+// First click shows password box
+portal.addEventListener("click", () => {
+  passwordBox.style.display = "block";
+});
+
+// Check password
+submitPassword.addEventListener("click", () => {
+  if (passwordInput.value === SECRET) {
+    portal.classList.add("expanded");
+    passwordBox.style.display = "none";
+    portalSound.play();
+  } else {
+    alert("Incorrect password!");
+  }
+});
+
+/* Cursor trail: smooth misty orbs */
+const canvas = document.getElementById("cursorCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let orbs = [];
+
+document.addEventListener("mousemove", (e) => {
+  orbs.push({
+    x: e.clientX,
+    y: e.clientY,
+    radius: Math.random() * 12 + 6,
+    alpha: 1,
+    decay: 0.02
+  });
+});
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for (let i=0; i<orbs.length; i++) {
+    let orb = orbs[i];
+    ctx.beginPath();
+    let gradient = ctx.createRadialGradient(orb.x,orb.y,0,orb.x,orb.y,orb.radius);
+    gradient.addColorStop(0, "rgba(186,85,211,"+orb.alpha+")");
+    gradient.addColorStop(1, "rgba(75,0,130,0)");
+    ctx.fillStyle = gradient;
+    ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI*2);
+    ctx.fill();
+    orb.alpha -= orb.decay;
+    orb.y -= 0.3; // slight float upward
+    if (orb.alpha <= 0) {
+      orbs.splice(i,1);
+      i--;
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
