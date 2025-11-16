@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual</title>
+<style>
+    /* ---------- Base Styles ---------- */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Courier New', monospace;
+        background-color: #000; 
+        color: cornflowerblue;
+        overflow-x: hidden;
+        overflow-y: auto;
+        transition: background 1s;
+        position: relative;
+    }
+
+    /* ---------- Star Particles ---------- */
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+        animation: twinkle 4s infinite;
+    }
+
+    @keyframes twinkle {
+        0%,100% { opacity: 0.2; }
+        50% { opacity: 1; }
+    }
+
+    /* ---------- Header ---------- */
+    header {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 3em;
+        color: cornflowerblue;
+        transition: opacity 0.5s;
+    }
+
+    header:hover { opacity: 1; }
+    header:not(:hover) { opacity: 0.3; }
+
+    /* ---------- Menu Buttons ---------- */
+    .menu {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+    .menu button {
+        background: linear-gradient(45deg, #440044, #220022);
+        color: cornflowerblue;
+        border: 2px solid cornflowerblue;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 1.2em;
+        border-radius: 5px;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 10;
+    }
+
+    .menu button:hover {
+        background: linear-gradient(45deg, #660066, #330033);
+    }
+
+    /* ---------- Drawers ---------- */
+    .drawer {
+        position: relative;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        background: linear-gradient(to top, #110011, #000000);
+        transition: max-height 0.7s ease, opacity 0.7s ease, transform 0.7s ease;
+        opacity: 0;
+        transform: scaleY(0.95);
+        margin-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .drawer.open {
+        max-height: 80vh;
+        opacity: 1;
+        transform: scaleY(1);
+    }
+
+    /* ---------- Floating Glow ---------- */
+    .holo-glow {
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, rgba(100,0,255,0.6), rgba(0,255,255,0.6));
+        margin: 0 auto;
+        border-radius: 2px;
+        animation: glowPulse 2s infinite alternate;
+    }
+
+    @keyframes glowPulse {
+        0% { transform: translateY(0) scaleX(1); opacity: 0.3; }
+        50% { transform: translateY(-5px) scaleX(1.2); opacity: 0.6; }
+        100% { transform: translateY(0) scaleX(1); opacity: 0.3; }
+    }
+
+    /* ---------- Gallery Drawer ---------- */
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .gallery img {
+        width: 120px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid cornflowerblue;
+        border-radius: 5px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .gallery img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px cornflowerblue;
+    }
+
+    /* ---------- Music Drawer ---------- */
+    .music {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+        gap: 15px;
+    }
+
+    audio {
+        width: 80%;
+        outline: none;
+    }
+
+    /* ---------- Content Sections ---------- */
+    .content-section {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background: rgba(30,0,30,0.8);
+        border-radius: 10px;
+        transition: opacity 0.7s;
+        opacity: 0;
+    }
+
+    .content-section.visible {
+        opacity: 1;
+    }
+
+    .content-section h2 {
+        color: cornflowerblue;
+        text-align: center;
+    }
+
+    .content-section p {
+        line-height: 1.6;
+        text-align: justify;
+    }
+
+    .content-section a {
+        color: #cc99ff;
+        text-decoration: none;
+    }
+</style>
+</head>
+<body>
+
+<header>Xenusual</header>
+
+<div class="menu">
+    <button data-drawer="gallery">Gallery</button>
+    <button data-drawer="music">Music</button>
+    <button data-section="tea">Tea Tidbits</button>
+    <button data-section="xen">About Xen</button>
+    <button data-section="tools">Tools</button>
+    <button data-section="discord">Join Discord</button>
+    <button data-section="chat">Chat with Xen</button>
+</div>
+
+<!-- ---------- Drawers ---------- -->
+<div class="drawer gallery-drawer">
+    <div class="holo-glow"></div>
+    <div class="gallery">
+        <a href="faux1.html" target="_blank"><img src="https://via.placeholder.com/120x80?text=Art1" alt="Art1"></a>
+        <a href="faux2.html" target="_blank"><img src="https://via.placeholder.com/120x80?text=Art2" alt="Art2"></a>
+        <a href="faux3.html" target="_blank"><img src="https://via.placeholder.com/120x80?text=Art3" alt="Art3"></a>
+    </div>
+</div>
+
+<div class="drawer music-drawer">
+    <div class="holo-glow"></div>
+    <div class="music">
+        <audio controls id="track1" src="faux.mp3"></audio>
+        <audio controls id="track2" src="faux.mp3"></audio>
+        <audio controls id="track3" src="faux.mp3"></audio>
+    </div>
+</div>
+
+<!-- ---------- Content Sections ---------- -->
+<div class="content-section" id="tea">
+    <h2>Tea Tidbits</h2>
+    <p>Discover subtle flavors of tea from around the world. Learn about tea ceremonies, unusual blends, and upcoming tea events. A perfect pause for your digital alchemy.</p>
+</div>
+
+<div class="content-section" id="xen">
+    <h2>About Xen</h2>
+    <p>Xen is a digital artist and creative alchemist, experimenting with AI tools, generative art, and immersive audiovisual experiences. Combining ChatGPT, AI assistants, and her own ingenuity, she conjures unique digital realms.</p>
+</div>
+
+<div class="content-section" id="tools">
+    <h2>Tools</h2>
+    <p>Her toolkit includes AI-based generation, ChatGPT for idea support, and a range of audio/visual software. From coding to music, Xen blends it all into interactive experiences.</p>
+</div>
+
+<div class="content-section" id="discord">
+    <h2>Join My Discord</h2>
+    <p><a href="#" id="discord-link">Click here to join</a></p>
+</div>
+
+<div class="content-section" id="chat">
+    <h2>Chat with Xen</h2>
+    <p>Engage directly! Ask questions, collaborate, or just hang out in a relaxed digital lounge.</p>
+</div>
+
+<script>
+    // ---------- Star Particles ----------
+    for(let i=0;i<50;i++){
+        let star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.width = Math.random() * 2 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(star);
+    }
+
+    // ---------- Drawer Logic ----------
+    const buttons = document.querySelectorAll('.menu button');
+    const galleryDrawer = document.querySelector('.gallery-drawer');
+    const musicDrawer = document.querySelector('.music-drawer');
+
+    function closeDrawers() {
+        galleryDrawer.classList.remove('open');
+        musicDrawer.classList.remove('open');
+        document.querySelectorAll('audio').forEach(a => a.pause());
+    }
+
+    function hideSections() {
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('visible'));
+    }
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetDrawer = btn.getAttribute('data-drawer');
+            const targetSection = btn.getAttribute('data-section');
+
+            if(targetDrawer){
+                if(targetDrawer === 'gallery'){
+                    if(galleryDrawer.classList.contains('open')){
+                        galleryDrawer.classList.remove('open');
+                    } else {
+                        closeDrawers();
+                        galleryDrawer.classList.add('open');
+                        galleryDrawer.scrollIntoView({behavior: 'smooth'});
+                    }
+                } else if(targetDrawer === 'music'){
+                    if(musicDrawer.classList.contains('open')){
+                        musicDrawer.classList.remove('open');
+                        document.querySelectorAll('audio').forEach(a => a.pause());
+                    } else {
+                        closeDrawers();
+                        musicDrawer.classList.add('open');
+                        document.querySelectorAll('audio').forEach(a => a.play());
+                        musicDrawer.scrollIntoView({behavior: 'smooth'});
+                    }
+                }
+            }
+
+            if(targetSection){
+                hideSections();
+                const section = document.getElementById(targetSection);
+                if(section){
+                    section.classList.add('visible');
+                    section.scrollIntoView({behavior: 'smooth'});
+                }
+            }
+        });
+    });
+
+    // ---------- Discord Confirmation ----------
+    document.getElementById('discord-link').addEventListener('click', function(e){
+        e.preventDefault();
+        let join = confirm("Do you want to join the Discord server?");
+        if(join){
+            window.open("https://discord.gg/", "_blank");
+        } else {
+            alert("No worries! You can join anytime later.");
+        }
+    });
+</script>
+</body>
+</html>
