@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual CyberSynth</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<style>
+/* -------- Base Styles -------- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'UnifrakturCook', cursive;
+    background: #1a1a1a;
+    color: #888;
+    overflow: hidden;
+    position: relative;
+    transition: color 0.5s ease;
+}
+
+body:hover { color: #fff; }
+
+/* -------- Headline -------- */
+h1 {
+    text-align: center;
+    font-size: 3em;
+    color: #aaa;
+    transition: color 1s ease, opacity 1s ease;
+    margin-top: 50px;
+}
+h1:hover {
+    color: #a0c0ff;
+    opacity: 1;
+}
+h1:not(:hover) { opacity: 0.25; }
+
+/* -------- Container -------- */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* -------- Avatar -------- */
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #a0c0ff;
+    box-shadow: 0 0 20px rgba(160,192,255,0.5),
+                inset 0 0 20px rgba(160,0,255,0.3);
+    animation: pulseGlow 3s ease-in-out infinite alternate;
+    margin-top: 20px;
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 20px rgba(160,192,255,0.5), inset 0 0 20px rgba(160,0,255,0.3); }
+    100% { box-shadow: 0 0 40px rgba(160,192,255,0.8), inset 0 0 40px rgba(160,0,255,0.5); }
+}
+
+/* -------- Icon Buttons -------- */
+.icon-bar {
+    position: fixed;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 100;
+}
+.icon-btn {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #a0c0ff, #8000ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(160,192,255,0.5);
+    transition: transform 0.3s ease;
+}
+.icon-btn:hover { transform: scale(1.2); }
+
+/* -------- Holographic Content Panel -------- */
+.holoContent {
+    position: absolute;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(20px);
+    min-width: 300px;
+    max-width: 500px;
+    padding: 20px;
+    background: rgba(30,30,60,0.7);
+    border: 1px solid rgba(160,192,255,0.5);
+    border-radius: 10px;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    overflow-wrap: break-word;
+}
+.holoContent.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+/* -------- Gallery -------- */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 15px;
+}
+.gallery img {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid rgba(160,192,255,0.3);
+    transition: transform 0.3s ease;
+}
+.gallery img:hover { transform: scale(1.2); }
+
+/* -------- Floating Particle Background -------- */
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(160,192,255,0.7);
+    border-radius: 50%;
+    animation: float 10s linear infinite;
+}
+@keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* -------- VHS Jitter -------- */
+.holoContent.vhs-jitter {
+    animation: vhsShake 0.25s steps(2) 0s 3,
+               vhsSkew 0.35s ease;
+    filter: brightness(120%) contrast(130%);
+    position: relative;
+}
+.holoContent.vhs-jitter::before {
+    content: "";
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.12);
+    mix-blend-mode: screen;
+    animation: vhsTear 0.35s ease;
+    pointer-events: none;
+}
+@keyframes vhsShake {
+    0%   { transform: translateX(-50%) translateY(-20px); }
+    25%  { transform: translateX(calc(-50% - 4px)) translateY(-18px); }
+    50%  { transform: translateX(calc(-50% + 3px)) translateY(-22px); }
+    75%  { transform: translateX(calc(-50% - 5px)) translateY(-19px); }
+    100% { transform: translateX(-50%) translateY(-20px); }
+}
+@keyframes vhsSkew {
+    0%   { transform: translateX(-50%) translateY(-20px) skewX(0deg); }
+    50%  { transform: translateX(calc(-50% + 6px))  translateY(-20px) skewX(2deg); }
+    100% { transform: translateX(-50%) translateY(-20px) skewX(0deg); }
+}
+@keyframes vhsTear {
+    0%   { opacity: 0.2; transform: translateX(0); }
+    50%  { opacity: 0.45; transform: translateX(25px); }
+    100% { opacity: 0; transform: translateX(-10px); }
+}
+
+/* -------- CRT Distortion -------- */
+.holoContent.crt-distort {
+    animation: crtWobble 0.35s ease forwards;
+    filter: contrast(140%) brightness(120%) saturate(120%);
+}
+.holoContent.crt-distort::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 2px);
+    mix-blend-mode: overlay;
+    opacity: .35;
+    pointer-events: none;
+    animation: crtScan 0.35s linear forwards;
+}
+@keyframes crtWobble {
+    0%   { transform: translateX(-50%) translateY(-20px) scaleX(1); }
+    33%  { transform: translateX(calc(-50% + 4px)) translateY(-18px) scaleX(1.04) skewX(1deg); }
+    66%  { transform: translateX(calc(-50% - 4px)) translateY(-22px) scaleX(0.96) skewX(-1deg); }
+    100% { transform: translateX(-50%) translateY(-20px) scaleX(1); }
+}
+@keyframes crtScan {
+    0%   { opacity: .15; }
+    50%  { opacity: .45; }
+    100% { opacity: .25; }
+}
+
+/* -------- Magnetic Ripple -------- */
+.holoContent.magnetic-ripple {
+    animation: ripple 0.5s ease forwards;
+}
+@keyframes ripple {
+    0% { transform: translateX(-50%) translateY(-10px) scale(1) rotate(0deg); }
+    25% { transform: translateX(-50%) translateY(-12px) scale(0.97) rotate(-1deg); }
+    50% { transform: translateX(-50%) translateY(-8px) scale(1.03) rotate(1deg); }
+    75% { transform: translateX(-50%) translateY(-11px) scale(0.98) rotate(-0.5deg); }
+    100% { transform: translateX(-50%) translateY(-10px) scale(1) rotate(0deg); }
+}
+
+/* -------- Static Fizzle -------- */
+.holoContent.static-fizzle {
+    animation: staticFizzle 0.6s forwards;
+}
+@keyframes staticFizzle {
+    0% { opacity: 1; filter: grayscale(0%) blur(0px); }
+    50% { filter: grayscale(100%) blur(2px); }
+    100% { opacity: 0; filter: grayscale(100%) blur(3px); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Xenusual</h1>
+    <img src="logofavi.png" alt="Avatar" class="avatar">
+
+    <!-- Gallery -->
+    <div class="gallery">
+        <a href="faux.html" target="_blank"><img src="https://via.placeholder.com/80x80?text=1"></a>
+        <a href="faux.html" target="_blank"><img src="https://via.placeholder.com/80x80?text=2"></a>
+        <a href="faux.html" target="_blank"><img src="https://via.placeholder.com/80x80?text=3"></a>
+    </div>
+</div>
+
+<!-- Icon Bar -->
+<div class="icon-bar">
+    <div class="icon-btn" data-message="About Xen">A</div>
+    <div class="icon-btn" data-message="Projects">P</div>
+    <div class="icon-btn" data-message="Favorites">F</div>
+    <div class="icon-btn" data-message="Tools">T</div>
+    <div class="icon-btn" data-message="Social">S</div>
+    <div class="icon-btn" data-message="Art Gallery">G</div>
+</div>
+
+<!-- Holographic Content Panel -->
+<div class="holoContent"></div>
+
+<script>
+// ------- Particle Background -------
+function createParticles() {
+    const body = document.body;
+    for(let i=0;i<30;i++){
+        const particle = document.createElement('div');
+        particle.className='particle';
+        particle.style.left=Math.random()*100+'%';
+        particle.style.animationDelay=Math.random()*10+'s';
+        body.appendChild(particle);
+    }
+}
+createParticles();
+
+// ------- Icon & Holo Panel Logic -------
+const icons = document.querySelectorAll('.icon-btn');
+const box = document.querySelector('.holoContent');
+let activePanel = null;
+let autoFadeTimeout;
+
+icons.forEach(icon => {
+    icon.addEventListener('click', () => {
+        // Hide others
+        icons.forEach(i => i !== icon && i.classList.remove('active'));
+        icons.forEach(i => i !== icon && i.classList.add('inactive'));
+
+        // Show content
+        box.innerText = icon.dataset.message;
+        box.className = 'holoContent visible';
+        activePanel = icon;
+        restartAutoFade();
+    });
+
+    // Double click to hide
+    icon.addEventListener('dblclick', () => {
+        box.className = 'holoContent';
+        icons.forEach(i => i.classList.remove('active','inactive'));
+        activePanel=null;
+        clearTimeout(autoFadeTimeout);
+    });
+});
+
+// ------- Holo Panel Auto Fade Sequence -------
+function restartAutoFade(){
+    clearTimeout(autoFadeTimeout);
+    autoFadeTimeout = setTimeout(()=>{
+        if(!activePanel) return;
+
+        // VHS Jitter
+        box.classList.add('vhs-jitter');
+
+        setTimeout(()=>{
+            box.classList.remove('vhs-jitter');
+            box.classList.add('crt-distort');
+
+            setTimeout(()=>{
+                box.classList.remove('crt-distort');
+                box.classList.add('magnetic-ripple');
+
+                setTimeout(()=>{
+                    box.classList.remove('magnetic-ripple');
+                    box.classList.add('static-fizzle');
+
+                    setTimeout(()=>{
+                        box.className='holoContent';
+                        activePanel=null;
+                        icons.forEach(i=>i.classList.remove('active','inactive'));
+                    },600);
+                },500); // magnetic ripple duration
+            },350); // crt distortion duration
+        },300); // vhs jitter duration
+    },7000); // 7s wait
+}
+</script>
+
+</body>
+</html>
