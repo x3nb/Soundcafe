@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual Cybersynth</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<style>
+/* --- Basic Reset --- */
+body, html {
+    margin:0;
+    padding:0;
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: cornflowerblue;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* --- Starfield --- */
+.star {
+    position:absolute;
+    background:white;
+    border-radius:50%;
+    opacity:0.8;
+}
+
+/* --- Container --- */
+.container {
+    max-width: 1000px;
+    margin:0 auto;
+    text-align:center;
+    padding:50px 20px;
+}
+
+/* --- Headline --- */
+h1 {
+    font-family: 'UnifrakturCook', cursive;
+    font-size:4rem;
+    color: cornflowerblue;
+    transition: opacity 2s ease;
+}
+h1:not(:hover) {
+    opacity:0.3;
+}
+
+/* --- Menu Icons --- */
+.menu {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:30px;
+    gap:20px;
+}
+.menu div {
+    cursor:pointer;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background: linear-gradient(45deg,#4B0082,#6A0DAD);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-weight:bold;
+    transition: transform 0.3s;
+}
+.menu div:hover {transform: scale(1.2);}
+
+/* --- Drawers --- */
+.drawer {
+    overflow:hidden;
+    max-height:0;
+    transition: max-height 0.8s ease;
+}
+.drawer.open {
+    max-height:1000px; /* big enough */
+}
+.drawer-content {
+    padding:20px;
+}
+
+/* --- Fade sway --- */
+.fade-sway.show {
+    opacity:1;
+    transform: translateY(0) rotate(0deg);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-sway.hide {
+    animation: swayFade 0.7s forwards;
+}
+@keyframes swayFade {
+    0% { opacity:1; transform:translateY(0px) rotate(0deg);}
+    25% { transform:translateY(-2px) rotate(-1deg);}
+    50% { transform:translateY(-4px) rotate(1deg);}
+    75% { transform:translateY(-6px) rotate(-1deg);}
+    100% { opacity:0; transform:translateY(-8px) rotate(0deg);}
+}
+
+/* --- Gallery --- */
+.gallery img {
+    width:80px;
+    margin:5px;
+    cursor:pointer;
+    border-radius:5px;
+    transition: transform 0.3s;
+}
+.gallery img:hover {transform: scale(1.2);}
+#fullscreenPreview {
+    position:fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:100;
+}
+#fullscreenPreview img {max-width:90%; max-height:90%;}
+
+/* --- Music --- */
+audio {width:80%; margin-top:10px;}
+
+/* --- Discord overlay --- */
+#overlay {
+    position:fixed;
+    top:0; left:0; width:100vw; height:100vh;
+    background: rgba(0,0,0,0.95);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    flex-direction:column;
+    z-index:200;
+}
+#overlay button {
+    margin:10px;
+    padding:10px 20px;
+    background:#4B0082;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Xenusual</h1>
+    <div class="menu">
+        <div data-drawer="about">A</div>
+        <div data-drawer="projects">P</div>
+        <div data-drawer="favorites">F</div>
+        <div data-drawer="tools">T</div>
+        <div data-drawer="social">S</div>
+        <div data-drawer="gallery">G</div>
+        <div data-drawer="music">M</div>
+    </div>
+
+    <!-- Drawers -->
+    <div id="about" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>About Xen</h2>
+            <p>Xen is a digital alchemist, experimenting with AI, generative art, and mystical visuals.</p>
+            <p>Tea tidbits: Enjoys rare purple teas and hosts online tea events.</p>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="projects" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>Projects</h2>
+            <p>From AI-assisted art to digital installations, Xen explores the border of code and magic.</p>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="favorites" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>Favorites</h2>
+            <p>Some favorite tools and techniques: ChatGPT, Blender, generative AI experiments.</p>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="tools" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>Tools</h2>
+            <p>Software, AI, and other digital instruments Xen uses to create alchemical visuals.</p>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="social" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>Social</h2>
+            <button id="discordBtn">Join Discord</button>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="gallery" class="drawer">
+        <div class="drawer-content fade-sway gallery">
+            <h2>Art Gallery</h2>
+            <img src="https://via.placeholder.com/80" alt="Art1" onclick="showPreview(this)">
+            <img src="https://via.placeholder.com/80" alt="Art2" onclick="showPreview(this)">
+            <img src="https://via.placeholder.com/80" alt="Art3" onclick="showPreview(this)">
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+
+    <div id="music" class="drawer">
+        <div class="drawer-content fade-sway">
+            <h2>Music</h2>
+            <audio src="track1.mp3" controls></audio>
+            <audio src="track2.mp3" controls></audio>
+            <audio src="track3.mp3" controls></audio>
+            <a href="#gallery">Back to Images</a>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen preview -->
+<div id="fullscreenPreview" onclick="this.style.display='none'">
+    <img src="" alt="Preview">
+</div>
+
+<!-- Discord Overlay -->
+<div id="overlay">
+    <p>Do you want to join the Discord?</p>
+    <div>
+        <button id="joinYes">Yes</button>
+        <button id="joinNo">No</button>
+    </div>
+</div>
+
+<script>
+// --- Starfield ---
+for(let i=0;i<50;i++){
+    const star=document.createElement('div');
+    star.className='star';
+    star.style.top=Math.random()*100+'vh';
+    star.style.left=Math.random()*100+'vw';
+    star.style.width=(1+Math.random()*2)+'px';
+    star.style.height=star.style.width;
+    star.style.opacity=Math.random();
+    document.body.appendChild(star);
+}
+
+// --- Drawer toggle ---
+const drawers=document.querySelectorAll('.drawer');
+document.querySelectorAll('.menu div').forEach(menuItem=>{
+    menuItem.addEventListener('click',()=>{
+        drawers.forEach(d=>{
+            const content=d.querySelectorAll('.fade-sway');
+            if(d.id===menuItem.dataset.drawer){
+                if(!d.classList.contains('open')){
+                    d.classList.add('open');
+                    content.forEach(c=>{
+                        c.classList.remove('hide');
+                        c.classList.add('show');
+                    });
+                    // Music autoplay
+                    if(d.id==='music'){
+                        d.querySelectorAll('audio').forEach(track=>{
+                            track.currentTime=0;
+                            track.play();
+                        });
+                    }
+                }
+            } else {
+                content.forEach(c=>{
+                    c.classList.remove('show');
+                    c.classList.add('hide');
+                });
+                setTimeout(()=>d.classList.remove('open'), 800);
+                // Pause music if closing music drawer
+                if(d.id==='music'){
+                    d.querySelectorAll('audio').forEach(track=>track.pause());
+                }
+            }
+        });
+        window.scrollTo({top:0,behavior:'smooth'});
+    });
+});
+
+// --- Gallery preview ---
+function showPreview(img){
+    const preview=document.getElementById('fullscreenPreview');
+    preview.querySelector('img').src=img.src;
+    preview.style.display='flex';
+}
+
+// --- Discord ---
+const overlay=document.getElementById('overlay');
+document.getElementById('discordBtn').addEventListener('click',()=>overlay.style.display='flex');
+document.getElementById('joinYes').addEventListener('click',()=>{
+    overlay.style.display='none';
+    window.open('https://discord.com','_blank');
+});
+document.getElementById('joinNo').addEventListener('click',()=>{
+    overlay.style.display='none';
+    alert('Maybe next time!');
+});
+</script>
+</body>
+</html>
