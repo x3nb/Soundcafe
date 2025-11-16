@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual</title>
+<style>
+/* --- Reset & base --- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body, html { width:100%; height:100%; overflow-x:hidden; font-family:'Courier New', monospace; background:#000; color:cornflowerblue; scroll-behavior:smooth; }
+
+/* --- Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+
+/* --- Background --- */
+body {
+  background: linear-gradient(to bottom, #0a0a0a 0%, #1a001a 100%);
+  position: relative;
+}
+#stars {
+  position: fixed; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:0;
+}
+.star {
+  position:absolute; width:2px; height:2px; background:cornflowerblue; opacity:0.7; border-radius:50%;
+}
+
+/* --- Director's Cut Background --- */
+#bg-scene {
+  position: fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1; transition: opacity 2s ease;
+  opacity:0; pointer-events:none;
+}
+
+/* --- Title --- */
+#headline {
+  position: fixed; top:10%; left:50%; transform:translateX(-50%) translateY(0);
+  font-family:'UnifrakturCook', cursive;
+  font-size:4rem; color:cornflowerblue; z-index:5;
+  animation: floatShimmer 4s ease-in-out infinite;
+}
+@keyframes floatShimmer {
+  0% { transform:translateX(-50%) translateY(0); opacity:0.8; }
+  50% { transform:translateX(-50%) translateY(-10px); opacity:1; }
+  100% { transform:translateX(-50%) translateY(0); opacity:0.8; }
+}
+
+/* --- Gallery & Music Drawers --- */
+.drawer {
+  position: fixed; bottom:0; left:0; width:100%; max-height:0; overflow:hidden; background:rgba(0,0,0,0.85);
+  transition: max-height 1s ease;
+  z-index:4; display:flex; justify-content:center; padding:0 0;
+}
+.drawer.open { max-height:200px; padding:20px 0; }
+
+/* --- Gallery Images --- */
+.drawer img { width:80px; margin:0 10px; border:2px solid cornflowerblue; border-radius:5px; cursor:pointer; transition: transform 0.3s; }
+.drawer img:hover { transform:scale(1.1); }
+
+/* --- Music Drawer --- */
+#musicDrawer audio { display:none; }
+
+/* --- Content Sections --- */
+.section {
+  width:90%; max-width:800px; margin:20px auto; padding:20px; background:rgba(25,0,25,0.7); border-radius:10px; display:none;
+  color:cornflowerblue;
+  transition: opacity 1s ease;
+}
+
+/* --- Links --- */
+a { color:cornflowerblue; text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* --- Fullscreen image overlay --- */
+#fullscreen-img {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    max-height: 80%;
+    display: none;
+    z-index:20;
+    border:3px solid cornflowerblue;
+    border-radius:10px;
+}
+
+/* --- Fade effect for exiting content --- */
+.fade-out { animation: fadeOut 2s forwards; }
+@keyframes fadeOut { from{opacity:1;} to{opacity:0;} }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div id="stars"></div>
+
+<!-- Director's Cut Background -->
+<img id="bg-scene" src="" alt="Director Scene">
+
+<!-- Title -->
+<div id="headline">Xenusual</div>
+
+<!-- Gallery Drawer -->
+<div id="galleryDrawer" class="drawer">
+  <img src="start.png" alt="start" data-bg="start.png" data-audio="audio1.mp3">
+  <img src="me.png" alt="me" data-bg="me.png" data-audio="audio2.mp3">
+  <img src="tea.png" alt="tea" data-bg="tea.png" data-audio="audio3.mp3">
+  <img src="cat.png" alt="cat" data-bg="cat.png" data-audio="audio4.mp3">
+  <img src="coffee.png" alt="coffee" data-bg="coffee.png" data-audio="audio5.mp3">
+</div>
+
+<!-- Music Drawer -->
+<div id="musicDrawer" class="drawer">
+  <audio id="track1" src="music1.mp3" loop></audio>
+  <audio id="track2" src="music2.mp3" loop></audio>
+  <audio id="track3" src="music3.mp3" loop></audio>
+</div>
+
+<!-- Sections -->
+<div id="about" class="section">
+  <h2>About Xenusual</h2>
+  <p>Xenusual is a digital alchemist and experimental artist, blending AI, ChatGPT, and digital magic into immersive creations.</p>
+</div>
+<div id="projects" class="section">
+  <h2>Projects</h2>
+  <p>Current explorations: digital tea rituals, interactive VR scenes, and ambient audiovisual experiences.</p>
+</div>
+<div id="favorites" class="section">
+  <h2>Favorites</h2>
+  <p>Tea ceremonies, midnight coding sessions, feline companions, and surreal digital landscapes.</p>
+</div>
+<div id="tools" class="section">
+  <h2>Tools</h2>
+  <p>AI art generators, ChatGPT, digital painting apps, music composition software, and more.</p>
+</div>
+<div id="social" class="section">
+  <h2>Social</h2>
+  <p>Join the Discord server or follow for updates and collaborative projects.</p>
+  <a href="#" id="discordLink">Join Discord</a>
+</div>
+<div id="art" class="section">
+  <h2>Art Gallery</h2>
+  <p>Click gallery images above to see full-screen background transformations and ambient audio.</p>
+</div>
+
+<!-- Fullscreen Image -->
+<img id="fullscreen-img" src="" alt="Full Screen View">
+
+<script>
+// --- Starfield ---
+const stars = document.getElementById('stars');
+for(let i=0;i<100;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  s.style.top=Math.random()*100+'%';
+  s.style.left=Math.random()*100+'%';
+  s.style.opacity=Math.random();
+  s.style.width=s.style.height=Math.random()*2+1+'px';
+  stars.appendChild(s);
+}
+
+// --- Drawer toggle ---
+function toggleDrawer(id){ 
+  const d = document.getElementById(id);
+  d.classList.toggle('open');
+}
+
+// --- Gallery image click ---
+const galleryImgs = document.querySelectorAll('#galleryDrawer img');
+const bgScene = document.getElementById('bg-scene');
+let currentAudio = null;
+
+galleryImgs.forEach(img=>{
+  img.addEventListener('click',()=>{
+    // Change background image
+    bgScene.src = img.dataset.bg;
+    bgScene.style.opacity=0;
+    setTimeout(()=>{bgScene.style.opacity=1;},50);
+
+    // Play ambient audio
+    if(currentAudio){ currentAudio.pause(); currentAudio.currentTime=0; }
+    if(img.dataset.audio){
+      currentAudio = new Audio(img.dataset.audio);
+      currentAudio.loop = true;
+      currentAudio.volume = 0.3;
+      currentAudio.play();
+    }
+  });
+});
+
+// --- Music Drawer click ---
+document.getElementById('musicDrawer').addEventListener('click',()=>{
+  const audios = document.querySelectorAll('#musicDrawer audio');
+  audios.forEach(a=>a.play());
+});
+
+// --- Discord confirm ---
+document.getElementById('discordLink').addEventListener('click',(e)=>{
+  e.preventDefault();
+  if(confirm("Do you want to join the Discord server?")){
+    alert("Opening Discord…");
+    window.open('https://discord.gg/faux', '_blank');
+  } else {
+    alert("Maybe next time!");
+  }
+});
+
+// --- Fullscreen image overlay ---
+function showFullscreen(src){
+  const fs = document.getElementById('fullscreen-img');
+  fs.src = src;
+  fs.style.display='block';
+  setTimeout(()=>fs.style.opacity=1,50);
+  fs.addEventListener('click',()=>{fs.style.display='none'; fs.style.opacity=0;});
+}
+
+// --- Example: clicking gallery shows fullscreen image ---
+galleryImgs.forEach(img=>{
+  img.addEventListener('dblclick',()=>showFullscreen(img.src));
+});
+
+// --- Smooth fade for content sections ---
+const sections = document.querySelectorAll('.section');
+function openSection(id){
+  sections.forEach(s=>s.style.display='none');
+  const sec = document.getElementById(id);
+  sec.style.display='block';
+  sec.style.opacity=0;
+  setTimeout(()=>sec.style.opacity=1,50);
+}
+
+// --- Anchors (scroll back to gallery) ---
+function scrollToGallery(){ document.getElementById('galleryDrawer').scrollIntoView({behavior:'smooth'}); }
+</script>
+</body>
+</html>
