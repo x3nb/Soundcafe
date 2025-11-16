@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cyber Mist Tunnel Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet" />
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: #111;
+  font-family: 'Open Sans', sans-serif;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Cyber Mist Tunnel background */
+#mist-tunnel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  background: radial-gradient(#0c0c0c, #111);
+}
+
+.mist {
+  position: absolute;
+  width: 2px;
+  height: 150%;
+  top: -25%;
+  background: linear-gradient(to bottom, rgba(138,43,226,0), rgba(138,43,226,0.7), rgba(138,43,226,0));
+  animation: flow 4s linear infinite;
+}
+
+@keyframes flow {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.3; }
+  50% { transform: translateY(100%) scaleX(1.2); opacity: 0.7; }
+  100% { transform: translateY(200%) scaleX(1); opacity: 0.3; }
+}
+
+/* Portal */
+#portal {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #8a2be2, #4b0082);
+  box-shadow: 0 0 20px #8a2be2, inset 0 0 10px #4b0082;
+  cursor: pointer;
+  transition: all 2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 1.2em;
+  z-index: 2;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Expanded portal */
+#portal.expanded {
+  width: 80%;
+  height: 80%;
+  border-radius: 10px;
+  font-size: 2em;
+  background: radial-gradient(circle, #b19cd9, #8a2be2);
+  box-shadow: 0 0 100px #b19cd9, inset 0 0 50px #4b0082;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Message inside portal */
+#message {
+  opacity: 0;
+  transition: opacity 1s ease;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+}
+#portal.expanded #message {
+  opacity: 1;
+  margin-top: 20px;
+  font-family: 'Cinzel', serif;
+}
+
+/* Pen name input overlay */
+#penNameContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#penNameContainer input {
+  padding: 8px 12px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+#penNameContainer input::placeholder { color: #ddd; }
+#penNameContainer button {
+  padding: 8px 16px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #6a0dad;
+  color: #fff;
+  cursor: pointer;
+}
+#penNameContainer button:hover { background-color: #8a2be2; }
+</style>
+</head>
+<body>
+
+<!-- Mist tunnel background -->
+<div id="mist-tunnel"></div>
+
+<!-- Pen name input overlay -->
+<div id="penNameContainer">
+  <label for="penName">Enter your pen name:</label>
+  <input type="text" id="penName" placeholder="Your Pen Name" />
+  <button id="submitPenName">Enter</button>
+</div>
+
+<!-- Portal -->
+<div id="portal">
+  <div id="message">Enter the Tunnel!</div>
+</div>
+
+<!-- Audio -->
+<audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
+
+<script>
+/* ================= Generate Mist Lines ================= */
+const mistContainer = document.getElementById('mist-tunnel');
+for(let i=0;i<100;i++){
+  const mistLine = document.createElement('div');
+  mistLine.className = 'mist';
+  mistLine.style.left = Math.random() * 100 + '%';
+  mistLine.style.animationDuration = (3 + Math.random()*3) + 's';
+  mistLine.style.opacity = Math.random()*0.5 + 0.2;
+  mistContainer.appendChild(mistLine);
+}
+
+/* ================= Portal Interaction ================= */
+const portal = document.getElementById('portal');
+const messageDiv = document.getElementById('message');
+const penNameContainer = document.getElementById('penNameContainer');
+const penNameInput = document.getElementById('penName');
+const submitBtn = document.getElementById('submitPenName');
+
+const quotes = [
+  "Step into the neon tunnel of wonder.",
+  "Mist swirls with electric energy.",
+  "Through the cyber mist, your path glows.",
+  "Adventure awaits in the shimmering corridor.",
+  "Your creativity pulses with neon light.",
+  "The tunnel hums with infinite possibility.",
+  "Embrace the flow of the cyber mist."
+];
+
+function getRandomQuote(){ return quotes[Math.floor(Math.random()*quotes.length)]; }
+
+let userPenName = "";
+
+portal.addEventListener('click', () => {
+  if (!portal.classList.contains('expanded')) penNameContainer.style.display='flex';
+});
+
+submitBtn.addEventListener('click', () => {
+  const name = penNameInput.value.trim();
+  if(name){
+    userPenName = name;
+    penNameContainer.style.display='none';
+    messageDiv.innerHTML = `Welcome, <strong>${userPenName}</strong>! ${getRandomQuote()}`;
+    portal.classList.add('expanded');
+    document.querySelector('audio').play();
+    setTimeout(()=>{ window.open('https://your-community-link.com','_blank'); },3000);
+  } else { alert('Please enter your pen name.'); }
+});
+</script>
+
+</body>
+</html>
