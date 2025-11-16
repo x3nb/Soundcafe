@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xenusual Cybersynth</title>
+<style>
+/* --- Fonts & base styles --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=MedievalSharp&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Mono', monospace;
+    background: black;
+    color: cornflowerblue;
+    overflow-x: hidden;
+    position: relative;
+}
+
+h1 {
+    font-family: 'MedievalSharp', cursive; /* Frank Goth-like */
+    font-size: 3em;
+    text-align: center;
+    margin-top: 40px;
+    transition: opacity 0.5s ease;
+}
+
+h1:hover {
+    opacity: 1;
+}
+
+h1:not(:hover) {
+    opacity: 0.3;
+}
+
+/* --- Starfield --- */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: drift 50s linear infinite;
+}
+
+@keyframes drift {
+    0% { transform: translateY(0px) translateX(0px); opacity: 0.8; }
+    50% { transform: translateY(-15px) translateX(10px); opacity: 1; }
+    100% { transform: translateY(0px) translateX(0px); opacity: 0.8; }
+}
+
+/* --- Container --- */
+.container {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- Menu Icons --- */
+.menu {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.menu div {
+    width: 60px;
+    height: 60px;
+    margin: 0 15px;
+    background: linear-gradient(135deg, #440066, #660088);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.menu div:hover {
+    transform: scale(1.1);
+}
+
+/* --- Icon labels --- */
+.menu div span {
+    position: absolute;
+    bottom: -20px;
+    font-size: 0.7em;
+    color: cornflowerblue;
+}
+
+/* --- Content drawers --- */
+.drawer {
+    width: 80%;
+    margin: 20px auto;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1s ease, opacity 1s ease;
+    opacity: 0;
+    background: rgba(80,0,80,0.6);
+    border-radius: 10px;
+    padding: 0 20px;
+}
+
+.drawer.open {
+    max-height: 1000px; /* large enough for content */
+    opacity: 1;
+    padding: 20px;
+}
+
+/* --- Gallery drawer --- */
+.gallery img {
+    width: 80px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.2);
+}
+
+/* --- Fullscreen preview --- */
+#fullscreenPreview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    max-width: 90%;
+    max-height: 90%;
+    display: none;
+    border: 3px solid cornflowerblue;
+    border-radius: 10px;
+    z-index: 999;
+}
+
+/* --- Music drawer --- */
+.music audio {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* --- Buttons --- */
+button {
+    background: linear-gradient(135deg, #440066, #660088);
+    color: cornflowerblue;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-size: 1em;
+    transition: transform 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* --- Fade/Sway content effect --- */
+.fade-sway {
+    transition: opacity 1s ease, transform 1s ease;
+}
+.fade-sway.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+.fade-sway.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- External link overlay --- */
+#overlay {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    color: cornflowerblue;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:1.5em;
+    display:none;
+    z-index: 999;
+}
+
+#overlay button {
+    margin: 15px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Xenusual</h1>
+
+<div class="container">
+
+    <div class="menu">
+        <div data-drawer="about"><span>About</span>👁️</div>
+        <div data-drawer="projects"><span>Projects</span>🛠️</div>
+        <div data-drawer="favorites"><span>Favorites</span>💜</div>
+        <div data-drawer="tools"><span>Tools</span>⚡</div>
+        <div data-drawer="social"><span>Social</span>🌐</div>
+        <div data-drawer="gallery"><span>Gallery</span>🖼️</div>
+        <div data-drawer="music"><span>Music</span>🎵</div>
+    </div>
+
+    <!-- About Drawer -->
+    <div class="drawer" id="about">
+        <p class="fade-sway show">
+        Xen is a digital alchemist, experimenting with AI, ChatGPT, and digital art. She loves tea, often sharing tidbits from tea events and her favorite brews.
+        </p>
+    </div>
+
+    <!-- Projects Drawer -->
+    <div class="drawer" id="projects">
+        <p class="fade-sway show">
+        Projects include digital art experiments, AI collaborations, and immersive multimedia stories.
+        </p>
+    </div>
+
+    <!-- Favorites Drawer -->
+    <div class="drawer" id="favorites">
+        <p class="fade-sway show">
+        Favorite things: purple-themed visuals, tea, synthwave music, and creative experiments.
+        </p>
+    </div>
+
+    <!-- Tools Drawer -->
+    <div class="drawer" id="tools">
+        <p class="fade-sway show">
+        Tools include AI platforms, ChatGPT, digital painting software, and music creation suites.
+        </p>
+    </div>
+
+    <!-- Social Drawer -->
+    <div class="drawer" id="social">
+        <p class="fade-sway show">
+        Connect via Discord or other social platforms to follow Xen’s journey.
+        </p>
+        <button id="discordBtn">Join Discord</button>
+    </div>
+
+    <!-- Gallery Drawer -->
+    <div class="drawer gallery" id="gallery">
+        <p class="fade-sway show">Click an image to preview:</p>
+        <img src="https://via.placeholder.com/80" data-link="faux.html">
+        <img src="https://via.placeholder.com/80" data-link="faux.html">
+        <img src="https://via.placeholder.com/80" data-link="faux.html">
+    </div>
+
+    <!-- Music Drawer -->
+    <div class="drawer music" id="music">
+        <p class="fade-sway show">Click play to listen:</p>
+        <audio controls src="music1.mp3"></audio>
+        <audio controls src="music2.mp3"></audio>
+        <audio controls src="music3.mp3"></audio>
+    </div>
+
+</div>
+
+<!-- Fullscreen Image Preview -->
+<img id="fullscreenPreview" src="">
+
+<!-- External Link Overlay -->
+<div id="overlay">
+    <p>Do you want to join the Discord server?</p>
+    <button id="joinYes">Yes</button>
+    <button id="joinNo">No</button>
+</div>
+
+<script>
+// --- Generate gentle starfield ---
+for(let i=0;i<50;i++){
+    const star = document.createElement('div');
+    star.className='star';
+    star.style.top = Math.random()*100 + 'vh';
+    star.style.left = Math.random()*100 + 'vw';
+    star.style.width = (1+Math.random()*2)+'px';
+    star.style.height = star.style.width;
+    star.style.animationDuration = (40+Math.random()*20)+'s';
+    star.style.opacity = Math.random();
+    document.body.appendChild(star);
+}
+
+// --- Drawer toggle ---
+const drawers = document.querySelectorAll('.drawer');
+document.querySelectorAll('.menu div').forEach(menuItem=>{
+    menuItem.addEventListener('click',()=>{
+        drawers.forEach(d=>{
+            if(d.id===menuItem.dataset.drawer){
+                d.classList.toggle('open');
+            } else {
+                d.classList.remove('open');
+            }
+        });
+        window.scrollTo({top:0, behavior:'smooth'}); // elevator effect
+    });
+});
+
+// --- Gallery image preview ---
+document.querySelectorAll('.gallery img').forEach(img=>{
+    img.addEventListener('click',()=>{
+        const preview = document.getElementById('fullscreenPreview');
+        preview.src = img.src;
+        preview.style.display='block';
+    });
+});
+
+document.getElementById('fullscreenPreview').addEventListener('click',()=>{
+    document.getElementById('fullscreenPreview').style.display='none';
+});
+
+// --- Discord overlay ---
+const overlay = document.getElementById('overlay');
+document.getElementById('discordBtn').addEventListener('click',()=>overlay.style.display='flex');
+
+document.getElementById('joinYes').addEventListener('click',()=>{
+    overlay.style.display='none';
+    window.open('https://discord.com','_blank'); // majestic open
+});
+document.getElementById('joinNo').addEventListener('click',()=>{
+    overlay.style.display='none';
+    alert('Maybe next time!');
+});
+</script>
+
+</body>
+</html>
