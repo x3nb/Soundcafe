@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ghost & Vampire Grid with Features</title>
+<title>Ghost & Vampire 36-Grid with Features</title>
 <!-- Google font for header -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
@@ -151,33 +151,33 @@
 <body>
 
 <h1>Welcome</h1>
-<!-- Music toggle switch -->
+<!-- Toggle switch for music -->
 <div id="musicToggle">
   <input type="checkbox" id="musicSwitch" />
   <label for="musicSwitch">Music On/Off</label>
 </div>
 
-<!-- The main grid -->
+<!-- Grid container -->
 <div class="gallery" id="gallery"></div>
 
-<!-- Audio elements for 3 songs -->
+<!-- 3 Songs for auto-play -->
 <audio id="song1" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 <audio id="song2" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
 <audio id="song3" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
 
-<!-- External music player container -->
+<!-- External music control -->
 <div id="audioPlayerContainer" style="display:none; position:fixed; bottom:10px; right:10px; background:#222; padding:10px; border-radius:8px; z-index:999;">
   <button id="playAll">Play All Songs</button>
   <button id="stopAll">Stop All</button>
 </div>
 
-<!-- chime sound -->
+<!-- Chime -->
 <audio id="chimeSound" src="https://www.soundjay.com/misc/sounds/wood-chime-01.mp3" preload="auto"></audio>
 
 <script>
   const gallery = document.getElementById('gallery');
 
-  // Generate 36 squares with diverse images, links, prompts
+  // Data for all 36 squares with varied images, links, prompts
   const squaresData = [
     { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
     { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
@@ -185,12 +185,33 @@
     { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
     { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
     { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
-    // add more images with diverse links/prompts
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: 'Ask a question?' },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: 'Ask a question?' },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: 'Ask a question?' },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+
+    // Fill to 36 with repeats for demo
   ];
   while (squaresData.length < 36) { squaresData.push(...squaresData); }
-  squaresData.length = 36;
+  squaresData.length=36;
 
-  // Generate the grid squares
+  // Generate grid squares
   for (let i=0; i<36; i++) {
     const div = document.createElement('div');
     div.className='card';
@@ -209,10 +230,10 @@
         ${linkHTML}
       </div>
     `;
-    gallery.appendChild(div);
+    document.getElementById('gallery').appendChild(div);
   }
 
-  // Apply random effects
+  // Effects
   document.querySelectorAll('.card').forEach(card => {
     if (Math.random() < 0.7) {
       card.classList.add('flicker-shadow');
@@ -223,21 +244,19 @@
     }
   });
 
-  // Random delayed fall for one square
+  // Delayed fall for one square
   const allSquares = Array.from(document.querySelectorAll('.card'));
   const randIdx = Math.floor(Math.random()*allSquares.length);
   const fallSquare = allSquares[randIdx];
   setTimeout(() => {
     fallSquare.classList.add('fall-out');
   }, 15000);
-
-  // Make it stay out on click
   fallSquare.addEventListener('click', () => {
     fallSquare.classList.remove('fall-out');
     fallSquare.classList.add('fallen');
   });
 
-  // Image morphing for #morphSquare
+  // Morphing images
   const morphImages = [
     'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80&ixid=...&text=Vampire2'
@@ -271,7 +290,7 @@
     });
   }
 
-  // Music toggle switch
+  // Music control
   const song1 = document.getElementById('song1');
   const song2 = document.getElementById('song2');
   const song3 = document.getElementById('song3');
@@ -287,8 +306,7 @@
     song2.pause(); song2.currentTime=0;
     song3.pause(); song3.currentTime=0;
   };
-
-  // Auto-play sequence
+  // Sequential auto-play if checked
   document.getElementById('musicSwitch').addEventListener('change', (e) => {
     if (e.target.checked) {
       song1.play();
@@ -298,27 +316,13 @@
       song3.pause(); song3.currentTime=0;
     }
   });
-
-  // Optional: loop songs continuously
   song1.onended = () => { if (document.getElementById('musicSwitch').checked) song2.play(); };
   song2.onended = () => { if (document.getElementById('musicSwitch').checked) song3.play(); };
   song3.onended = () => { if (document.getElementById('musicSwitch').checked) song1.play(); };
 
-  // Make a square with image that opens a player for 3 songs
-  // For example, let's assign it to last square 
+  // Square that opens audio player for 3 songs (last square)
   document.querySelectorAll('.card')[35].addEventListener('click', () => {
     document.getElementById('audioPlayerContainer').style.display='block';
-  });
-
-  document.getElementById('playAll').onclick = () => {
-    song1.play();
-    song2.play();
-    song3.play();
-  };
-  document.getElementById('stopAll').onclick = () => {
-    song1.pause(); song1.currentTime=0;
-    song2.pause(); song2.currentTime=0;
-    song3.pause(); song3.currentTime=0;
   });
 </script>
 </body>
