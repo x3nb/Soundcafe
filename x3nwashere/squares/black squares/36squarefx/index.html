@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Extended Gothic Grid with Voice</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    overflow-x: hidden;
+  }
+
+  /* Fog overlay for atmosphere */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') repeat;
+    opacity: 0.2;
+    z-index: -1;
+    background-size: cover;
+    animation: fogAnim 60s linear infinite;
+  }
+  @keyframes fogAnim {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  /* Card styles with glow & flicker */
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 2px solid #444;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, #222, #111);
+  }
+
+  @keyframes glitch {
+    0% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+    20% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    40% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    60% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    80% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    100% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+  }
+  .card:hover {
+    animation: glitch 0.3s steps(2, start) infinite;
+  }
+
+  .image-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 100%;
+  }
+  .card.open .image-container {
+    max-height: 0;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 10px #00BFFF; }
+    50% { box-shadow: 0 0 20px #00BFFF; }
+  }
+  .glow {
+    animation: glowPulse 2s infinite alternate;
+  }
+
+  @keyframes flickerShadow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+  }
+  .flicker-shadow {
+    animation: flickerShadow 3s infinite alternate;
+  }
+
+  @keyframes ghostlyShimmer {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-0.2px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(0.2px); }
+    100% { transform: translateX(0); }
+  }
+  .subtle-move {
+    animation: ghostlyShimmer 12s ease-in-out infinite;
+  }
+
+  @keyframes fallOut {
+    0% { opacity: 1; transform: translateY(0) rotate(0); }
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(200px) rotate(10deg); }
+  }
+  .fall-out { animation: fallOut 4s forwards ease-in; }
+</style>
+</head>
+<body>
+
+<div class="gallery" id="gallery">
+  <!-- 36 squares, fill with similar structure -->
+  <!-- For brevity, I'll generate them with JavaScript below -->
+</div>
+
+<!-- Audio for music toggle -->
+<audio id="musicSound" loop src="https://www.soundjay.com/misc/sounds/ominous-music-01.mp3" preload="auto"></audio>
+<!-- Chime sound -->
+<audio id="chimeSound" src="https://www.soundjay.com/misc/sounds/wood-chime-01.mp3" preload="auto"></audio>
+
+<script>
+  // Generate 36 squares dynamically
+  const gallery = document.getElementById('gallery');
+  const totalSquares = 36;
+  for (let i = 0; i < totalSquares; i++) {
+    const div = document.createElement('div');
+    div.className = 'card';
+
+    // For the special squares:
+    if (i === totalSquares - 2) {
+      div.id = 'morphSquare';
+    } else if (i === totalSquares - 1) {
+      div.id = 'voiceSquare';
+    }
+
+    div.innerHTML = `
+      <div class="image-container">
+        <img src="https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="image" />
+      </div>
+      <div class="info"><h3>Haunting Image</h3></div>
+    `;
+    gallery.appendChild(div);
+  }
+
+  // Assign some flicker/shadow/glow effects randomly
+  document.querySelectorAll('.card').forEach(card => {
+    if (Math.random() < 0.7) {
+      card.classList.add('flicker-shadow');
+      card.style.animationDelay = (Math.random() * 6) + 's';
+    }
+    if (Math.random() < 0.3) {
+      card.classList.add('glow');
+    }
+  });
+
+  // Pick one square to fall after 15 seconds
+  const allCards = Array.from(document.querySelectorAll('.card'));
+  const randIdx = Math.floor(Math.random() * allCards.length);
+  const fallCard = allCards[randIdx];
+  setTimeout(() => {
+    fallCard.classList.add('fall-out');
+  }, 15000);
+
+  // Make it stay out when clicked
+  fallCard.addEventListener('click', () => {
+    fallCard.classList.remove('fall-out');
+    fallCard.classList.add('fallen');
+  });
+
+  // Special: Image morphing for #morphSquare
+  const morphImages = [
+    'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80&ixid=...&text=Vampire2'
+  ];
+  let morphIdx = 0;
+  const morphSquare = document.getElementById('morphSquare');
+  if (morphSquare) {
+    setInterval(() => {
+      morphImages.reverse();
+      morphIdx = (morphIdx + 1) % morphImages.length;
+      const img = document.querySelector('#morphSquare .image');
+      img.style.transition = 'opacity 0.5s';
+      img.style.opacity = 0;
+      setTimeout(() => {
+        img.src = morphImages[morphIdx];
+        img.style.opacity = 1;
+      }, 500);
+    }, 4000);
+  }
+
+  // Voice speaking square
+  const voiceSquare = document.getElementById('voiceSquare');
+  voiceSquare.addEventListener('click', () => {
+    const utterance = new SpeechSynthesisUtterance("Greetings, mortal. I am the vampiric spirit. Do you seek knowledge or doom?");
+    utterance.lang = 'en-US';
+    // Set voice to female if available
+    const voices = speechSynthesis.getVoices();
+    const femaleVoice = voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman'));
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
+    }
+    speechSynthesis.speak(utterance);
+  });
+
+  // Toggle music on #musicSquare
+  const musicAudio = document.getElementById('musicSound');
+  const musicSquare = document.querySelector('#musicSquare');
+  if (musicSquare) {
+    musicSquare.addEventListener('click', () => {
+      if (musicAudio.paused) {
+        musicAudio.play();
+      } else {
+        musicAudio.pause();
+      }
+    });
+  }
+
+  // Toggle info and chime for all
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+      const chime = document.getElementById('chimeSound');
+      chime.currentTime = 0;
+      chime.play();
+    });
+  });
+</script>
+</body>
+</html>
