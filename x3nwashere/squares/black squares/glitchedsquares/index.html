@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Epic Gothic Ghost Mosaic</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000; /* Deep black background */
+    overflow-x: hidden;
+  }
+
+  /* Ghostly fog overlay for atmospheric effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') repeat;
+    opacity: 0.2;
+    z-index: -1;
+    pointer-events: none;
+    animation: fogAnim 60s linear infinite;
+    background-size: cover;
+  }
+
+  @keyframes fogAnim {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* perfect square for all cards */
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 2px solid #444;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, #222, #111);
+  }
+
+  /* Glitch effect on hover */
+  @keyframes glitch {
+    0% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+    20% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    40% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    60% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    80% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    100% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+  }
+
+  .card:hover {
+    animation: glitch 0.3s steps(2, start) infinite;
+  }
+
+  .image-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 100%;
+  }
+
+  .card.open .image-container {
+    max-height: 0;
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .info {
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(17, 17, 17, 0.9);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #eee;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+
+  .card.open .info {
+    opacity: 1;
+  }
+
+  /* Subtle ghostly sway animation for some cards */
+  @keyframes ghostlyShimmer {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-0.2px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(0.2px); }
+    100% { transform: translateX(0); }
+  }
+
+  .subtle-move {
+    animation: ghostlyShimmer 12s ease-in-out infinite;
+  }
+
+  /* Optional: stagger delays for variation */
+</style>
+</head>
+<body>
+
+<div class="gallery">
+  <!-- 18 ghostly squares with info -->
+  <!-- For variety, some will have subtle movements -->
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly" class="image" />
+    </div>
+    <div class="info">
+      <h3>Haunted Peaks</h3>
+      <p>Whispering shadows in the misty mountains.</p>
+      <a href="#" target="_blank">Follow the spirits</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly" class="image" />
+    </div>
+    <div class="info">
+      <h3>Dark Forest</h3>
+      <p>Where shadows dance among ancient trees.</p>
+      <a href="#" target="_blank">Follow the ghosts</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly" class="image" />
+    </div>
+    <div class="info">
+      <h3>Misty Graveyard</h3>
+      <p>Whispers of lost souls in the fog.</p>
+      <a href="#" target="_blank">Follow the phantoms</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1520974734234-0de0832dbe5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly" class="image" />
+    </div>
+    <div class="info">
+      <h3>Haunted Mansion</h3>
+      <p>Echoes of the past linger in the halls.</p>
+      <a href="#" target="_blank">Follow the specters</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly Lake" class="image" />
+    </div>
+    <div class="info">
+      <h3>Ghost Lake</h3>
+      <p>Reflections of lost souls on still waters.</p>
+      <a href="#" target="_blank">Follow the spirits</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ghostly Cliff" class="image" />
+    </div>
+    <div class="info">
+      <h3>Phantom Cliffs</h3>
+      <p>Echoes of the wind whisper secrets.</p>
+      <a href="#" target="_blank">Follow the echoes</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Specter Fields" class="image" />
+    </div>
+    <div class="info">
+      <h3>Ghostly Fields</h3>
+      <p>Winds carry the whispers of spirits.</p>
+      <a href="#" target="_blank">Follow the phantoms</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Eerie Alley" class="image" />
+    </div>
+    <div class="info">
+      <h3>Eerie Alley</h3>
+      <p>Shadows lurk in every corner.</p>
+      <a href="#" target="_blank">Follow the shadows</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1520974734234-0de0832dbe5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Spectral River" class="image" />
+    </div>
+    <div class="info">
+      <h3>Ghost River</h3>
+      <p>Flowing with unseen spirits.</p>
+      <a href="#" target="_blank">Follow the ghosts</a>
+    </div>
+  </div>
+  <!-- Repeat for total 18 squares as needed, with some having the subtle move class -->
+</div>
+
+<!-- Subtle ghostly flicker animation added dynamically in JS -->
+<!-- Light wood chime sound -->
+<audio id="chimeSound" src="https://www.soundjay.com/misc/sounds/wood-chime-01.mp3" preload="auto"></audio>
+
+<script>
+  // Assign subtle movement to some squares randomly
+  document.querySelectorAll('.card').forEach((card) => {
+    if (Math.random() < 0.7) {
+      card.classList.add('subtle-move');
+      card.style.animationDelay = (Math.random() * 5) + 's';
+    }
+  });
+
+  // Toggle open on click
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+      // Play a soft wood chime
+      const chime = document.getElementById('chimeSound');
+      chime.currentTime = 0;
+      chime.play();
+    });
+  });
+</script>
+</body>
+</html>
