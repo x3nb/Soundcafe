@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ghost & Vampire Grid with Features</title>
+<!-- Google font for header -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+<style>
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #000;
+    overflow-x: hidden;
+  }
+  /* Header with gradient font */
+  h1 {
+    text-align: center;
+    font-size: 3em;
+    margin: 10px 0;
+    background: linear-gradient(45deg, #ff0066, #6600ff, #00ffff);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 10s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  /* Fog overlay for atmosphere */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') repeat;
+    opacity: 0.2;
+    z-index: -1;
+    background-size: cover;
+    animation: fogAnim 60s linear infinite;
+  }
+  @keyframes fogAnim {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* Main grid styles */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  /* Card styles with effects */
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 2px solid #444;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, #222, #111);
+  }
+  @keyframes glitch {
+    0% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+    20% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    40% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    60% { clip: rect(0, 100%, 100%, 0); transform: translate(-0.2px, 0); }
+    80% { clip: rect(0, 100%, 100%, 0); transform: translate(0.2px, 0); }
+    100% { clip: rect(0, 100%, 0, 0); transform: translate(0); }
+  }
+  .card:hover {
+    animation: glitch 0.3s steps(2, start) infinite;
+  }
+  /* Image container and reveal */
+  .image-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 100%;
+  }
+  .card.open .image-container {
+    max-height: 0;
+  }
+  /* Image styles with object-fit: cover */
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Glowing for vampire mood */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 10px #00BFFF; }
+    50% { box-shadow: 0 0 20px #00BFFF; }
+  }
+  .glow {
+    animation: glowPulse 2s infinite alternate;
+  }
+  /* Flickering shadow effect */
+  @keyframes flickerShadow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+  }
+  .flicker-shadow {
+    animation: flickerShadow 3s infinite alternate;
+  }
+  /* Subtle sway effect */
+  @keyframes ghostlyShimmer {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-0.2px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(0.2px); }
+    100% { transform: translateX(0); }
+  }
+  .subtle-move {
+    animation: ghostlyShimmer 12s ease-in-out infinite;
+  }
+  /* Falling out */
+  @keyframes fallOut {
+    0% { opacity: 1; transform: translateY(0) rotate(0); }
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(200px) rotate(10deg); }
+  }
+  .fall-out { animation: fallOut 4s forwards ease-in; }
+
+  /* Style for the toggle switch */
+  #musicSwitch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 1em;
+    color: #eee;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    border-radius: 8px;
+    z-index: 999;
+  }
+</style>
+</head>
+<body>
+
+<h1>Welcome</h1>
+<!-- Music toggle switch -->
+<div id="musicToggle">
+  <input type="checkbox" id="musicSwitch" />
+  <label for="musicSwitch">Music On/Off</label>
+</div>
+
+<!-- The main grid -->
+<div class="gallery" id="gallery"></div>
+
+<!-- Audio elements for 3 songs -->
+<audio id="song1" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="song2" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+<audio id="song3" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
+
+<!-- External music player container -->
+<div id="audioPlayerContainer" style="display:none; position:fixed; bottom:10px; right:10px; background:#222; padding:10px; border-radius:8px; z-index:999;">
+  <button id="playAll">Play All Songs</button>
+  <button id="stopAll">Stop All</button>
+</div>
+
+<!-- chime sound -->
+<audio id="chimeSound" src="https://www.soundjay.com/misc/sounds/wood-chime-01.mp3" preload="auto"></audio>
+
+<script>
+  const gallery = document.getElementById('gallery');
+
+  // Generate 36 squares with diverse images, links, prompts
+  const squaresData = [
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: 'Ask a question?' },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: 'https://example.com', prompt: null },
+    { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', link: '', prompt: null },
+    // add more images with diverse links/prompts
+  ];
+  while (squaresData.length < 36) { squaresData.push(...squaresData); }
+  squaresData.length = 36;
+
+  // Generate the grid squares
+  for (let i=0; i<36; i++) {
+    const div = document.createElement('div');
+    div.className='card';
+
+    if(i===34) div.id='morphSquare';
+    if(i===35) div.id='voiceSquare';
+
+    const data = squaresData[i];
+    const linkHTML = data.link ? `<a href="${data.link}" target="_blank" style="color:#eee;text-decoration:none;">Link</a>` : '';
+    div.innerHTML = `
+      <div class="image-container">
+        <img src="${data.img}" class="image" />
+      </div>
+      <div class="info">
+        <h3>Haunting Image</h3>
+        ${linkHTML}
+      </div>
+    `;
+    gallery.appendChild(div);
+  }
+
+  // Apply random effects
+  document.querySelectorAll('.card').forEach(card => {
+    if (Math.random() < 0.7) {
+      card.classList.add('flicker-shadow');
+      card.style.animationDelay = (Math.random()*6)+'s';
+    }
+    if (Math.random() < 0.3) {
+      card.classList.add('glow');
+    }
+  });
+
+  // Random delayed fall for one square
+  const allSquares = Array.from(document.querySelectorAll('.card'));
+  const randIdx = Math.floor(Math.random()*allSquares.length);
+  const fallSquare = allSquares[randIdx];
+  setTimeout(() => {
+    fallSquare.classList.add('fall-out');
+  }, 15000);
+
+  // Make it stay out on click
+  fallSquare.addEventListener('click', () => {
+    fallSquare.classList.remove('fall-out');
+    fallSquare.classList.add('fallen');
+  });
+
+  // Image morphing for #morphSquare
+  const morphImages = [
+    'https://images.unsplash.com/photo-1549887534-7c680186b0ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80&ixid=...&text=Vampire2'
+  ];
+  const morphSquare = document.getElementById('morphSquare');
+  if (morphSquare) {
+    setInterval(() => {
+      morphImages.reverse();
+      const img = document.querySelector('#morphSquare .image');
+      img.style.transition='opacity 0.5s';
+      img.style.opacity=0;
+      setTimeout(() => {
+        img.src = morphImages[Math.floor(Math.random() * morphImages.length)];
+        img.style.opacity=1;
+      }, 500);
+    }, 4000);
+  }
+
+  // Voice speaking square
+  const voiceSquare = document.getElementById('voiceSquare');
+  if (voiceSquare) {
+    voiceSquare.addEventListener('click', () => {
+      const utterance = new SpeechSynthesisUtterance("Greetings, mortal. I am the vampiric spirit. Do you seek knowledge or doom?");
+      utterance.lang='en-US';
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman'));
+      if (femaleVoice) {
+        utterance.voice=femaleVoice;
+      }
+      speechSynthesis.speak(utterance);
+    });
+  }
+
+  // Music toggle switch
+  const song1 = document.getElementById('song1');
+  const song2 = document.getElementById('song2');
+  const song3 = document.getElementById('song3');
+  const musicSwitch = document.getElementById('musicSwitch');
+
+  document.getElementById('playAll').onclick = () => {
+    song1.play();
+    song2.play();
+    song3.play();
+  };
+  document.getElementById('stopAll').onclick = () => {
+    song1.pause(); song1.currentTime=0;
+    song2.pause(); song2.currentTime=0;
+    song3.pause(); song3.currentTime=0;
+  };
+
+  // Auto-play sequence
+  document.getElementById('musicSwitch').addEventListener('change', (e) => {
+    if (e.target.checked) {
+      song1.play();
+    } else {
+      song1.pause(); song1.currentTime=0;
+      song2.pause(); song2.currentTime=0;
+      song3.pause(); song3.currentTime=0;
+    }
+  });
+
+  // Optional: loop songs continuously
+  song1.onended = () => { if (document.getElementById('musicSwitch').checked) song2.play(); };
+  song2.onended = () => { if (document.getElementById('musicSwitch').checked) song3.play(); };
+  song3.onended = () => { if (document.getElementById('musicSwitch').checked) song1.play(); };
+
+  // Make a square with image that opens a player for 3 songs
+  // For example, let's assign it to last square
+  document.querySelectorAll('.card')[35].addEventListener('click', () => {
+    document.getElementById('audioPlayerContainer').style.display='block';
+  });
+
+  document.getElementById('playAll').onclick = () => {
+    song1.play();
+    song2.play();
+    song3.play();
+  };
+  document.getElementById('stopAll').onclick = () => {
+    song1.pause(); song1.currentTime=0;
+    song2.pause(); song2.currentTime=0;
+    song3.pause(); song3.currentTime=0;
+  });
+</script>
+</body>
+</html>
