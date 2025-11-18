@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image Mosaic Slide-Down Gallery</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Ensures square shape in modern browsers */
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .image-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 100%; /* full height initially */
+  }
+
+  .card.open .image-container {
+    max-height: 0; /* collapse to reveal info */
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card.open .info {
+    opacity: 1;
+  }
+
+  /* Optional: Add some style to info text */
+  .info h3 {
+    margin: 10px 0 5px 0;
+  }
+
+  .info p {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .info a {
+    margin-top: 10px;
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="gallery">
+  <!-- Example card -->
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Landscape" class="image" />
+    </div>
+    <div class="info">
+      <h3>Beautiful Landscape</h3>
+      <p>A stunning view of mountains during sunset.</p>
+      <a href="https://twitter.com" target="_blank">Follow on Social</a>
+    </div>
+  </div>
+  <!-- Repeat for other images -->
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="City Night" class="image" />
+    </div>
+    <div class="info">
+      <h3>City Night</h3>
+      <p>Lights and life in the city after dark.</p>
+      <a href="https://facebook.com" target="_blank">Follow on Social</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Beach" class="image" />
+    </div>
+    <div class="info">
+      <h3>Sunny Beach</h3>
+      <p>Relaxing day by the ocean with clear skies.</p>
+      <a href="https://instagram.com" target="_blank">Follow on Social</a>
+    </div>
+  </div>
+  <!-- Add more cards as needed -->
+</div>
+
+<!-- Play subtle sound on reveal -->
+<audio id="slideSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+
+<script>
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+      // Play sound
+      const sound = document.getElementById('slideSound');
+      sound.currentTime = 0;
+      sound.play();
+    });
+  });
+</script>
+
+</body>
+</html>
