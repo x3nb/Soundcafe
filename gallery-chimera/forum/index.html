@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Message Realm</title>
+    <style>
+        body {
+            background: #f0f0f0; /* Light grey for paper background */
+            color: #000; /* Black text */
+            font-family: 'Courier New', monospace; /* Typewriter font */
+            font-weight: bold; /* Bold font */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        /* Add a subtle paper texture */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="paper" patternUnits="userSpaceOnUse" width="100" height="100"><rect width="100" height="100" fill="%23fff"/><circle cx="50" cy="50" r="1" fill="%23ddd" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23paper)"/></svg>') repeat;
+            pointer-events: none;
+            z-index: -1;
+        }
+        h1 {
+            color: #000; /* Black title */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Slight shadow for dimension */
+            background: #fff; /* White background for paper cutout effect */
+            padding: 10px 20px;
+            border: 2px solid #000; /* Black border */
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5); /* Dimension with shadow */
+            transform: rotate(-1deg); /* Slight tilt for cutout feel */
+            margin-bottom: 20px;
+        }
+        .message-form {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            transform: rotate(-0.5deg);
+            max-width: 600px;
+            width: 100%;
+        }
+        .message-form textarea {
+            width: 100%;
+            height: 80px;
+            border: 2px solid #000;
+            background: #f9f9f9;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .message-form button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transform: rotate(0.5deg);
+        }
+        .message-form button:hover {
+            background: #ddd;
+        }
+        .message-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .message-scrap {
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            transform: rotate(calc(var(--rotation, 0deg)));
+            position: relative;
+            min-height: 100px;
+        }
+        .message-scrap p {
+            margin: 0;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .message-scrap .timestamp {
+            font-size: 10px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .message-scrap .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transform: rotate(-0.5deg);
+        }
+        .back-button:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Anonymous Message Realm</h1>
+    <div class="message-form">
+        <textarea id="message-input" placeholder="Leave an anonymous note..."></textarea>
+        <button id="submit-message">Post Note</button>
+    </div>
+    <div class="message-wall" id="message-wall"></div>
+    <button class="back-button" onclick="window.close()">Back to Gallery</button>
+
+    <script>
+        const messageInput = document.getElementById('message-input');
+        const submitMessage = document.getElementById('submit-message');
+        const messageWall = document.getElementById('message-wall');
+
+        function loadMessages() {
+            messageWall.innerHTML = '';
+            const messages = JSON.parse(localStorage.getItem('forumMessages')) || [];
+            messages.forEach((msg, index) => {
+                const scrap = document.createElement('div');
+                scrap.className = 'message-scrap';
+                scrap.style.setProperty('--rotation', `${Math.random() * 4 - 2}deg`); // Random rotation for scrapbook feel
+                scrap.innerHTML = `
+                    <p>${msg.text}</p>
+                    <div class="timestamp">${new Date(msg.timestamp).toLocaleString()}</div>
+                    <button class="delete-btn" onclick="deleteMessage(${index})">X</button>
+                `;
+                messageWall.appendChild(scrap);
+            });
+        }
+
+        function addMessage(text) {
+            const messages = JSON.parse(localStorage.getItem('forumMessages')) || [];
+            messages.push({ text, timestamp: Date.now() });
+            localStorage.setItem('forumMessages', JSON.stringify(messages));
+            loadMessages();
+        }
+
+        function deleteMessage(index) {
+            const messages = JSON.parse(localStorage.getItem('forumMessages')) || [];
+            messages.splice(index, 1);
+            localStorage.setItem('forumMessages', JSON.stringify(messages));
+            loadMessages();
+        }
+
+        submitMessage.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            if (text) {
+                addMessage(text);
+                messageInput.value = '';
+            }
+        });
+
+        // Load messages on page load
+        loadMessages();
+    </script>
+</body>
+</html>
