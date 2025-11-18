@@ -462,3 +462,295 @@
                 bio: 'A DJ chimeracat human who loves to party. Miki spins beats that light up the night.',
                 img: 'https://picsum.photos/200/200?random=miki',
                 social:
+                    social: 'https://twitter.com/miki_example' // Replace with actual link
+            }
+        ];
+
+        // Function to create a simple tone using Web Audio API
+        function playTone(frequency, duration) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+
+            audioContexts.push(audioContext); // Store for stopping
+        }
+
+        function showModal() {
+            modal.style.display = 'flex';
+            yesButton.style.display = 'inline-block';
+            noButton.style.display = 'inline-block';
+            closeButton.style.display = 'none';
+            modalMessage.textContent = 'Do you want to join our Discord server?';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function showCharacterGallery() {
+            characterGalleryModal.style.display = 'flex';
+        }
+
+        function closeCharacterGalleryModal() {
+            characterGalleryModal.style.display = 'none';
+        }
+
+        function showBio(character) {
+            bioName.textContent = character.name;
+            bioImg.src = character.img;
+            bioText.textContent = character.bio;
+            socialLink.onclick = () => window.open(character.social, '_blank');
+            bioModal.style.display = 'flex';
+        }
+
+        function closeBioModal() {
+            bioModal.style.display = 'none';
+        }
+
+        function showMusicBox() {
+            musicBoxModal.style.display = 'flex';
+            gamerName = '';
+            askedMusic = false;
+            tracks.style.display = 'none';
+            musicChatWindow.innerHTML = '<div class="chat-message"><strong>Bot:</strong> Welcome to the Music Box! What\'s your gamer name?</div>';
+        }
+
+        function closeMusicBoxModal() {
+            musicBoxModal.style.display = 'none';
+        }
+
+        function addMusicMessage(sender, message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message';
+            msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            musicChatWindow.appendChild(msgDiv);
+            musicChatWindow.scrollTop = musicChatWindow.scrollHeight;
+        }
+
+        function musicBotResponse(userMessage) {
+            if (!gamerName) {
+                gamerName = userMessage.trim();
+                addMusicMessage('Bot', `Nice to meet you, ${gamerName}! Would you like to hear some music tracks from the cafe? (Say yes or no)`);
+                askedMusic = true;
+            } else if (askedMusic) {
+                const lowerMsg = userMessage.toLowerCase();
+                if (lowerMsg.includes('yes') || lowerMsg.includes('ok')) {
+                    addMusicMessage('Bot', 'Awesome! Here are some tracks:');
+                    tracks.style.display = 'block';
+                } else if (lowerMsg.includes('no')) {
+                    addMusicMessage('Bot', 'No worries, ${gamerName}! Enjoy the rest of the gallery.');
+                } else {
+                    addMusicMessage('Bot', 'Please say yes or no, ${gamerName}.');
+                }
+            }
+        }
+
+        function showChatbot() {
+            chatbotModal.style.display = 'flex';
+            askedSubscribe = false;
+        }
+
+        function closeChatbotModal() {
+            chatbotModal.style.display = 'none';
+        }
+
+        function addMessage(sender, message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message';
+            msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function botResponse(userMessage) {
+            const lowerMsg = userMessage.toLowerCase();
+            let response = '';
+
+            if (lowerMsg.includes('hi') || lowerMsg.includes('hello')) {
+                response = 'Hi there! Nice to meet you.';
+            } else if (lowerMsg.includes('how are you')) {
+                response = 'I\'m doing great, thanks for asking! How about you?';
+            } else if (lowerMsg.includes('bye')) {
+                response = 'Goodbye! Have a wonderful day!';
+            } else if (askedSubscribe && (lowerMsg.includes('yes') || lowerMsg.includes('ok'))) {
+                response = 'Awesome! Opening the YouTube channel now.';
+                setTimeout(() => {
+                    window.open('https://www.youtube.com/channel/example', '_blank'); // Replace with actual YouTube channel link
+                }, 1000);
+            } else if (askedSubscribe && lowerMsg.includes('no')) {
+                response = 'No worries! Feel free to come back anytime.';
+            } else {
+                response = 'I\'m not sure about that. Try saying hi, hello, how are you, or bye!';
+            }
+
+            if (!askedSubscribe && (lowerMsg.includes('hi') || lowerMsg.includes('hello') || lowerMsg.includes('how are you'))) {
+                setTimeout(() => {
+                    addMessage('Bot', 'By the way, would you like to subscribe to our YouTube channel?');
+                    askedSubscribe = true;
+                }, 1000);
+            }
+
+            if (response) {
+                setTimeout(() => addMessage('Bot', response), 500);
+            }
+        }
+
+        // Generate character gallery
+        characters.forEach(character => {
+            const img = document.createElement('img');
+            img.src = character.img;
+            img.alt = character.name;
+            img.className = 'character-img';
+            img.title = `Fun fact: ${character.name} loves coffee!`; // Tooltip
+            img.addEventListener('click', () => showBio(character));
+            characterGallery.appendChild(img);
+        });
+
+        yesButton.addEventListener('click', () => {
+            window.open('https://discord.gg/example', '_blank'); // Replace with actual Discord invite link
+            closeModal();
+        });
+
+        noButton.addEventListener('click', () => {
+            modalMessage.textContent = 'Maybe next time!';
+            yesButton.style.display = 'none';
+            noButton.style.display = 'none';
+            closeButton.style.display = 'inline-block';
+        });
+
+        closeButton.addEventListener('click', closeModal);
+
+        closeCharacterGallery.addEventListener('click', closeCharacterGalleryModal);
+
+        closeBio.addEventListener('click', closeBioModal);
+
+        musicSendButton.addEventListener('click', () => {
+            const message = musicChatInput.value.trim();
+            if (message) {
+                addMusicMessage('You', message);
+                musicBotResponse(message);
+                musicChatInput.value = '';
+            }
+        });
+
+        musicChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                musicSendButton.click();
+            }
+        });
+
+        closeMusicBox.addEventListener('click', closeMusicBoxModal);
+
+        sendButton.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage('You', message);
+                botResponse(message);
+                chatInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+
+        closeChatbot.addEventListener('click', closeChatbotModal);
+
+        // Track controls
+        document.getElementById('play-track1').addEventListener('click', () => document.getElementById('track1').play());
+        document.getElementById('stop-track1').addEventListener('click', () => {
+            const audio = document.getElementById('track1');
+            audio.pause();
+            audio.currentTime = 0;
+        });
+        document.getElementById('play-track2').addEventListener('click', () => document.getElementById('track2').play());
+        document.getElementById('stop-track2').addEventListener('click', () => {
+            const audio = document.getElementById('track2');
+            audio.pause();
+            audio.currentTime = 0;
+        });
+        document.getElementById('play-track3').addEventListener('click', () => document.getElementById('track3').play());
+        document.getElementById('stop-track3').addEventListener('click', () => {
+            const audio = document.getElementById('track3');
+            audio.pause();
+            audio.currentTime = 0;
+        });
+
+        // Generate 36 images
+        for (let i = 0; i < 36; i++) {
+            const container = document.createElement('div');
+            container.className = 'image-container';
+
+            const img = document.createElement('img');
+            img.src = `https://picsum.photos/100/100?random=${i}`; // Placeholder images
+            img.alt = `Image ${i + 1}`;
+
+            // Only the first image (index 0) opens the character gallery
+            if (i === 0) {
+                img.addEventListener('click', showCharacterGallery);
+            } else if (i === 3) { // 4th square (index 3) opens the music box
+                img.addEventListener('click', showMusicBox);
+            } else if (i % 2 !== 0) { // Odd-indexed ones vanish
+                setTimeout(() => {
+                    img.classList.add('vanished');
+                    setTimeout(() => {
+                        img.classList.remove('vanished');
+                    }, 30000); // Reappear after 30 seconds
+                }, 7000); // Vanish after 7 seconds
+            }
+
+            // Some images play music on click (every 3rd one)
+            if ((i + 1) % 3 === 0) {
+                img.addEventListener('click', () => {
+                    playTone(440 + (i * 10), 1); // Play a tone based on index
+                });
+            }
+
+            // At least 5 images reveal a message chat on click (indices 5,10,15,20,25)
+            const chatIndices = [5, 10, 15, 20, 25];
+            if (chatIndices.includes(i)) {
+                img.addEventListener('click', showModal);
+            }
+
+            // One image (index 18, center) opens the chatbot
+            if (i === 18) {
+                img.addEventListener('click', showChatbot);
+            }
+
+            container.appendChild(img);
+            gallery.appendChild(container);
+        }
+
+        // Off button to stop all audio
+        offButton.addEventListener('click', () => {
+            audioContexts.forEach(context => {
+                context.close();
+            });
+            audioContexts = [];
+            ambientAudio.pause();
+            ambientAudio.currentTime = 0;
+            // Stop all tracks
+            ['track1', 'track2', 'track3'].forEach(id => {
+                const audio = document.getElementById(id);
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        });
+    </script>
+</body>
+</html>
+
