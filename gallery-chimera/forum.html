@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Message Realm</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = 'YOUR_PROJECT_URL';
+      const supabaseKey = 'YOUR_ANON_PUBLIC_KEY';
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+    <style>
+        /* ... (keep all the existing styles from before) ... */
+        .auth-form {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            transform: rotate(-0.5deg);
+            max-width: 400px;
+            width: 100%;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #000;
+            background: #f9f9f9;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .auth-form button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transform: rotate(0.5deg);
+        }
+        .auth-form button:hover {
+            background: #ddd;
+        }
+        .user-info {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .toggle {
+            margin-bottom: 10px;
+        }
+        .toggle label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Anonymous Message Realm</h1>
+    <div id="auth-section">
+        <div class="auth-form" id="login-form">
+            <h3>Login as Member</h3>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Password">
+            <button id="login-btn">Login</button>
+            <button id="signup-btn">Sign Up</button>
+            <button id="logout-btn" style="display: none;">Logout</button>
+        </div>
+        <div class="user-info" id="user-info" style="display: none;"></div>
+    </div>
+    <div class="message-form">
+        <div class="toggle">
+            <label><input type="checkbox" id="anonymous-toggle"> Post Anonymously</label>
+        </div>
+        <textarea id="message-input" placeholder="Leave a note..."></textarea>
+        <button id="submit-message">Post Note</button>
+    </div>
+    <div class="message-wall" id="message-wall"></div>
+    <button class="back-button" onclick="window.close()">Back to Gallery</button>
+
+    <script>
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+        const anonymousToggle = document.getElementById('anonymous-toggle');
+        const messageInput = document.getElementById('message-input');
+        const submitMessage = document.getElementById('submit-message');
+        const messageWall = document.getElementById('message-wall');
+
+        let currentUser = null;
+
+        // Check for existing session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                currentUser = session.user;
+                showUserInfo();
+            }
+        });
+
+        // Auth event listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                showUserInfo();
+            } else {
+                currentUser = null;
+                hideUserInfo();
+            }
+        });
+
+        function showUserInfo() {
+            userInfo.style.display = 'block';
+            userInfo.textContent = `Logged in as: ${currentUser.email}`;
+            logoutBtn.style.display = 'inline-block';
+            loginBtn.style.display = 'none';
+            signupBtn.style.display = 'none';
+        }
+
+        function hideUserInfo() {
+            userInfo.style.display = 'none';
+            logoutBtn.style.display = 'none';
+            loginBtn.style.display = 'inline-block';
+            signupBtn.style.display = 'inline-block';
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            const email = loginEmail.value;
+            const password = loginPassword.value;
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) alert('Login failed: ' + error.message);
+        });
+
+        signupBtn.addEventListener('click', async () => {
+            const email = loginEmail.value;
+            const password = loginPassword.value;
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) alert('Signup failed: ' + error.message);
+            else alert('Check your email for confirmation!');
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+        });
+
+        async function loadMessages() {
+            messageWall.innerHTML = '';
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .order('timestamp', { ascending: false });
+
+            if (error) {
+                console.error('Error loading messages:', error);
+                return;
+            }
+
+            data.forEach((msg) => {
+                const scrap = document.createElement('div');
+                scrap.className = 'message-scrap';
+                scrap.style.setProperty('--rotation', `${Math.random() * 4 - 2}deg`);
+                const author = msg.user_id ? `By: ${msg.author || 'Member'}` : 'Anonymous';
+                scrap.innerHTML = `
+                    <p>${msg.text}</p>
+                    <div class="timestamp">${author} - ${new Date(msg.timestamp).toLocaleString()}</div>
+                    ${currentUser && msg.user_id === currentUser.id ? `<button class="delete-btn" onclick="deleteMessage(${msg.id})">X</button>` : ''}
+                `;
+                messageWall.appendChild(scrap);
+            });
+        }
+
+        async function addMessage(text, isAnonymous) {
+            const messageData = { text: text };
+            if (!isAnonymous && currentUser) {
+                messageData.user_id = currentUser.id;
+                messageData.author = currentUser.email.split('@')[0]; // Simple name from email
+            }
+            const { error } = await supabase
+                .from('messages')
+                .insert([messageData]);
+
+            if (error) {
+                console.error('Error adding message:', error);
+                alert('Failed to post message. Try again.');
+                return;
+            }
+            loadMessages();
+        }
+
+        async function deleteMessage(id) {
+            const { error } = await supabase
+                .from('messages')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('Error deleting message:', error);
+                return;
+            }
+            loadMessages();
+        }
+
+        submitMessage.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            const isAnonymous = anonymousToggle.checked;
+            if (text) {
+                addMessage(text, isAnonymous);
+                messageInput.value = '';
+            }
+        });
+
+        // Load messages on page load
+        loadMessages();
+    </script>
+</body>
+</html>
