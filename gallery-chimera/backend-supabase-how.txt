@@ -41,6 +41,13 @@ Click to expand
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 ...
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'YOUR_PROJECT_URL'; // e.g., https://your-project.supabase.co
+  const supabaseKey = 'YOUR_ANON_PUBLIC_KEY'; // The anon key from Step 3
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+</script>
+
 Update the <script> Section (replace the entire script with this):
 
 javascript
@@ -51,6 +58,75 @@ Click to expand
 <script>
 const messageInput = document.getElementById('message-input');
 ...
+
+<script>
+  const messageInput = document.getElementById('message-input');
+  const submitMessage = document.getElementById('submit-message');
+  const messageWall = document.getElementById('message-wall');
+
+  async function loadMessages() {
+    messageWall.innerHTML = '';
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .order('timestamp', { ascending: false }); // Newest first
+
+    if (error) {
+      console.error('Error loading messages:', error);
+      return;
+    }
+
+    data.forEach((msg) => {
+      const scrap = document.createElement('div');
+      scrap.className = 'message-scrap';
+      scrap.style.setProperty('--rotation', `${Math.random() * 4 - 2}deg`);
+      scrap.innerHTML = `
+        <p>${msg.text}</p>
+        <div class="timestamp">${new Date(msg.timestamp).toLocaleString()}</div>
+        <button class="delete-btn" onclick="deleteMessage(${msg.id})">X</button>
+      `;
+      messageWall.appendChild(scrap);
+    });
+  }
+
+  async function addMessage(text) {
+    const { error } = await supabase
+      .from('messages')
+      .insert([{ text: text }]); // timestamp auto-handled
+
+    if (error) {
+      console.error('Error adding message:', error);
+      alert('Failed to post message. Try again.');
+      return;
+    }
+    loadMessages();
+  }
+
+  async function deleteMessage(id) {
+    const { error } = await supabase
+      .from('messages')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting message:', error);
+      return;
+    }
+    loadMessages();
+  }
+
+  submitMessage.addEventListener('click', () => {
+    const text = messageInput.value.trim();
+    if (text) {
+      addMessage(text);
+      messageInput.value = '';
+    }
+  });
+
+  // Load messages on page load
+  loadMessages();
+</script>
+
 How to Test and Deploy
 Test Locally: Open forum.html in your browser (via a local server like python -m http.server or VS Code Live Server). Post a message—it should appear in Supabase's Table Editor and reload on refresh.
 Deploy: Upload forum.html to a static host like GitHub Pages or Netlify. Ensure the Supabase URL and key are correct.
