@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Director's Cut</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #2E1A47, #4B0082, #2F2F2F, #4169E1);
+            color: #E0E0E0;
+            font-family: 'Courier New', monospace; /* Cinematic font */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><filter id="grain"><feTurbulence baseFrequency="0.9" numOctaves="4"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter><rect width="100%" height="100%" filter="url(%23grain)" opacity="0.1"/></svg>') repeat;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(100, 149, 237, 0.5);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        h1 {
+            color: #B0C4DE;
+            text-shadow: 0 0 10px #6495ED;
+            animation: fadeIn 2s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            max-width: 800px;
+        }
+        .image-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 2px solid #6495ED;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #6495ED;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease, opacity 0.5s ease;
+        }
+        img:hover {
+            filter: grayscale(0%);
+        }
+        .glitch {
+            animation: gentle-glitch 0.5s infinite;
+        }
+        @keyframes gentle-glitch {
+            0% { transform: translate(0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(0); }
+            75% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+        .vanished {
+            opacity: 0;
+        }
+        #off-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #800080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #off-button:hover {
+            background: #4B0082;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: modalFadeIn 0.5s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: #333;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 20px #6495ED;
+        }
+        .modal button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #800080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .modal button:hover {
+            background: #4B0082;
+        }
+        .character-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 600px;
+        }
+        .character-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid #6495ED;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .character-img:hover {
+            transform: scale(1.1);
+        }
+        .character-img[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .bio-modal .modal-content {
+            max-width: 500px;
+            text-align: left;
+        }
+        .bio-modal p {
+            margin-bottom: 10px;
+        }
+        .music-box-modal .modal-content {
+            max-width: 700px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        .music-box-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .music-player {
+            flex: 1;
+        }
+        .track {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .track button {
+            margin-right: 10px;
+        }
+        .chatbot-modal .modal-content {
+            max-width: 600px;
+            width: 90%;
+            text-align: left;
+        }
+        .chatbot {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        .chatbot-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            background: #6495ED;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        .chat-window {
+            flex: 1;
+            border: 1px solid #555;
+            padding: 10px;
+            overflow-y: auto;
+            background: #222;
+            margin-bottom: 10px;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            display: flex;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+        }
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background: #800080;
+            color: white;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background: #4B0082;
+        }
+        .intro-modal {
+            animation: modalFadeIn 1s ease;
+        }
+        .intro-modal .modal-content {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <audio id="ambient-audio" loop volume="0.1">
+        <source src="https://www.soundjay.com/misc/sounds/cafe-ambience.mp3" type="audio/mpeg"> <!-- Placeholder ambient cafe sound -->
+    </audio>
+
+    <div id="intro-modal" class="modal intro-modal">
+        <div class="modal-content">
+            <h2>Welcome to the Director's Cut</h2>
+            <p>Exclusive behind-the-scenes content awaits...</p>
+            <button id="enter-site">Enter</button>
+        </div>
+    </div>
+
+    <h1>Gallery - Director's Cut</h1>
+    <div class="gallery" id="gallery">
+        <!-- 36 image containers will be generated by JS -->
+    </div>
+    <button id="off-button">Off (Stop All Music)</button>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">Do you want to join our Discord server?</p>
+            <button id="yes-button">Yes</button>
+            <button id="no-button">No</button>
+            <button id="close-button" style="display: none;">Close</button>
+        </div>
+    </div>
+
+    <div id="character-gallery-modal" class="modal">
+        <div class="modal-content">
+            <h2>Character Gallery</h2>
+            <div class="character-gallery" id="character-gallery">
+                <!-- 5 character images will be generated by JS -->
+            </div>
+            <button id="close-character-gallery">Close</button>
+        </div>
+    </div>
+
+    <div id="bio-modal" class="modal bio-modal">
+        <div class="modal-content">
+            <h2 id="bio-name"></h2>
+            <img id="bio-img" src="" alt="" style="width: 100px; height: 100px; border-radius: 5px; margin: 10px 0;">
+            <p id="bio-text"></p>
+            <button id="social-link">Visit Social Media</button>
+            <button id="close-bio">Close</button>
+        </div>
+    </div>
+
+    <div id="music-box-modal" class="modal music-box-modal">
+        <div class="modal-content">
+            <img class="music-box-image" src="https://picsum.photos/200/200?random=musicbox" alt="Music Box Image"> <!-- Placeholder image -->
+            <div class="music-player">
+                <h2>Cafe Soundtrack</h2>
+                <div class="chatbot">
+                    <div class="chatbot-avatar">🎵</div>
+                    <div class="chat-window" id="music-chat-window">
+                        <div class="chat-message"><strong>Bot:</strong> Welcome to the Music Box! What's your gamer name?</div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="music-chat-input" placeholder="Type your gamer name...">
+                        <button id="music-send-button">Send</button>
+                    </div>
+                </div>
+                <div id="tracks" style="display: none;">
+                    <h3>Tracks from the Cafe:</h3>
+                    <div class="track">
+                        <button id="play-track1">Play</button>
+                        <button id="stop-track1">Stop</button>
+                        <span>Track 1: Cozy Brew</span>
+                        <audio id="track1" src="https://www.soundjay.com/misc/sounds/cafe-music1.mp3"></audio> <!-- Placeholder -->
+                    </div>
+                    <div class="track">
+                        <button id="play-track2">Play</button>
+                        <button id="stop-track2">Stop</button>
+                        <span>Track 2: Herbal Harmony</span>
+                        <audio id="track2" src="https://www.soundjay.com/misc/sounds/cafe-music2.mp3"></audio> <!-- Placeholder -->
+                    </div>
+                    <div class="track">
+                        <button id="play-track3">Play</button>
+                        <button id="stop-track3">Stop</button>
+                        <span>Track 3: Party Vibes</span>
+                        <audio id="track3" src="https://www.soundjay.com/misc/sounds/cafe-music3.mp3"></audio> <!-- Placeholder -->
+                    </div>
+                </div>
+                <button id="close-music-box" style="margin-top: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chatbot-modal" class="modal chatbot-modal">
+        <div class="modal-content">
+            <div class="chatbot">
+                <div class="chatbot-avatar">🤖</div>
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-message"><strong>Bot:</strong> Hello! How can I help you today?</div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
+            <button id="close-chatbot" style="margin-top: 10px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const ambientAudio = document.getElementById('ambient-audio');
+        const introModal = document.getElementById('intro-modal');
+        const enterSite = document.getElementById('enter-site');
+        const gallery = document.getElementById('gallery');
+        const offButton = document.getElementById('off-button');
+        const modal = document.getElementById('modal');
+        const modalMessage = document.getElementById('modal-message');
+        const yesButton = document.getElementById('yes-button');
+        const noButton = document.getElementById('no-button');
+        const closeButton = document.getElementById('close-button');
+        const characterGalleryModal = document.getElementById('character-gallery-modal');
+        const characterGallery = document.getElementById('character-gallery');
+        const closeCharacterGallery = document.getElementById('close-character-gallery');
+        const bioModal = document.getElementById('bio-modal');
+        const bioName = document.getElementById('bio-name');
+        const bioImg = document.getElementById('bio-img');
+        const bioText = document.getElementById('bio-text');
+        const socialLink = document.getElementById('social-link');
+        const closeBio = document.getElementById('close-bio');
+        const musicBoxModal = document.getElementById('music-box-modal');
+        const musicChatWindow = document.getElementById('music-chat-window');
+        const musicChatInput = document.getElementById('music-chat-input');
+        const musicSendButton = document.getElementById('music-send-button');
+        const tracks = document.getElementById('tracks');
+        const closeMusicBox = document.getElementById('close-music-box');
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const chatWindow = document.getElementById('chat-window');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const closeChatbot = document.getElementById('close-chatbot');
+        let audioContexts = []; // To keep track of audio for stopping
+        let askedSubscribe = false;
+        let gamerName = '';
+        let askedMusic = false;
+
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.width = particle.style.height = Math.random() * 5 + 2 + 'px';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Intro modal
+        enterSite.addEventListener('click', () => {
+            introModal.style.display = 'none';
+            ambientAudio.play();
+        });
+
+        const characters = [
+            {
+                name: 'Star',
+                bio: 'Chimeracat coffee shop owner. Star runs a cozy coffee shop where dreams and brews come together.',
+                img: 'https://picsum.photos/200/200?random=star',
+                social: 'https://twitter.com/star_example' // Replace with actual link
+            },
+            {
+                name: 'Milo',
+                bio: 'Herb gardener who studies Taoism. Milo finds peace in the garden, balancing nature and ancient wisdom.',
+                img: 'https://picsum.photos/200/200?random=milo',
+                social: 'https://twitter.com/milo_example' // Replace with actual link
+            },
+            {
+                name: 'Chari',
+                bio: 'Coffee shop apprentice. Chari is learning the art of coffee-making under Star\'s guidance.',
+                img: 'https://picsum.photos/200/200?random=chari',
+                social: 'https://twitter.com/chari_example' // Replace with actual link
+            },
+            {
+                name: 'Hans',
+                bio: 'Vampire foxhybrid who escaped the lab. Hans is a mysterious figure with a dark past, now seeking freedom.',
+                img: 'https://picsum.photos/200/200?random=hans',
+                social: 'https://twitter.com/hans_example' // Replace with actual link
+            },
+            {
+                name: 'Miki',
+                bio: 'A DJ chimeracat human who loves to party. Miki spins beats that light up the night.',
+                img: 'https://picsum.photos/200/200?random=miki',
+                social:
