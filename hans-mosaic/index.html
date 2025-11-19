@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>36-Portal Epic Gallery — V2 Optimized</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        background: #050007;
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+        color: white;
+    }
+
+    /* --- GRID --- */
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-gap: 6px;
+        padding: 6px;
+    }
+
+    .tile {
+        width: 100%;
+        padding-bottom: 100%;
+        position: relative;
+        cursor: pointer;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #0f0019;
+        box-shadow: 0 0 10px #4a0082aa;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .tile:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 30px #a473ffaa;
+    }
+
+    /* MAKE IMAGES SHARP, NO BLUR */
+    .tile-content {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.95) contrast(1.05);
+    }
+
+    /* Purple glow without blocking clicks */
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, #00000000 50%, #2a006666 100%);
+        pointer-events: none; /* important fix */
+    }
+
+    /* popups */
+    .popup {
+        position: fixed;
+        inset: 0;
+        display: none;
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(10px);
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+    }
+
+    .popup.active { display: flex; }
+
+    .popup-content {
+        background: #1a002e;
+        border: 1px solid #9d71e4;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 0 20px #c7afff66;
+        animation: fadeIn .4s ease;
+    }
+
+    .close-btn {
+        float: right;
+        cursor: pointer;
+        color: #dcb5ff;
+        font-size: 22px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-4px, 3px); }
+        40% { transform: translate(5px, -2px); }
+        60% { transform: translate(-3px, 1px); }
+        80% { transform: translate(2px, -3px); }
+        100% { transform: translate(0); }
+    }
+
+    .glitching {
+        animation: glitch .12s infinite;
+    }
+
+    /* AVATAR CHATBOT */
+    #chatbot {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 360px;
+        display: none;
+        background: #11001a;
+        border: 1px solid #9d71e4;
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 15px #a57aff66;
+        z-index: 30;
+    }
+
+    #chatbot-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ccaaff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- ======================= GALLERY ========================= -->
+
+<div class="gallery" id="gallery"></div>
+
+<!-- ======================= POPUPS ========================== -->
+
+<div id="genericPopup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <div id="popupBody">Loading...</div>
+    </div>
+</div>
+
+<div id="chatbot">
+    <div id="chatbot-header">
+        <img src="https://picsum.photos/seed/avatar/120" width="45" style="border-radius:50%;">
+        Aether Guide
+    </div>
+    <div id="chatbot-body">
+        <p>Welcome, traveler… Ready for your first question?</p>
+    </div>
+</div>
+
+
+<!-- ====================== SCRIPTS ========================== -->
+
+<script>
+/* ACTION MAP — identical superpowers as before */
+const actions = [
+    "social","forum","anchor","portal","youtube","chatbot",
+    "academy","music","hans","guest","glitch","morph",
+    "menu","elevator","social2","forum2","anchor2","portal2",
+    "youtube2","chatbot2","academy2","music2","lore2","guest2",
+    "glitch2","morph2","menu2","elevator2","portal3","music3",
+    "secret","warp","rift","void","ascend","final"
+];
+
+/* GENERATE GALLERY PROGRAMMATICALLY — FIXES NON-CLICK ISSUE */
+const gallery = document.getElementById("gallery");
+
+gallery.innerHTML = actions.map((a,i)=>`
+    <div class="tile" data-action="${a}">
+        <div class="tile-content" 
+             style="background-image:url('https://picsum.photos/seed/${i}/1200');"></div>
+        <div class="overlay"></div>
+    </div>
+`).join("");
+
+/* INTERACTION FIX — now tiles 100% clickable */
+document.querySelectorAll(".tile").forEach(tile=>{
+    tile.addEventListener("click", ()=> {
+        handleAction(tile.dataset.action, tile);
+    });
+});
+
+
+/* POPUP UTILITIES */
+const genericPopup = document.getElementById("genericPopup");
+const popupBody = document.getElementById("popupBody");
+const chatbot = document.getElementById("chatbot");
+
+function showPopup(html){
+    popupBody.innerHTML = html;
+    genericPopup.classList.add("active");
+}
+function closePopup(){ genericPopup.classList.remove("active"); }
+
+/* CORE INTERACTIONS */
+function handleAction(action, tile){
+    switch(action){
+        case "hans": startHansChat(); break;
+        case "social": window.open("https://your-social.com","_blank"); break;
+        case "forum": window.open("https://your-forum.com","_blank"); break;
+        case "anchor": scrollToTile(20); break;
+        case "portal": showPopup("✨ A violet portal yawns open…"); break;
+        case "youtube": window.open("https://youtube.com","_blank"); break;
+        case "chatbot": chatbot.style.display="block"; break;
+        case "academy": window.open("https://your-academy.com","_blank"); break;
+        case "music": showMusicPlayer(); break;
+        case "lore": showPopup("🌌 <b>Lore Chamber</b><p>The café is alive…</p>"); break;
+        case "guest": showPopup("A guest of shimmering light steps through…"); break;
+        case "glitch": glitchTile(tile); break;
+        case "morph": morphTile(tile); break;
+        case "menu": showPopup("📜 <b>Table of Contents</b><br>Everything the universe holds."); break;
+        case "elevator": showPopup("A glowing elevator descends from above…"); break;
+        default:
+            showPopup("This tile’s power has yet to be awakened.");
+    }
+}
+
+/* HELPERS */
+function scrollToTile(i){
+    document.querySelectorAll(".tile")[i].scrollIntoView({behavior:"smooth"});
+}
+
+function glitchTile(tile){
+    tile.classList.add("glitching");
+    setTimeout(()=> tile.classList.remove("glitching"), 7000);
+}
+
+function morphTile(tile){
+    let img = tile.querySelector(".tile-content");
+    img.style.transition = "1s ease";
+    img.style.filter = "brightness(.6) contrast(.9) blur(8px)";
+    setTimeout(()=>{
+        img.style.backgroundImage = `url('https://picsum.photos/seed/morph${Math.random()}/1200')`;
+        img.style.filter = "brightness(.95) contrast(1.05)";
+    },900);
+}
+
+function showMusicPlayer(){
+    showPopup(`
+        <h2>🎵 Hidden Music Archive</h2>
+        <audio controls><source src="song1.mp3"></audio><br>
+        <audio controls><source src="song2.mp3"></audio><br>
+        <audio controls><source src="song3.mp3"></audio><br>
+        <audio controls><source src="song4.mp3"></audio><br>
+        <p>Downloads:</p>
+        <a href="song1.mp3" download>Song 1</a> •
+        <a href="song2.mp3" download>Song 2</a> •
+        <a href="song3.mp3" download>Song 3</a> •
+        <a href="song4.mp3" download>Song 4</a>
+    `);
+}
+/* ========================================================= */
+/*                 HANS THE TEASNOB — CHARACTER              */
+/* ========================================================= */
+
+const hansDialogue = {
+    start: {
+        text: `"Well well well… look what the chimera-cat dragged in."  
+        <br><br>
+        *Hans adjusts his monocle, sniffing the air like you’re a cup of oversteeped Earl Grey.*  
+        <br><br>
+        "Tell me, traveler, do you even know the difference between real tea and whatever leaf-flavored disappointment you pretend to enjoy?"`,
+        options: [
+            { label: "…Yes?", next: "yes1" },
+            { label: "Uhh… No?", next: "no1" }
+        ]
+    },
+
+    yes1: {
+        text: `"Oh DO you now? How utterly *precious*.  
+        <br><br>
+        Enlighten me, then—do you brew your tea at the proper angle?  
+        One must tilt the kettle exactly 17 degrees northeast to avoid angering the spirit of Darjeeling."`,
+        options: [
+            { label: "Obviously.", next: "yes2" },
+            { label: "What?!", next: "no2" }
+        ]
+    },
+
+    no1: {
+        text: `"Of course you don’t.  
+        <br><br>
+        Most visitors wouldn’t know Assam from a puddle they stepped in on the way here."`,
+        options: [
+            { label: "Rude.", next: "yes1" },
+            { label: "Teach me then.", next: "teach" }
+        ]
+    },
+
+    yes2: {
+        text: `"Well now I don’t believe you for a second, but I admire the confidence.  
+        <br><br>
+        Tell me, do you also serenade the teapot before pouring?"`,
+        options: [
+            { label: "Every morning.", next: "serious" },
+            { label: "You’re making this up.", next: "caught" }
+        ]
+    },
+
+    no2: {
+        text: `"Tea is a discipline, not… whatever chaos your life is.  
+        <br><br>
+        Try again."`,
+        options: [
+            { label: "Fine. Yes.", next: "yes2" }
+        ]
+    },
+
+    teach: {
+        text: `"Ah! Finally, a student with taste—or at least curiosity.  
+        <br><br>
+        First lesson: never trust anyone who microwaves water.  
+        They are agents of entropy."`,
+        options: [
+            { label: "Duly noted.", next: "end" }
+        ]
+    },
+
+    serious: {
+        text: `"You might be insufferable, but I respect the commitment.  
+        <br><br>
+        Congratulations, you are now 3% less of a disappointment."`,
+        options: [
+            { label: "I’ll take it?", next: "end" }
+        ]
+    },
+
+    caught: {
+        text: `"How *DARE* you imply I would fabricate tea law.  
+        <br><br>
+        Begone before I fetch the chamomile of judgment."`,
+        options: [
+            { label: "Sorry??", next: "end" }
+        ]
+    },
+
+    end: {
+        text: `"Run along now. I have important tea-snobbery to attend to."`,
+        options: [
+            { label: "Close", next: "close" }
+        ]
+    }
+};
+
+
+/* Show Hans popup */
+function startHansChat(){
+    showPopup(`<div id="hansBox"></div>`);
+    runHans("start");
+}
+
+/* Render a dialogue step */
+function runHans(node){
+    const box = document.getElementById("hansBox");
+    const data = hansDialogue[node];
+
+    let html = `<p>${data.text}</p><div style="margin-top:20px;">`;
+
+    data.options.forEach(opt => {
+        html += `<button style="
+            background:#6b3fa7;
+            color:white;
+            padding:8px 14px;
+            margin-right:10px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        " onclick="handleHansChoice('${opt.next}')">${opt.label}</button>`;
+    });
+
+    html += "</div>";
+
+    box.innerHTML = html;
+}
+
+function handleHansChoice(next){
+    if(next === "close"){ closePopup(); return; }
+    runHans(next);
+}
+
+</script>
+
+</body>
+</html>
