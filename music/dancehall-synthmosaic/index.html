@@ -1,0 +1,415 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>The Comfort Cafe Playlist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: linear-gradient(135deg, #2e004f, #4b007d);
+      color: #b0f08c;
+      min-height: 100vh;
+    }
+    .cryptic-font {
+      font-family: 'UnifrakturCook', cursive;
+      letter-spacing: 0.1em;
+      text-shadow:
+        0 0 5px #a0ff7a,
+        0 0 10px #7fff00,
+        0 0 20px #7fff00,
+        0 0 30px #a0ff7a;
+    }
+    .bento-img {
+      border-radius: 1rem 0.5rem 1rem 0.5rem;
+      box-shadow:
+        0 0 10px #7fff00aa,
+        0 0 20px #a0ff7aaa,
+        0 0 30px #7fff00cc;
+      transition: transform 0.3s ease;
+    }
+    .bento-img:hover {
+      transform: scale(1.05) rotate(-2deg);
+      box-shadow:
+        0 0 15px #b0ff6c,
+        0 0 30px #b0ff6c,
+        0 0 40px #a0ff7a;
+    }
+    .neon-button {
+      background: linear-gradient(90deg, #4b007d, #2e004f);
+      border: 2px solid #7fff00;
+      color: #b0f08c;
+      text-shadow:
+        0 0 5px #7fff00,
+        0 0 10px #a0ff7a;
+      transition: all 0.3s ease;
+      font-family: 'UnifrakturCook', cursive;
+      letter-spacing: 0.15em;
+    }
+    .neon-button:hover {
+      background: #7fff00;
+      color: #2e004f;
+      box-shadow:
+        0 0 10px #7fff00,
+        0 0 20px #a0ff7a,
+        0 0 30px #7fff00;
+    }
+    /* Visualizer bars */
+    .bar {
+      width: 4px;
+      height: 20px;
+      margin: 0 1px;
+      background: #7fff00;
+      border-radius: 2px;
+      animation: bounce 1.2s infinite ease-in-out;
+      box-shadow:
+        0 0 5px #7fff00,
+        0 0 10px #a0ff7a;
+    }
+    .bar:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    .bar:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    .bar:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+    .bar:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+    .bar:nth-child(6) {
+      animation-delay: 0.5s;
+    }
+    .bar:nth-child(7) {
+      animation-delay: 0.6s;
+    }
+    .bar:nth-child(8) {
+      animation-delay: 0.7s;
+    }
+    .bar:nth-child(9) {
+      animation-delay: 0.8s;
+    }
+    .bar:nth-child(10) {
+      animation-delay: 0.9s;
+    }
+    @keyframes bounce {
+      0%, 100% {
+        height: 20px;
+        opacity: 0.6;
+      }
+      50% {
+        height: 50px;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen p-4 md:p-8 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 text-green-300">
+  <header class="mb-8 text-center">
+    <h1 class="cryptic-font text-5xl md:text-6xl tracking-widest mb-2 select-none drop-shadow-[0_0_10px_rgba(112,255,0,0.8)]">
+      The Comfort Cafe
+    </h1>
+    <p class="text-green-400 font-mono text-sm md:text-base uppercase tracking-widest">
+      Tea Sippin' Tunes to Soothe Your Mind
+    </p>
+  </header>
+  <main class="flex flex-col md:flex-row gap-8 md:gap-12 max-w-7xl mx-auto w-full">
+    <!-- Playlist Section -->
+    <section class="md:w-1/2 space-y-6" id="playlist-section">
+      <h2 class="cryptic-font text-3xl mb-4 border-b border-green-500 pb-2 select-none drop-shadow-[0_0_8px_rgba(112,255,0,0.7)]">
+        Playlist
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="playlist-grid">
+        <!-- Songs will be rendered here dynamically -->
+      </div>
+    </section>
+    <!-- Visualizer & Controls Section -->
+    <section class="md:w-1/2 flex flex-col items-center space-y-6">
+      <h2 class="cryptic-font text-3xl mb-4 border-b border-green-500 pb-2 select-none drop-shadow-[0_0_8px_rgba(112,255,0,0.7)] w-full text-center">
+        Now Playing
+      </h2>
+      <div class="w-full max-w-md bg-gradient-to-tr from-purple-900 to-purple-700 rounded-xl p-6 shadow-lg flex flex-col items-center" id="visualizer-container">
+        <img alt="Placeholder album cover with text 'Select a Song' in neon green on purple gradient background" class="bento-img w-64 h-64 object-cover mb-6" height="400" id="now-playing-img" loading="lazy" src="https://storage.googleapis.com/a1aa/image/faa3a31c-e469-4dd9-bb87-c4d895a1d31e.jpg" width="400" />
+        <h3 class="cryptic-font text-2xl text-green-300 mb-2 select-none" id="now-playing-title">
+          No song selected
+        </h3>
+        <p class="font-mono text-green-400 mb-6 select-none" id="now-playing-artist">
+          Click a song to play
+        </p>
+        <div aria-label="Audio visualizer" class="flex justify-center items-end h-20 w-full max-w-xs mb-6" id="visualizer">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="flex space-x-6">
+          <button aria-label="Play or pause audio" class="neon-button px-6 py-2 rounded-lg flex items-center space-x-2" id="play-pause-btn">
+            <i class="fas fa-play"></i>
+            <span>Play</span>
+          </button>
+          <button aria-label="Mute or unmute audio" class="neon-button px-6 py-2 rounded-lg flex items-center space-x-2" id="mute-btn">
+            <i class="fas fa-volume-up"></i>
+            <span>Mute</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <audio id="audio-player" loop></audio>
+  <script>
+    // Updated songs data with SoundHelix Lo-Fi tracks URLs
+    // SoundHelix provides free sample mp3s for testing, here we use their Lo-Fi style tracks
+    // Titles and artists remain as requested
+
+    let songs = [
+      {
+        title: "Stell",
+        artist: "Nightshade Echoes",
+        cover:
+          "https://3society.neocities.org/COMFORTCAFE_LORE/PLAYLIST/STELLAR-removebg-preview.png",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+      },
+      {
+        title: "Milo",
+        artist: "Lunar Veil",
+        cover:
+          "https://3society.neocities.org/COMFORTCAFE_LORE/PLAYLIST/milo.jpeg",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
+      },
+      {
+        title: "Lovi",
+        artist: "Shadowmancer",
+        cover:
+          "https://3society.neocities.org/COMFORTCAFE_LORE/PLAYLIST/Lovi.png",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+      },
+      {
+        title: "Lovi Lavi",
+        artist: "Phantom Realm",
+        cover:
+          "https://placehold.co/400x400/png?text=Lovi+Lavi&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
+      },
+      {
+        title: "Rose Garden",
+        artist: "Cyber Shade",
+        cover:
+          "https://placehold.co/400x400/png?text=Rose+Garden&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+      },
+      {
+        title: "Be Still",
+        artist: "Nocturnal Pulse",
+        cover:
+          "https://placehold.co/400x400/png?text=Be+Still&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
+      },
+      {
+        title: "New Creation",
+        artist: "Mystic Veins",
+        cover:
+          "https://placehold.co/400x400/png?text=New+Creation&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3",
+      },
+      {
+        title: "Phantom Lullaby",
+        artist: "Spectral Choir",
+        cover:
+          "https://placehold.co/400x400/png?text=Phantom+Lullaby&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3",
+      },
+      {
+        title: "Sacred Shadows",
+        artist: "Ethereal Faith",
+        cover:
+          "https://placehold.co/400x400/png?text=Sacred+Shadows&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3",
+      },
+      {
+        title: "Divine Twilight",
+        artist: "Holy Veil",
+        cover:
+          "https://placehold.co/400x400/png?text=Divine+Twilight&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-19.mp3",
+      },
+      {
+        title: "Celestial Mourning",
+        artist: "Gothic Psalms",
+        cover:
+          "https://placehold.co/400x400/png?text=Celestial+Mourning&font=UnifrakturCook&bg=4b007d&fg=7fff00",
+        url:
+          "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-20.mp3",
+      }
+    ];
+
+    const playlistGrid = document.getElementById("playlist-grid");
+    const audioPlayer = document.getElementById("audio-player");
+    const playPauseBtn = document.getElementById("play-pause-btn");
+    const muteBtn = document.getElementById("mute-btn");
+    const nowPlayingTitle = document.getElementById("now-playing-title");
+    const nowPlayingArtist = document.getElementById("now-playing-artist");
+    const nowPlayingImg = document.getElementById("now-playing-img");
+    const clickSound = new Audio("https://cdn.freesound.org/previews/522/522177_5674460-lq.mp3");
+    clickSound.volume = 0.15;
+
+    let currentSongIndex = null;
+    let isPlaying = false;
+
+    // Function to render playlist dynamically
+    function renderPlaylist() {
+      playlistGrid.innerHTML = "";
+      songs.forEach((song, idx) => {
+        const a = document.createElement("a");
+        a.href = song.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.className = "bento-img group block bg-gradient-to-tr from-purple-900 to-purple-700 p-4 cursor-pointer select-none shadow-lg";
+        a.setAttribute("data-index", idx);
+
+        const img = document.createElement("img");
+        img.src = song.cover;
+        img.alt = `Figma bento shaped album cover for ${song.title} by ${song.artist} with neon green and purple gradient`;
+        img.className = "w-full rounded-lg mb-3";
+        img.height = 400;
+        img.width = 400;
+        img.loading = "lazy";
+
+        const h3 = document.createElement("h3");
+        h3.className = "cryptic-font text-lg text-green-400 group-hover:text-green-200 transition-colors";
+        h3.textContent = song.title;
+
+        const p = document.createElement("p");
+        p.className = "text-xs font-mono text-green-300 group-hover:text-green-100";
+        p.textContent = `By ${song.artist}`;
+
+        a.appendChild(img);
+        a.appendChild(h3);
+        a.appendChild(p);
+
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          clickSound.currentTime = 0;
+          clickSound.play();
+          loadSong(idx);
+        });
+
+        playlistGrid.appendChild(a);
+      });
+    }
+
+    // Play or pause audio
+    function togglePlayPause() {
+      if (!audioPlayer.src) return;
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        isPlaying = true;
+        playPauseBtn.querySelector("i").classList.replace("fa-play", "fa-pause");
+        playPauseBtn.querySelector("span").textContent = "Pause";
+      } else {
+        audioPlayer.pause();
+        isPlaying = false;
+        playPauseBtn.querySelector("i").classList.replace("fa-pause", "fa-play");
+        playPauseBtn.querySelector("span").textContent = "Play";
+      }
+    }
+
+    // Mute or unmute audio
+    function toggleMute() {
+      audioPlayer.muted = !audioPlayer.muted;
+      if (audioPlayer.muted) {
+        muteBtn.querySelector("i").classList.replace("fa-volume-up", "fa-volume-mute");
+        muteBtn.querySelector("span").textContent = "Unmute";
+      } else {
+        muteBtn.querySelector("i").classList.replace("fa-volume-mute", "fa-volume-up");
+        muteBtn.querySelector("span").textContent = "Mute";
+      }
+    }
+
+    // Load and play selected song
+    function loadSong(index) {
+      if (index === currentSongIndex) {
+        togglePlayPause();
+        return;
+      }
+      currentSongIndex = index;
+      const song = songs[index];
+      audioPlayer.src = song.url;
+      audioPlayer.loop = true;
+      audioPlayer.play();
+      isPlaying = true;
+      playPauseBtn.querySelector("i").classList.replace("fa-play", "fa-pause");
+      playPauseBtn.querySelector("span").textContent = "Pause";
+      muteBtn.querySelector("i").classList.replace("fa-volume-mute", "fa-volume-up");
+      muteBtn.querySelector("span").textContent = "Mute";
+      audioPlayer.muted = false;
+
+      nowPlayingTitle.textContent = song.title;
+      nowPlayingArtist.textContent = song.artist;
+      nowPlayingImg.src = song.cover;
+      nowPlayingImg.alt = `Album cover for ${song.title} by ${song.artist} with neon green and purple gradient`;
+    }
+
+    playPauseBtn.addEventListener("click", () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+      togglePlayPause();
+    });
+
+    muteBtn.addEventListener("click", () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+      toggleMute();
+    });
+
+    // Visualizer animation tied to audio playing state
+    const bars = document.querySelectorAll("#visualizer .bar");
+    let visualizerInterval;
+
+    function startVisualizer() {
+      if (visualizerInterval) return;
+      visualizerInterval = setInterval(() => {
+        bars.forEach((bar) => {
+          const height = 20 + Math.random() * 50;
+          bar.style.height = height + "px";
+          bar.style.opacity = 0.6 + Math.random() * 0.4;
+        });
+      }, 200);
+    }
+
+    function stopVisualizer() {
+      clearInterval(visualizerInterval);
+      visualizerInterval = null;
+      bars.forEach((bar) => {
+        bar.style.height = "20px";
+        bar.style.opacity = "0.6";
+      });
+    }
+
+    audioPlayer.addEventListener("play", startVisualizer);
+    audioPlayer.addEventListener("pause", stopVisualizer);
+    audioPlayer.addEventListener("ended", stopVisualizer);
+
+    // Initial render
+    renderPlaylist();
+  </script>
+</body>
+</html>
